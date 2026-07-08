@@ -23,9 +23,9 @@ export function PageLoader() {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="grid h-16 w-16 place-items-center rounded-xl bg-brand text-brand-foreground font-display text-2xl font-bold">
-                DS
-              </div>
+              <div className="h-16 w-16">
+              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+            </div>
               <motion.div
                 className="absolute -inset-2 rounded-2xl border-2 border-accent-red border-t-transparent"
                 animate={{ rotate: 360 }}
