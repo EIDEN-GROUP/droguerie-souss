@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
+import logo from "@/assets/logo.png";
 
 export function PageLoader() {
   const [show, setShow] = useState(true);
@@ -24,7 +25,7 @@ export function PageLoader() {
               className="relative"
             >
               <div className="h-16 w-16">
-              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
               <motion.div
                 className="absolute -inset-2 rounded-2xl border-2 border-accent-red border-t-transparent"

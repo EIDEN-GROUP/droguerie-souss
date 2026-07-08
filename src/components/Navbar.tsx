@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-
 import { ChevronRight, Heart, Menu, Phone, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/store";
+import logo from "@/assets/logo.png";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -48,7 +49,7 @@ export function Navbar() {
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <div className="h-16 w-16">
-              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
             <div className="hidden sm:block leading-tight">
               <div className="font-display text-lg font-bold tracking-wide">

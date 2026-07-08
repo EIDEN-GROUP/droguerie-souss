@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { LayoutDashboard, Package, Receipt, LogOut, Store, X } from "lucide-react";
+import logo from "@/assets/logo.png";
 import { useAdminAuth } from "@/lib/adminAuth";
 
 const links = [
@@ -14,18 +15,18 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const logout = useAdminAuth((s) => s.logout);
 
   return (
-    <div className="flex h-full flex-col bg-brand-secondary text-paper">
-      <div className="flex items-center gap-3 px-5 py-6">
-        <div className="h-11 w-11">
-          <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+    <div className="flex h-full flex-col bg-brand-secondary text-paper lg:rounded-r-3xl">
+      <div className="flex items-center gap-3 px-6 py-7">
+        <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full bg-paper/10">
+          <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
         </div>
         <div className="leading-tight">
-          <div className="font-display text-base font-bold tracking-wide">DROGUERIE SOUSS</div>
-          <div className="text-[10px] uppercase tracking-[0.25em] text-paper/60">Admin</div>
+          <div className="font-display text-base font-bold tracking-wide">Droguerie Souss</div>
+          <div className="text-[11px] text-paper/60">Espace admin</div>
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 px-3">
+      <nav className="flex-1 space-y-1.5 px-4">
         {links.map((l) => {
           const active = l.to === "/admin" ? pathname === "/admin" : pathname.startsWith(l.to);
           return (
@@ -33,8 +34,10 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               key={l.to}
               to={l.to}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold uppercase tracking-wider transition ${
-                active ? "bg-brand text-brand-foreground" : "text-paper/70 hover:bg-paper/10 hover:text-paper"
+              className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
+                active
+                  ? "bg-mint text-brand-secondary shadow-sm"
+                  : "text-paper/75 hover:bg-paper/10 hover:text-paper"
               }`}
             >
               <l.icon className="h-4 w-4" />
@@ -42,20 +45,21 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
             </Link>
           );
         })}
-      </nav>
-
-      <div className="space-y-1 border-t border-paper/10 p-3">
         <Link
           to="/"
-          className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold uppercase tracking-wider text-paper/70 transition hover:bg-paper/10 hover:text-paper"
+          onClick={onNavigate}
+          className="flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold text-paper/75 transition hover:bg-paper/10 hover:text-paper"
         >
           <Store className="h-4 w-4" /> Voir le site
         </Link>
+      </nav>
+
+      <div className="px-4 pb-6">
         <button
           onClick={() => logout()}
-          className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold uppercase tracking-wider text-accent-red/90 transition hover:bg-accent-red/10 hover:text-accent-red"
+          className="flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold text-paper/75 transition hover:bg-paper/10 hover:text-paper"
         >
-          <LogOut className="h-4 w-4" /> Déconnexion
+          <LogOut className="h-4 w-4" /> Logout
         </button>
       </div>
     </div>

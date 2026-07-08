@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Facebook, Instagram, Mail, MapPin, Phone } from "lucide-react";
+import logo from "@/assets/logo.png";
 
 export function Footer() {
   return (
@@ -8,7 +9,7 @@ export function Footer() {
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <div className="h-16 w-16">
-              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
             <div>
               <div className="font-display text-lg font-bold">DROGUERIE SOUSS</div>
