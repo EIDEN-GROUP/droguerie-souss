@@ -1,0 +1,178 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { motion } from "framer-motion";
+import { CheckCircle2, ChevronRight, ShoppingBag } from "lucide-react";
+import { useState } from "react";
+import { Layout } from "@/components/Layout";
+import { cartTotal, useApp } from "@/lib/store";
+
+export const Route = createFileRoute("/checkout")({
+  component: Checkout,
+  head: () => ({ meta: [{ title: "Devis   Droguerie Souss" }] }),
+});
+
+function Checkout() {
+  const { cart, clearCart } = useApp();
+  const navigate = useNavigate();
+  const [payment, setPayment] = useState("cod");
+  const [submitting, setSubmitting] = useState(false);
+  const total = cartTotal(cart);
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitting(true);
+    setTimeout(() => {
+      clearCart();
+      navigate({ to: "/confirmation" });
+    }, 800);
+  };
+
+  return (
+    <Layout>
+      <div className="border-b bg-cream">
+        <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
+          <Link to="/" className="hover:text-brand">Accueil</Link>
+          <ChevronRight className="h-3 w-3" />
+          <Link to="/shop" className="hover:text-brand">Shop</Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-ink">Demande de devis</span>
+        </div>
+      </div>
+
+      <div className="container-x py-12">
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-accent-red">
+            Étape finale
+          </span>
+          <h1 className="mt-2 font-display text-4xl font-bold uppercase sm:text-5xl">
+            Demande de devis
+          </h1>
+          <p className="mt-2 text-ink-soft">
+            Aucun paiement en ligne. Notre équipe vous contactera pour confirmer.
+          </p>
+        </motion.div>
+
+        {cart.length === 0 ? (
+          <div className="mt-12 rounded-2xl border-2 border-dashed py-20 text-center">
+            <ShoppingBag className="mx-auto h-12 w-12 text-ink-soft" />
+            <p className="mt-4 font-display text-lg font-bold uppercase">Votre panier est vide</p>
+            <p className="mt-1 text-sm text-ink-soft">Ajoutez des produits avant de demander un devis.</p>
+            <Link
+              to="/shop"
+              className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
+            >
+              Voir la boutique
+            </Link>
+          </div>
+        ) : (
+          <form onSubmit={onSubmit} className="mt-10 grid gap-8 lg:grid-cols-3">
+            <div className="space-y-6 lg:col-span-2">
+              <Card title="Informations client">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <Field label="Nom complet" required><input required className="ci" /></Field>
+                  <Field label="Téléphone" required><input required type="tel" className="ci" /></Field>
+                  <Field label="Email (optionnel)"><input type="email" className="ci" /></Field>
+                  <Field label="Ville" required><input required className="ci" /></Field>
+                </div>
+                <Field label="Adresse de livraison" required>
+                  <textarea required rows={3} className="ci" />
+                </Field>
+              </Card>
+
+              <Card title="Mode de règlement">
+                <div className="grid gap-3">
+                  {[
+                    { id: "cod", label: "Paiement à la livraison", desc: "Réglez en espèces à la réception." },
+                    { id: "bank", label: "Virement bancaire", desc: "Nos coordonnées vous seront transmises." },
+                    { id: "rep", label: "À arranger avec le commercial", desc: "Modalités définies avec notre représentant." },
+                  ].map((p) => (
+                    <label
+                      key={p.id}
+                      className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
+                        payment === p.id ? "border-brand bg-brand/5" : "hover:border-brand/50"
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="payment"
+                        checked={payment === p.id}
+                        onChange={() => setPayment(p.id)}
+                        className="mt-1 h-4 w-4 accent-[#4274d9]"
+                      />
+                      <div>
+                        <p className="text-sm font-bold">{p.label}</p>
+                        <p className="mt-0.5 text-xs text-ink-soft">{p.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
+              </Card>
+            </div>
+
+            <div className="lg:sticky lg:top-28 self-start">
+              <Card title="Récapitulatif">
+                <ul className="divide-y">
+                  {cart.map((i) => {
+                    const price = i.product.promo
+                      ? i.product.price * (1 - i.product.promo / 100)
+                      : i.product.price;
+                    return (
+                      <li key={i.product.id} className="flex gap-3 py-3">
+                        <img src={i.product.image} alt="" className="h-14 w-14 rounded object-cover" />
+                        <div className="flex-1 min-w-0">
+                          <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
+                          <p className="text-[11px] text-ink-soft">
+                            {i.qty} × {price.toFixed(0)} MAD
+                          </p>
+                        </div>
+                        <p className="text-xs font-bold">{(price * i.qty).toFixed(0)} MAD</p>
+                      </li>
+                    );
+                  })}
+                </ul>
+                <div className="mt-4 flex items-baseline justify-between border-t pt-4">
+                  <span className="text-sm text-ink-soft">Total estimé</span>
+                  <span className="font-display text-2xl font-bold text-brand">
+                    {total.toFixed(0)} MAD
+                  </span>
+                </div>
+                <p className="mt-2 text-[11px] text-ink-soft">
+                  Prix indicatifs. Le devis final sera confirmé par notre équipe.
+                </p>
+                <button
+                  type="submit"
+                  disabled={submitting}
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-5 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 disabled:opacity-60"
+                >
+                  {submitting ? "Envoi..." : <><CheckCircle2 className="h-4 w-4" /> Confirmer la demande</>}
+                </button>
+              </Card>
+            </div>
+          </form>
+        )}
+      </div>
+      <style>{`.ci{width:100%;border:1px solid var(--color-border);border-radius:0.5rem;padding:0.7rem 0.9rem;font-size:0.875rem;outline:none;background:white}.ci:focus{border-color:var(--color-brand)}`}</style>
+    </Layout>
+  );
+}
+
+function Card({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border bg-paper p-5 sm:p-6">
+      <h3 className="mb-5 font-display text-lg font-bold uppercase tracking-wider">
+        {title}
+      </h3>
+      {children}
+    </div>
+  );
+}
+
+function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <label className="mt-4 block first:mt-0">
+      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+        {label} {required && <span className="text-accent-red">*</span>}
+      </span>
+      {children}
+    </label>
+  );
+}
