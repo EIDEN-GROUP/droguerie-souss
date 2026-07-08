@@ -108,7 +108,7 @@ function Contact() {
                 Message envoyé ! Notre équipe vous contactera sous 24h.
               </div>
             )}
-            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <div className="mt-6 grid gap-4 sm:grid-cols-2 mb-4">
               <Field label="Nom complet" required><input required className="input" /></Field>
               <Field label="Téléphone" required><input required type="tel" className="input" /></Field>
               <Field label="Email"><input type="email" className="input" /></Field>
@@ -130,7 +130,7 @@ function Contact() {
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
-    <label className="mt-4 block first:mt-0">
+    <label className="block first:mt-0">
       <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
         {label} {required && <span className="text-accent-red">*</span>}
       </span>

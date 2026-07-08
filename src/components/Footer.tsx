@@ -7,8 +7,8 @@ export function Footer() {
       <div className="container-x grid gap-10 py-14 md:grid-cols-4">
         <div className="min-w-0">
           <div className="flex items-center gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-brand font-display text-xl font-bold">
-              DS
+            <div className="h-11 w-11">
+              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
             <div>
               <div className="font-display text-lg font-bold">DROGUERIE SOUSS</div>

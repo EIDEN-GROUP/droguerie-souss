@@ -4,7 +4,8 @@ import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
-import { categories, products, type Category } from "@/lib/products";
+import { useAdminStore } from "@/lib/adminStore";
+import { categories, type Category } from "@/lib/products";
 import { ChevronDown, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/shop")({
 
 function Shop() {
   const { cat: initialCat, q: initialQ } = Route.useSearch();
+  const products = useAdminStore((s) => s.products);
   const [activeCat, setActiveCat] = useState<Category | "all">(
     (initialCat as Category) || "all",
   );
@@ -42,7 +44,7 @@ function Shop() {
     if (sort === "asc") list = [...list].sort((a, b) => a.price - b.price);
     if (sort === "desc") list = [...list].sort((a, b) => b.price - a.price);
     return list;
-  }, [activeCat, query, sort]);
+  }, [products, activeCat, query, sort]);
 
   return (
     <Layout>

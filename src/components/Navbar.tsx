@@ -47,8 +47,8 @@ export function Navbar() {
       >
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="grid h-11 w-11 place-items-center rounded-lg bg-brand text-brand-foreground font-display text-xl font-bold">
-              DS
+            <div className="h-11 w-11">
+              <img src="/src/assets/logo.png" alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
             <div className="hidden sm:block leading-tight">
               <div className="font-display text-lg font-bold tracking-wide">

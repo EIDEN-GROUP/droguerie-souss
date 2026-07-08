@@ -11,7 +11,7 @@ import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import promoImg from "@/assets/promo-collection.jpg";
-import { bestSellers, seasonalProducts, products } from "@/lib/products";
+import { useAdminStore } from "@/lib/adminStore";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
@@ -20,6 +20,9 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
+  const products = useAdminStore((s) => s.products);
+  const bestSellers = products.filter((p) => p.bestseller);
+
   return (
     <Layout>
       <HeroCarousel />

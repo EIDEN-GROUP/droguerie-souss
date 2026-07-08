@@ -13,8 +13,12 @@ import { Route as ShopRouteImport } from './routes/shop'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as AdminProductsRouteImport } from './routes/admin/products'
+import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 
 const ShopRoute = ShopRouteImport.update({
   id: '/shop',
@@ -36,24 +40,48 @@ const CheckoutRoute = CheckoutRouteImport.update({
   path: '/checkout',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const ProductIdRoute = ProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminProductsRoute = AdminProductsRouteImport.update({
+  id: '/products',
+  path: '/products',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -61,36 +89,65 @@ export interface FileRoutesByTo {
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/admin': typeof AdminIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
   '/shop': typeof ShopRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/products': typeof AdminProductsRoute
   '/product/$id': typeof ProductIdRoute
+  '/admin/': typeof AdminIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/checkout' | '/confirmation' | '/contact' | '/shop' | '/product/$id'
+    | '/'
+    | '/admin'
+    | '/checkout'
+    | '/confirmation'
+    | '/contact'
+    | '/shop'
+    | '/admin/orders'
+    | '/admin/products'
+    | '/product/$id'
+    | '/admin/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/checkout' | '/confirmation' | '/contact' | '/shop' | '/product/$id'
-  id:
-    | '__root__'
     | '/'
     | '/checkout'
     | '/confirmation'
     | '/contact'
     | '/shop'
+    | '/admin/orders'
+    | '/admin/products'
     | '/product/$id'
+    | '/admin'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/checkout'
+    | '/confirmation'
+    | '/contact'
+    | '/shop'
+    | '/admin/orders'
+    | '/admin/products'
+    | '/product/$id'
+    | '/admin/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
   ConfirmationRoute: typeof ConfirmationRoute
   ContactRoute: typeof ContactRoute
@@ -128,12 +185,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/product/$id': {
       id: '/product/$id'
@@ -142,11 +213,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/products': {
+      id: '/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AdminProductsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
+interface AdminRouteChildren {
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminProductsRoute: typeof AdminProductsRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminOrdersRoute: AdminOrdersRoute,
+  AdminProductsRoute: AdminProductsRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
   ConfirmationRoute: ConfirmationRoute,
   ContactRoute: ContactRoute,

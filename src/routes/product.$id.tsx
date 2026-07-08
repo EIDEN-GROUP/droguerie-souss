@@ -1,37 +1,49 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ChevronRight, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw } from "lucide-react";
+import { ChevronRight, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { SectionHeader } from "@/components/SectionHeader";
-import { products } from "@/lib/products";
+import { useAdminStore } from "@/lib/adminStore";
+import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/product/$id")({
-  loader: ({ params }) => {
-    const product = products.find((p) => p.id === params.id);
-    if (!product) throw notFound();
-    return { product };
-  },
   component: ProductDetail,
-  head: ({ loaderData }) => ({
-    meta: loaderData
-      ? [
-          { title: `${loaderData.product.name}   Droguerie Souss` },
-          { name: "description", content: loaderData.product.description },
-          { property: "og:image", content: loaderData.product.image },
-        ]
-      : [],
-  }),
 });
 
 function ProductDetail() {
-  const { product } = Route.useLoaderData();
+  const { id } = Route.useParams();
+  const products = useAdminStore((s) => s.products);
+  const product = products.find((p) => p.id === id);
+
+  if (!product) {
+    return (
+      <Layout>
+        <div className="container-x py-24 text-center">
+          <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
+          <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
+          <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
+          <Link
+            to="/shop"
+            className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
+          >
+            Voir la boutique
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
+
+  return <ProductDetailContent product={product} products={products} />;
+}
+
+function ProductDetailContent({ product, products }: { product: Product; products: Product[] }) {
   const [qty, setQty] = useState(1);
+  const { addToCart, toggleFavorite, favorites } = useApp();
   const gallery = product.images && product.images.length > 0 ? product.images : [product.image];
   const [activeImage, setActiveImage] = useState(0);
-  const { addToCart, toggleFavorite, favorites } = useApp();
   const isFav = favorites.includes(product.id);
   const sameCategory = products.filter((p) => p.category === product.category && p.id !== product.id);
   const otherProducts = products.filter((p) => p.category !== product.category && p.id !== product.id);
@@ -40,6 +52,7 @@ function ProductDetail() {
 
   useEffect(() => {
     setActiveImage(0);
+    setQty(1);
   }, [product.id]);
 
   return (

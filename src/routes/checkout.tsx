@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { CheckCircle2, ChevronRight, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
+import { useAdminStore } from "@/lib/adminStore";
+import type { PaymentMethod } from "@/lib/orders";
 import { cartTotal, useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/checkout")({
@@ -12,14 +14,33 @@ export const Route = createFileRoute("/checkout")({
 
 function Checkout() {
   const { cart, clearCart } = useApp();
+  const addOrder = useAdminStore((s) => s.addOrder);
   const navigate = useNavigate();
-  const [payment, setPayment] = useState("cod");
+  const [payment, setPayment] = useState<PaymentMethod>("cod");
   const [submitting, setSubmitting] = useState(false);
+  const [form, setForm] = useState({ name: "", phone: "", email: "", city: "", address: "" });
   const total = cartTotal(cart);
+
+  const updateField = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+    setForm((f) => ({ ...f, [field]: e.target.value }));
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    addOrder({
+      customer: {
+        name: form.name,
+        phone: form.phone,
+        email: form.email || undefined,
+        city: form.city,
+        address: form.address,
+      },
+      payment,
+      items: cart.map((i) => {
+        const price = i.product.promo ? i.product.price * (1 - i.product.promo / 100) : i.product.price;
+        return { productId: i.product.id, name: i.product.name, image: i.product.image, price, qty: i.qty };
+      }),
+    });
     setTimeout(() => {
       clearCart();
       navigate({ to: "/confirmation" });
@@ -67,24 +88,26 @@ function Checkout() {
           <form onSubmit={onSubmit} className="mt-10 grid gap-8 lg:grid-cols-3">
             <div className="space-y-6 lg:col-span-2">
               <Card title="Informations client">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field label="Nom complet" required><input required className="ci" /></Field>
-                  <Field label="Téléphone" required><input required type="tel" className="ci" /></Field>
-                  <Field label="Email (optionnel)"><input type="email" className="ci" /></Field>
-                  <Field label="Ville" required><input required className="ci" /></Field>
+                <div className="grid gap-4 sm:grid-cols-2 mb-4">
+                  <Field label="Nom complet" required><input required value={form.name} onChange={updateField("name")} className="ci" /></Field>
+                  <Field label="Téléphone" required><input required type="tel" value={form.phone} onChange={updateField("phone")} className="ci" /></Field>
+                  <Field label="Email (optionnel)"><input type="email" value={form.email} onChange={updateField("email")} className="ci" /></Field>
+                  <Field label="Ville" required><input required value={form.city} onChange={updateField("city")} className="ci" /></Field>
                 </div>
-                <Field label="Adresse de livraison" required>
-                  <textarea required rows={3} className="ci" />
+                <Field label="Adresse de livraison" required >
+                  <textarea required rows={3} value={form.address} onChange={updateField("address")} className="ci" />
                 </Field>
               </Card>
 
               <Card title="Mode de règlement">
                 <div className="grid gap-3">
-                  {[
-                    { id: "cod", label: "Paiement à la livraison", desc: "Réglez en espèces à la réception." },
-                    { id: "bank", label: "Virement bancaire", desc: "Nos coordonnées vous seront transmises." },
-                    { id: "rep", label: "À arranger avec le commercial", desc: "Modalités définies avec notre représentant." },
-                  ].map((p) => (
+                  {(
+                    [
+                      { id: "cod", label: "Paiement à la livraison", desc: "Réglez en espèces à la réception." },
+                      { id: "bank", label: "Virement bancaire", desc: "Nos coordonnées vous seront transmises." },
+                      { id: "rep", label: "À arranger avec le commercial", desc: "Modalités définies avec notre représentant." },
+                    ] as { id: PaymentMethod; label: string; desc: string }[]
+                  ).map((p) => (
                     <label
                       key={p.id}
                       className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
@@ -168,7 +191,7 @@ function Card({ title, children }: { title: string; children: React.ReactNode })
 
 function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
   return (
-    <label className="mt-4 block first:mt-0">
+    <label className="block first:mt-0">
       <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
         {label} {required && <span className="text-accent-red">*</span>}
       </span>
