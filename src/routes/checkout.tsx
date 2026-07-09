@@ -119,7 +119,7 @@ function Checkout() {
                         name="payment"
                         checked={payment === p.id}
                         onChange={() => setPayment(p.id)}
-                        className="mt-1 h-4 w-4 accent-[#4274d9]"
+                        className="mt-1 h-4 w-4 accent-[#2f378d]"
                       />
                       <div>
                         <p className="text-sm font-bold">{p.label}</p>

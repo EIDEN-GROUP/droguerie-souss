@@ -4,30 +4,33 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Brand palette
- * #4274D9 primary blue, #b8001f accent red, #95CCDD sky, #D0E7E6 mint,
- * #FFFFFF white, #393737 dark gray text
+/* Souss Droguerie brand palette (from brand_guide.html)
+ * Indigo #2F378D primary · #202560 deep · #272D74 hover
+ * Periwinkle #8E93C3 · Mist #DDDFEC · Indigo-50 #F3F3F8 surface
+ * Ink #30313D · Ink-soft #757783 · Error #B24242
+ * Type: Fraunces (display), Inter (body), IBM Plex Mono (labels)
  */
 
 @theme {
-  --font-display: "Barlow Condensed", "Bebas Neue", sans-serif;
-  --font-sans: "Inter", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
 
-  --color-brand-secondary: #293681;
-  --color-brand: #4274d9;
+  --color-brand-secondary: #202560;
+  --color-brand: #2f378d;
   --color-brand-foreground: #ffffff;
-  --color-brand-dark: #2c5bb8;
-  --color-accent-red: #b8001f;
+  --color-brand-dark: #272d74;
+  --color-accent-red: #b24242;
   --color-accent-red-foreground: #ffffff;
-  --color-sky: #95ccdd;
-  --color-mint: #d0e7e6;
-  --color-ink: #393737;
-  --color-ink-soft: #6b6968;
+  --color-sky: #8e93c3;
+  --color-mint: #dddfec;
+  --color-ink: #30313d;
+  --color-ink-soft: #757783;
   --color-paper: #ffffff;
-  --color-cream: #f6f7f9;
+  --color-cream: #f3f3f8;
 
-  --shadow-card: 0 10px 30px -12px rgba(57, 55, 55, 0.15);
-  --shadow-elevated: 0 20px 50px -20px rgba(66, 116, 217, 0.35);
+  --shadow-card: 0 4px 16px rgba(47, 55, 141, 0.1), 0 2px 4px rgba(48, 49, 61, 0.06);
+  --shadow-elevated: 0 16px 48px rgba(47, 55, 141, 0.16), 0 4px 12px rgba(48, 49, 61, 0.08);
 }
 
 @theme inline {
@@ -57,26 +60,26 @@
 }
 
 :root {
-  --radius: 0.5rem;
+  --radius: 0.625rem;
   --background: #ffffff;
-  --foreground: #393737;
+  --foreground: #30313d;
   --card: #ffffff;
-  --card-foreground: #393737;
+  --card-foreground: #30313d;
   --popover: #ffffff;
-  --popover-foreground: #393737;
-  --primary: #4274d9;
+  --popover-foreground: #30313d;
+  --primary: #2f378d;
   --primary-foreground: #ffffff;
-  --secondary: #d0e7e6;
-  --secondary-foreground: #393737;
-  --muted: #f6f7f9;
-  --muted-foreground: #6b6968;
-  --accent: #95ccdd;
-  --accent-foreground: #393737;
-  --destructive: #b8001f;
+  --secondary: #dddfec;
+  --secondary-foreground: #30313d;
+  --muted: #f3f3f8;
+  --muted-foreground: #757783;
+  --accent: #dddfec;
+  --accent-foreground: #30313d;
+  --destructive: #b24242;
   --destructive-foreground: #ffffff;
-  --border: #e6e8ec;
-  --input: #e6e8ec;
-  --ring: #4274d9;
+  --border: #e0e1ee;
+  --input: #e0e1ee;
+  --ring: #2f378d;
 }
 
 @layer base {
@@ -116,6 +119,29 @@
   -ms-overflow-style: none;
   &::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@utility styled-scrollbar {
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin-block: 16px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: rgb(47 55 141 / 0.25);
+    background-clip: padding-box;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgb(47 55 141 / 0.5);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(47 55 141 / 0.35) transparent;
   }
 }
 

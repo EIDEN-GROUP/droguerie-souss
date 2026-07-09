@@ -1,4 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
+import { AnimatePresence, motion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { useAdminAuth } from "@/lib/adminAuth";
 
@@ -22,7 +23,18 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </button>
-      <h1 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">{title}</h1>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.h1
+          key={pathname}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl"
+        >
+          {title}
+        </motion.h1>
+      </AnimatePresence>
       <div className="ml-auto">
         <button
           onClick={() => logout()}

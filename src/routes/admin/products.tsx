@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -23,6 +24,8 @@ import {
 import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
 import { useAdminStore } from "@/lib/adminStore";
 import { categories, type Category, type Product } from "@/lib/products";
+
+const MotionTableRow = motion(TableRow);
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
@@ -100,8 +103,13 @@ function AdminProducts() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((p) => (
-              <TableRow key={p.id}>
+            {filtered.map((p, i) => (
+              <MotionTableRow
+                key={p.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.04 }}
+              >
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <img src={p.image} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
@@ -146,7 +154,7 @@ function AdminProducts() {
                     </button>
                   </div>
                 </TableCell>
-              </TableRow>
+              </MotionTableRow>
             ))}
           </TableBody>
         </Table>

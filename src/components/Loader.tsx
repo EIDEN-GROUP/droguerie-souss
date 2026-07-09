@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import logo from "@/assets/logo.png";
+import logo from "@/assets/icon-blue.png";
 
 export function PageLoader() {
   const [show, setShow] = useState(true);
@@ -24,7 +24,7 @@ export function PageLoader() {
               transition={{ duration: 0.5 }}
               className="relative"
             >
-              <div className="h-16 w-16">
+              <div className="h-20 w-20 p-2">
               <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
               <motion.div
@@ -32,14 +32,6 @@ export function PageLoader() {
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="text-xs uppercase tracking-[0.3em] text-ink-soft"
-            >
-              Droguerie Souss
             </motion.div>
           </div>
         </motion.div>

@@ -48,16 +48,8 @@ export function Navbar() {
       >
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="h-16 w-16">
+            <div className="h-16 w-full">
               <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
-            </div>
-            <div className="hidden sm:block leading-tight">
-              <div className="font-display text-lg font-bold tracking-wide">
-                DROGUERIE SOUSS
-              </div>
-              <div className="text-[10px] uppercase tracking-[0.25em] text-ink-soft">
-                S.A.R.L • Matériaux de construction
-              </div>
             </div>
           </Link>
 
