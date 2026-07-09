@@ -17,17 +17,22 @@ export async function sendAdminEmail(subject: string, html: string) {
   }
 
   const supabaseUrl = getEnv("VITE_SUPABASE_URL");
-  const serviceKey = getEnv("SUPABASE_SERVICE_ROLE_KEY");
-  const url = `${supabaseUrl}/functions/v1/send-email`;
+  const anonKey = getEnv("VITE_SUPABASE_ANON_KEY");
 
-  const res = await fetch(url, {
+  const res = await fetch(`${supabaseUrl}/functions/v1/send-email`, {
     method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${serviceKey}` },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${anonKey}`,
+    },
     body: JSON.stringify({ subject, html }),
   });
 
   if (!res.ok) {
-    const body = await res.text().catch(() => "(no body)");
-    console.error(`Email send failed (${res.status}): ${body}`);
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    console.error("send-email edge function failed:", err);
+    return;
   }
+
+  console.log(`Email sent via Edge Function: "${subject}"`);
 }
