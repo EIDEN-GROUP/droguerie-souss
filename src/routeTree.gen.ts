@@ -9,7 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ShopRouteImport } from './routes/shop'
+import { Route as ProduitsRouteImport } from './routes/produits'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CheckoutRouteImport } from './routes/checkout'
@@ -22,9 +22,9 @@ import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminContactsRouteImport } from './routes/admin/contacts'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 
-const ShopRoute = ShopRouteImport.update({
-  id: '/shop',
-  path: '/shop',
+const ProduitsRoute = ProduitsRouteImport.update({
+  id: '/produits',
+  path: '/produits',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -89,7 +89,7 @@ export interface FileRoutesByFullPath {
   '/checkout': typeof CheckoutRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
-  '/shop': typeof ShopRoute
+  '/produits': typeof ProduitsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -102,7 +102,7 @@ export interface FileRoutesByTo {
   '/checkout': typeof CheckoutRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
-  '/shop': typeof ShopRoute
+  '/produits': typeof ProduitsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -117,7 +117,7 @@ export interface FileRoutesById {
   '/checkout': typeof CheckoutRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
-  '/shop': typeof ShopRoute
+  '/produits': typeof ProduitsRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -133,7 +133,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/confirmation'
     | '/contact'
-    | '/shop'
+    | '/produits'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -146,7 +146,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/confirmation'
     | '/contact'
-    | '/shop'
+    | '/produits'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -160,7 +160,7 @@ export interface FileRouteTypes {
     | '/checkout'
     | '/confirmation'
     | '/contact'
-    | '/shop'
+    | '/produits'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -175,17 +175,17 @@ export interface RootRouteChildren {
   CheckoutRoute: typeof CheckoutRoute
   ConfirmationRoute: typeof ConfirmationRoute
   ContactRoute: typeof ContactRoute
-  ShopRoute: typeof ShopRoute
+  ProduitsRoute: typeof ProduitsRoute
   ProductIdRoute: typeof ProductIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/shop': {
-      id: '/shop'
-      path: '/shop'
-      fullPath: '/shop'
-      preLoaderRoute: typeof ShopRouteImport
+    '/produits': {
+      id: '/produits'
+      path: '/produits'
+      fullPath: '/produits'
+      preLoaderRoute: typeof ProduitsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -292,7 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutRoute: CheckoutRoute,
   ConfirmationRoute: ConfirmationRoute,
   ContactRoute: ContactRoute,
-  ShopRoute: ShopRoute,
+  ProduitsRoute: ProduitsRoute,
   ProductIdRoute: ProductIdRoute,
 }
 export const routeTree = rootRouteImport
