@@ -49,8 +49,8 @@ export function Navbar() {
       >
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
-            <div className="h-16 w-full">
-              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-contain" />
+            <div className="h-16 w-auto">
+              <img src={logo} alt="Droguerie Souss Logo" className="max-h-16 w-auto object-contain" />
             </div>
           </Link>
 
@@ -141,7 +141,7 @@ export function Navbar() {
               <div className="flex items-center justify-between border-b px-5 py-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10">
-                    <img src={logoMobile} alt="Droguerie Souss Logo" className="h-full w-full object-contain" />
+                    <img src={logoMobile} alt="Droguerie Souss Logo" className="max-h-10 w-auto object-contain" />
                   </div>
                 </div>
                 <button
