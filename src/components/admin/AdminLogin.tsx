@@ -48,7 +48,7 @@ export function AdminLogin() {
   return (
     <div className="flex min-h-screen overflow-x-hidden bg-paper">
       {/* Decorative diagonal panel */}
-      <div className="relative hidden overflow-hidden md:block md:w-1/2 lg:w-[40%]">
+      <div className="relative hidden overflow-hidden md:block md:w-1/2 lg:w-[50%]">
         <video
           src={loginVid}
           autoPlay
