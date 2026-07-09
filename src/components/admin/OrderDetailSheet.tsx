@@ -6,7 +6,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
-import { useAdminStore } from "@/lib/adminStore";
+import { useUpdateOrderStatus } from "@/lib/adminStore";
 import type { Order, OrderStatus } from "@/lib/orders";
 
 const paymentLabels: Record<Order["payment"], string> = {
@@ -22,7 +22,7 @@ export function OrderDetailSheet({
   order: Order | null;
   onOpenChange: (open: boolean) => void;
 }) {
-  const updateOrderStatus = useAdminStore((s) => s.updateOrderStatus);
+  const updateOrderStatus = useUpdateOrderStatus();
 
   return (
     <Sheet open={!!order} onOpenChange={onOpenChange}>
@@ -30,7 +30,7 @@ export function OrderDetailSheet({
         {order && (
           <>
             <SheetHeader>
-              <SheetTitle className="font-display uppercase tracking-wide">Commande #{order.id.split("-")[1]}</SheetTitle>
+              <SheetTitle className="font-display uppercase tracking-wide">Commande #{order.id.slice(0, 8)}</SheetTitle>
               <SheetDescription>
                 {new Date(order.createdAt).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}
               </SheetDescription>
@@ -43,7 +43,7 @@ export function OrderDetailSheet({
                 </label>
                 <select
                   value={order.status}
-                  onChange={(e) => updateOrderStatus(order.id, e.target.value as OrderStatus)}
+                  onChange={(e) => updateOrderStatus.mutate({ id: order.id, status: e.target.value as OrderStatus })}
                   className="w-full rounded-lg border border-border px-3 py-2 text-sm outline-none focus:border-brand"
                 >
                   <option value="pending">En attente</option>

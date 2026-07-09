@@ -1,11 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ChevronRight, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch } from "lucide-react";
+import { ChevronRight, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { SectionHeader } from "@/components/SectionHeader";
-import { useAdminStore } from "@/lib/adminStore";
+import { useProducts } from "@/lib/adminStore";
+import { useProduct } from "@/lib/adminStore";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 
@@ -15,8 +16,36 @@ export const Route = createFileRoute("/product/$id")({
 
 function ProductDetail() {
   const { id } = Route.useParams();
-  const products = useAdminStore((s) => s.products);
-  const product = products.find((p) => p.id === id);
+  const { data: product, isLoading, isError } = useProduct(id);
+  const { data: allProducts } = useProducts();
+
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="container-x flex items-center justify-center py-24">
+          <Loader2 className="h-8 w-8 animate-spin text-brand" />
+        </div>
+      </Layout>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Layout>
+        <div className="container-x py-24 text-center">
+          <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
+          <p className="mt-4 font-display text-xl font-bold uppercase">Erreur de chargement</p>
+          <p className="mt-1 text-sm text-ink-soft">Impossible de charger le produit. Veuillez réessayer.</p>
+          <Link
+            to="/shop"
+            className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
+          >
+            Retour à la boutique
+          </Link>
+        </div>
+      </Layout>
+    );
+  }
 
   if (!product) {
     return (
@@ -36,7 +65,7 @@ function ProductDetail() {
     );
   }
 
-  return <ProductDetailContent product={product} products={products} />;
+  return <ProductDetailContent product={product as unknown as Product} products={(allProducts || []) as unknown as Product[]} />;
 }
 
 function ProductDetailContent({ product, products }: { product: Product; products: Product[] }) {
@@ -53,7 +82,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
-  }, [product.id]);
+  }, [product?.id]);
 
   return (
     <Layout>

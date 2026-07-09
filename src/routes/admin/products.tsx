@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Pencil, Plus, Search, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { FileDown, Loader2, Pencil, Plus, Search, Trash2, Upload } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import Papa from "papaparse";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,8 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
-import { useAdminStore } from "@/lib/adminStore";
-import { categories, type Category, type Product } from "@/lib/products";
+import { useProducts, useDeleteProduct, useCategories } from "@/lib/adminStore";
+import { importProductsCsv, exportProductsCsv } from "@/lib/api/products";
+import { categories as defaultCategories, type Category, type Product } from "@/lib/products";
+import type { ProductInput } from "@/lib/database.types";
+
+const MotionTableRow = motion(TableRow);
 
 const MotionTableRow = motion(TableRow);
 
@@ -32,20 +37,32 @@ export const Route = createFileRoute("/admin/products")({
 });
 
 function AdminProducts() {
-  const products = useAdminStore((s) => s.products);
-  const deleteProduct = useAdminStore((s) => s.deleteProduct);
+  const { data: products, isLoading, isError } = useProducts();
+  const deleteProduct = useDeleteProduct();
+  const { data: dbCategories } = useCategories();
+  const catOptions = (dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories).map((c: any) => ({
+    value: c.category ?? c.name,
+    label: c.name,
+  }));
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState<Category | "all">("all");
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Product | undefined>(undefined);
   const [toDelete, setToDelete] = useState<Product | null>(null);
+  const [importBusy, setImportBusy] = useState(false);
+  const [exportBusy, setExportBusy] = useState(false);
+  const [importError, setImportError] = useState("");
+  const [importSuccess, setImportSuccess] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const productList = useMemo(() => (products || []) as unknown as Product[], [products]);
 
   const filtered = useMemo(() => {
-    let list = products;
+    let list = productList;
     if (cat !== "all") list = list.filter((p) => p.category === cat);
     if (query.trim()) list = list.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
     return list;
-  }, [products, cat, query]);
+  }, [productList, cat, query]);
 
   const openAdd = () => {
     setEditing(undefined);
@@ -56,8 +73,80 @@ function AdminProducts() {
     setFormOpen(true);
   };
 
+  const handleExport = async () => {
+    setExportBusy(true);
+    try {
+      const data = await exportProductsCsv();
+      const csv = Papa.unparse(data, {
+        columns: ["name", "category", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"],
+      });
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `produits-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed", err);
+    } finally {
+      setExportBusy(false);
+    }
+  };
+
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImportBusy(true);
+    setImportError("");
+    setImportSuccess("");
+    try {
+      const text = await file.text();
+      const result = Papa.parse(text, { header: true, skipEmptyLines: true });
+      const rows = result.data as Record<string, string>[];
+      const products: ProductInput[] = rows.map((row, i) => {
+        if (!row.name || !row.category || !row.price) {
+          throw new Error(`Ligne ${i + 2} : le nom, la catégorie et le prix sont obligatoires.`);
+        }
+        return {
+          name: row.name.trim(),
+          category: row.category.trim(),
+          price: parseFloat(row.price),
+          unit: (row.unit || "unité").trim(),
+          description: (row.description || "").trim(),
+          stock: parseInt(row.stock || "0", 10) || 0,
+          bestseller: row.bestseller === "true" || row.bestseller === "1" || row.bestseller === "oui",
+          seasonal: row.seasonal === "true" || row.seasonal === "1" || row.seasonal === "oui",
+          promo: row.promo ? parseInt(row.promo, 10) : null,
+          image_url: row.image_url?.trim() || undefined,
+          images_urls: row.image_url ? [row.image_url.trim()] : [],
+        };
+      });
+      await importProductsCsv({ data: { products } });
+      setImportSuccess(`${products.length} produit(s) importé(s) avec succès.`);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : "Erreur lors de l'import CSV.");
+    } finally {
+      setImportBusy(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-brand" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-4">
+      {isError && (
+        <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+          Erreur de chargement. Veuillez réessayer.
+        </div>
+      )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative sm:max-w-xs">
@@ -75,20 +164,56 @@ function AdminProducts() {
             className="rounded-full border border-border bg-paper px-4 py-2.5 text-sm outline-none focus:border-brand"
           >
             <option value="all">Toutes les catégories</option>
-            {categories.map((c) => (
-              <option key={c.slug} value={c.category}>
-                {c.name}
+            {catOptions.map((opt: any) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
               </option>
             ))}
           </select>
         </div>
-        <button
-          onClick={openAdd}
-          className="flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
-        >
-          <Plus className="h-4 w-4" /> Ajouter un produit
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <input
+            ref={fileRef}
+            type="file"
+            accept=".csv"
+            className="hidden"
+            onChange={handleImport}
+          />
+          <button
+            onClick={() => fileRef.current?.click()}
+            disabled={importBusy}
+            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+          >
+            {importBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+            Importer CSV
+          </button>
+          <button
+            onClick={handleExport}
+            disabled={exportBusy}
+            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+          >
+            {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+            Exporter CSV
+          </button>
+          <button
+            onClick={openAdd}
+            className="flex items-center justify-center gap-2 rounded-full bg-brand px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
+          >
+            <Plus className="h-4 w-4" /> Ajouter
+          </button>
+        </div>
       </div>
+
+      {importError && (
+        <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+          {importError}
+        </div>
+      )}
+      {importSuccess && (
+        <div className="rounded-xl border border-mint/30 bg-mint/5 px-4 py-3 text-sm font-semibold text-brand-secondary">
+          {importSuccess}
+        </div>
+      )}
 
       <div className="overflow-x-auto rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
         <Table>
@@ -178,7 +303,7 @@ function AdminProducts() {
             <AlertDialogAction
               className="bg-accent-red text-accent-red-foreground hover:bg-accent-red/90"
               onClick={() => {
-                if (toDelete) deleteProduct(toDelete.id);
+                if (toDelete) deleteProduct.mutate(toDelete.id);
                 setToDelete(null);
               }}
             >

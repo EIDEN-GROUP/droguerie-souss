@@ -13,12 +13,21 @@ export const Route = createFileRoute("/admin")({
 
 function AdminLayout() {
   const [mounted, setMounted] = useState(false);
-  const isAuthed = useAdminAuth((s) => s.isAuthed);
+  const { isAuthed, loading, checkSession } = useAdminAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+    checkSession();
+  }, []);
 
-  if (!mounted) return null;
+  if (!mounted || loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-cream">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!isAuthed) return (
     <>

@@ -2,11 +2,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Heart, ShoppingBag, X } from "lucide-react";
 import { useApp } from "@/lib/store";
-import { products } from "@/lib/products";
+import { useProducts } from "@/lib/adminStore";
 
 export function FavoritesSidebar() {
   const { favorites, favOpen, setFavOpen, toggleFavorite, addToCart } = useApp();
-  const favProducts = products.filter((p) => favorites.includes(p.id));
+  const { data: products } = useProducts();
+  const favProducts = (products || []).filter((p) => favorites.includes(p.id));
 
   return (
     <AnimatePresence>
@@ -85,7 +86,7 @@ export function FavoritesSidebar() {
                         </p>
                         <div className="mt-auto flex items-center gap-2 pt-2">
                           <button
-                            onClick={() => addToCart(p)}
+                            onClick={() => addToCart(p as any)}
                             className="flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-brand-foreground hover:bg-brand-dark"
                           >
                             <ShoppingBag className="h-3 w-3" /> Ajouter

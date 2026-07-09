@@ -1,13 +1,15 @@
 import { useId } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { LayoutDashboard, Package, Receipt, Store } from "lucide-react";
+import { LayoutDashboard, Package, Receipt, Tags, Store, MessageSquare } from "lucide-react";
 import logo from "@/assets/icon-white.png";
 
 const links = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/products", label: "Produits", icon: Package },
+  { to: "/admin/categories", label: "Catégories", icon: Tags },
   { to: "/admin/orders", label: "Ventes", icon: Receipt },
+  { to: "/admin/contacts", label: "Contacts", icon: MessageSquare },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {

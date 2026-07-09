@@ -1,17 +1,19 @@
 import { useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu } from "lucide-react";
+import { LogOut, Menu } from "lucide-react";
 import { useAdminAuth } from "@/lib/adminAuth";
 
 const titles: Record<string, string> = {
   "/admin": "Tableau de bord",
   "/admin/products": "Produits",
   "/admin/orders": "Ventes",
+  "/admin/categories": "Catégories",
+  "/admin/contacts": "Contacts",
 };
 
 export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const logout = useAdminAuth((s) => s.logout);
+  const { logout, userEmail } = useAdminAuth();
   const title = titles[pathname] ?? "Dashboard";
 
   return (
@@ -23,6 +25,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </button>
+
       <AnimatePresence mode="wait" initial={false}>
         <motion.h1
           key={pathname}
@@ -35,11 +38,16 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
           {title}
         </motion.h1>
       </AnimatePresence>
-      <div className="ml-auto">
+
+      <div className="ml-auto flex items-center gap-4">
+        {userEmail && (
+          <span className="hidden text-xs text-ink-soft sm:block">{userEmail}</span>
+        )}
         <button
           onClick={() => logout()}
-          className="rounded-full bg-accent-red px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-accent-red/70"
+          className="flex items-center gap-2 rounded-full bg-accent-red px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-accent-red/70"
         >
+          <LogOut className="h-3.5 w-3.5" />
           Déconnexion
         </button>
       </div>

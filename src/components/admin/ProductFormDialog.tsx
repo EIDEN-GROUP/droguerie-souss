@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImagePlus, X } from "lucide-react";
+import { ImagePlus, Loader2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,8 +9,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useAdminStore } from "@/lib/adminStore";
-import { categories, type Product } from "@/lib/products";
+import { useCreateProduct, useUpdateProduct, useCategories } from "@/lib/adminStore";
+import { getUploadUrl } from "@/lib/api/uploads";
+import { categories as defaultCategories, type Product } from "@/lib/products";
 
 const MAX_IMAGE_BYTES = 1_500_000;
 
@@ -37,10 +38,16 @@ export function ProductFormDialog({
   onOpenChange: (open: boolean) => void;
   product?: Product;
 }) {
-  const addProduct = useAdminStore((s) => s.addProduct);
-  const updateProduct = useAdminStore((s) => s.updateProduct);
-  const [images, setImages] = useState<string[]>([]);
+  const createProduct = useCreateProduct();
+  const updateProduct = useUpdateProduct();
+  const { data: dbCategories } = useCategories();
+  const catOptions = (dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories).map((c) => ({
+    value: "category" in c ? (c as any).category : c.name,
+    label: "name" in c ? c.name : (c as any).name,
+  }));
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [imageError, setImageError] = useState("");
+  const [uploading, setUploading] = useState(false);
 
   const {
     register,
@@ -49,7 +56,7 @@ export function ProductFormDialog({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", category: categories[0].category, price: 0, unit: "", stock: 0, description: "" },
+    defaultValues: { name: "", category: catOptions[0]?.value ?? "", price: 0, unit: "", stock: 0, description: "" },
   });
 
   useEffect(() => {
@@ -67,40 +74,68 @@ export function ProductFormDialog({
               seasonal: product.seasonal,
               promo: product.promo,
             }
-          : { name: "", category: categories[0].category, price: 0, unit: "", stock: 0, description: "" },
+          : { name: "", category: catOptions[0]?.value ?? "", price: 0, unit: "", stock: 0, description: "" },
       );
-      setImages(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
+      setImageUrls(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
       setImageError("");
     }
   }, [open, product, reset]);
 
-  const onFilesSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
     setImageError("");
+    setUploading(true);
     for (const file of files) {
       if (file.size > MAX_IMAGE_BYTES) {
         setImageError("Une image dépasse 1.5 Mo et a été ignorée.");
         continue;
       }
-      const reader = new FileReader();
-      reader.onload = () => setImages((prev) => [...prev, reader.result as string]);
-      reader.readAsDataURL(file);
+      try {
+        const { signedUrl, publicUrl } = await getUploadUrl();
+        const blob = file.slice();
+        const res = await fetch(signedUrl, {
+          method: "PUT",
+          body: blob,
+          headers: { "Content-Type": file.type },
+        });
+        if (!res.ok) throw new Error(`Échec de l'upload (${res.status})`);
+        setImageUrls((prev) => [...prev, publicUrl]);
+      } catch (err) {
+        console.error("Upload error:", err);
+        setImageError(err instanceof Error ? err.message : "Erreur lors de l'upload de l'image.");
+      }
     }
+    setUploading(false);
     e.target.value = "";
   };
 
-  const removeImage = (i: number) => setImages((prev) => prev.filter((_, idx) => idx !== i));
+  const removeImage = (i: number) => setImageUrls((prev) => prev.filter((_, idx) => idx !== i));
 
-  const onSubmit = (values: FormValues) => {
-    if (images.length === 0) {
+  const onSubmit = async (values: FormValues) => {
+    if (imageUrls.length === 0) {
       setImageError("Ajoutez au moins une image du produit.");
       return;
     }
-    const payload = { ...values, category: values.category as Product["category"], image: images[0], images };
-    if (product) updateProduct(product.id, payload);
-    else addProduct(payload);
-    onOpenChange(false);
+    const payload = {
+      ...values,
+      category: values.category,
+      image_url: imageUrls[0],
+      images_urls: imageUrls,
+    };
+    try {
+      if (product) {
+        await updateProduct.mutateAsync({ id: product.id, patch: payload });
+      } else {
+        await createProduct.mutateAsync(payload);
+      }
+      onOpenChange(false);
+    } catch (err) {
+      console.error("Save error:", err);
+      setImageError(err instanceof Error ? err.message : "Erreur lors de l'enregistrement.");
+    }
   };
+
+  const busy = createProduct.isPending || updateProduct.isPending;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -117,9 +152,9 @@ export function ProductFormDialog({
               Images du produit
             </label>
             <div className="flex flex-wrap gap-3">
-              {images.map((img, i) => (
-                <div key={i} className="relative h-20 w-20 overflow-hidden rounded-lg border">
-                  <img src={img} alt="" className="h-full w-full object-cover" />
+              {imageUrls.map((url, i) => (
+                <div key={url + i} className="relative h-20 w-20 overflow-hidden rounded-lg border">
+                  <img src={url} alt="" className="h-full w-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
@@ -135,43 +170,47 @@ export function ProductFormDialog({
                 </div>
               ))}
               <label className="grid h-20 w-20 cursor-pointer place-items-center rounded-lg border-2 border-dashed text-ink-soft transition hover:border-brand hover:text-brand">
-                <ImagePlus className="h-5 w-5" />
-                <input type="file" accept="image/*" multiple className="hidden" onChange={onFilesSelected} />
+                {uploading ? (
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                  <ImagePlus className="h-5 w-5" />
+                )}
+                <input type="file" accept="image/*" multiple className="hidden" onChange={onFilesSelected} disabled={uploading} />
               </label>
             </div>
             {imageError && <p className="mt-1.5 text-xs font-semibold text-accent-red">{imageError}</p>}
           </div>
 
           <Field label="Nom du produit" error={errors.name?.message}>
-            <input {...register("name")} className="ci" />
+            <input {...register("name")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Catégorie" error={errors.category?.message}>
-              <select {...register("category")} className="ci">
-                {categories.map((c) => (
-                  <option key={c.slug} value={c.category}>
-                    {c.name}
+              <select {...register("category")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand">
+                {catOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
                   </option>
                 ))}
               </select>
             </Field>
             <Field label="Unité (m², sac, boîte...)" error={errors.unit?.message}>
-              <input {...register("unit")} className="ci" />
+              <input {...register("unit")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
             <Field label="Prix (MAD)" error={errors.price?.message}>
-              <input type="number" step="0.01" {...register("price")} className="ci" />
+              <input type="number" step="0.01" {...register("price")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
             <Field label="Stock" error={errors.stock?.message}>
-              <input type="number" {...register("stock")} className="ci" />
+              <input type="number" {...register("stock")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
             <Field label="Promo % (optionnel)" error={errors.promo?.message}>
-              <input type="number" {...register("promo")} className="ci" />
+              <input type="number" {...register("promo")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
           </div>
 
           <Field label="Description" error={errors.description?.message}>
-            <textarea rows={3} {...register("description")} className="ci" />
+            <textarea rows={3} {...register("description")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
           </Field>
 
           <div className="flex gap-6">
@@ -195,13 +234,15 @@ export function ProductFormDialog({
             </button>
             <button
               type="submit"
-              className="rounded-full bg-brand px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
+              disabled={busy}
+              className="flex items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark disabled:opacity-60"
             >
+              {busy && <Loader2 className="h-4 w-4 animate-spin" />}
               {product ? "Enregistrer" : "Ajouter"}
             </button>
           </div>
         </form>
-        <style>{`.ci{width:100%;border:1px solid var(--color-border);border-radius:0.5rem;padding:0.6rem 0.8rem;font-size:0.875rem;outline:none;background:white}.ci:focus{border-color:var(--color-brand)}`}</style>
+
       </DialogContent>
     </Dialog>
   );
@@ -224,3 +265,5 @@ function Field({
     </label>
   );
 }
+
+

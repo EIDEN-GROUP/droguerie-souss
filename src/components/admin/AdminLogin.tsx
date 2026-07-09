@@ -24,17 +24,24 @@ const itemVariants: Variants = {
 };
 
 export function AdminLogin() {
-  const login = useAdminAuth((s) => s.login);
+  const { login } = useAdminAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
   const shakeControls = useAnimationControls();
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!login(password)) {
-      setError(true);
+    setBusy(true);
+    setError("");
+    try {
+      await login(email, password);
+    } catch {
+      setError("Email ou mot de passe incorrect.");
       void shakeControls.start({ x: [0, -8, 8, -5, 5, 0] }, { duration: 0.45 });
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -54,7 +61,6 @@ export function AdminLogin() {
 
       {/* Form panel */}
       <div className="relative z-10 flex min-w-0 flex-1 flex-col bg-paper md:-ml-12 md:rounded-l-[48px]">
-        {/* CONNEXION tab merging into the form panel */}
         <motion.div
           initial={{ opacity: 0, x: 24 }}
           animate={{ opacity: 1, x: 0 }}
@@ -78,7 +84,7 @@ export function AdminLogin() {
               >
                 <path d="M0 0 A16 16 0 0 1 16 16 L16 0 Z" fill="currentColor" />
               </svg>
-            </div> 
+            </div>
           </Link>
         </motion.div>
 
@@ -113,7 +119,7 @@ export function AdminLogin() {
                     type="email"
                     placeholder="Email"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => { setEmail(e.target.value); setError(""); }}
                     className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft/60"
                   />
                 </label>
@@ -122,13 +128,9 @@ export function AdminLogin() {
                   <Lock className="h-5 w-5 shrink-0 text-ink-soft/60" />
                   <input
                     type="password"
-                    placeholder="Password"
-                    autoFocus
+                    placeholder="Mot de passe"
                     value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      setError(false);
-                    }}
+                    onChange={(e) => { setPassword(e.target.value); setError(""); }}
                     className="w-full bg-transparent text-sm text-ink outline-none placeholder:text-ink-soft/60"
                   />
                 </label>
@@ -143,7 +145,7 @@ export function AdminLogin() {
                   exit={{ opacity: 0, y: -6 }}
                   className="mt-3 text-xs font-semibold text-accent-red"
                 >
-                  Mot de passe incorrect.
+                  {error}
                 </motion.p>
               )}
             </AnimatePresence>
@@ -161,11 +163,12 @@ export function AdminLogin() {
               </button>
               <motion.button
                 type="submit"
+                disabled={busy}
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.96 }}
-                className="rounded-full bg-gradient-to-r from-brand to-brand-secondary px-8 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-md"
+                className="rounded-full bg-gradient-to-r from-brand to-brand-secondary px-8 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-md disabled:opacity-60"
               >
-                SE CONNECTER
+                {busy ? "CONNEXION..." : "SE CONNECTER"}
               </motion.button>
             </motion.div>
           </motion.div>

@@ -1,30 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import promo1 from "@/assets/promo-1.jpg";
-import promo2 from "@/assets/promo-2.jpg";
 import collectionBath from "@/assets/collection-bath.jpg";
 import collectionLiving from "@/assets/collection-living.jpg";
 import { SectionHeader } from "./SectionHeader";
-
-const cards = [
-  {
-    image: promo1,
-    kicker: "Nouvelle collection",
-    title: "Carrelage & Marbre 2026",
-    text: "Découvrez notre sélection de revêtements pour vos projets d'intérieur.",
-    cta: "Explorer",
-    color: "brand",
-  },
-  {
-    image: promo2,
-    kicker: "Promotion",
-    title: "-20% sur la peinture façade",
-    text: "Jusqu'à fin du mois, préparez vos travaux extérieurs à petit prix.",
-    cta: "En profiter",
-    color: "accent",
-  },
-];
 
 export function PromoCards() {
   return (

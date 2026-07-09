@@ -41,7 +41,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           </div>
           <div className="absolute right-3 top-3 flex flex-col gap-2 transition lg:opacity-0 lg:group-hover:opacity-100">
             <button
-              onClick={() => toggleFavorite(product.id)}
+              onClick={(e) => { e.stopPropagation(); toggleFavorite(product.id); }}
               className={`grid h-9 w-9 place-items-center rounded-full bg-paper shadow transition hover:bg-mint ${
                 isFav ? "text-accent-red" : "text-ink"
               }`}
@@ -49,17 +49,15 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             >
               <Heart className={`h-4 w-4 ${isFav ? "fill-current" : ""}`} />
             </button>
-            <Link
-              to="/product/$id"
-              params={{ id: product.id }}
+            <span
               className="grid h-9 w-9 place-items-center rounded-full bg-paper text-ink shadow transition hover:bg-mint"
               aria-label="Voir"
             >
               <Eye className="h-4 w-4" />
-            </Link>
+            </span>
           </div>
           <button
-            onClick={() => addToCart(product)}
+            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
             className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-paper transition-all duration-300 hover:bg-brand lg:translate-y-16 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100"
           >
             <ShoppingBag className="h-3.5 w-3.5" /> Ajouter
@@ -69,13 +67,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <span className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
             {product.category}
           </span>
-          <Link
-            to="/product/$id"
-            params={{ id: product.id }}
-            className="mt-1 line-clamp-2 text-sm font-semibold text-ink transition hover:text-brand"
-          >
+          <span className="mt-1 line-clamp-2 text-sm font-semibold text-ink">
             {product.name}
-          </Link>
+          </span>
           <div className="mt-2 flex items-baseline gap-2">
             {promoPrice ? (
               <>
