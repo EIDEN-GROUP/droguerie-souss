@@ -61,7 +61,7 @@ function AdminDashboard() {
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         <StatCard label="Total produits" value={products?.length ?? 0} icon={Boxes} tint="brand" />
         <StatCard label="Commandes" value={orders?.length ?? 0} icon={ShoppingBag} tint="mint" />
-        <StatCard label="Clients" value={clients} icon={User} tint="gold" />
+        <StatCard label="Clients" value={clients?.length ?? 0} icon={User} tint="mint" />
         <StatCard label="Stock total" value={totalStock} icon={Receipt} tint="sky" />
         <StatCard label="Rupture de stock" value={outOfStock} icon={PackageX} tint="red" />
       </div>
@@ -168,7 +168,7 @@ function AdminDashboard() {
         className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]"
       >
         <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
-          Chiffre d'affaires &mdash; 6 derniers mois
+          Chiffre d'affaires 6 derniers mois
         </h3>
         <div className="mt-2 h-64">
           <ResponsiveContainer width="100%" height="100%">

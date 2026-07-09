@@ -8,7 +8,7 @@ import { PageLoader } from "@/components/Loader";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin   Droguerie Souss" }] }),
+  head: () => ({ meta: [{ title: "Admin Droguerie Souss" }] }),
 });
 
 function AdminLayout() {
