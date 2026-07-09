@@ -5,6 +5,14 @@ import { useAdminAuth } from "@/lib/adminAuth";
 import loginVid from "@/assets/login-vid.mp4";
 import { Link } from "@tanstack/react-router";
 
+const layerVariants: Variants = {
+  hidden: { x: "-100%" },
+  show: (i: number) => ({
+    x: 0,
+    transition: { delay: 0.08 * i, duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  }),
+};
+
 const formVariants: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.09, delayChildren: 0.25 } },

@@ -215,11 +215,11 @@ export function ProductFormDialog({
 
           <div className="flex gap-6">
             <label className="flex items-center gap-2 text-sm font-semibold">
-              <input type="checkbox" {...register("bestseller")} className="h-4 w-4 accent-[#4274d9]" />
+              <input type="checkbox" {...register("bestseller")} className="h-4 w-4 accent-[#2f378d]" />
               Best-seller
             </label>
             <label className="flex items-center gap-2 text-sm font-semibold">
-              <input type="checkbox" {...register("seasonal")} className="h-4 w-4 accent-[#4274d9]" />
+              <input type="checkbox" {...register("seasonal")} className="h-4 w-4 accent-[#2f378d]" />
               Saisonnier
             </label>
           </div>

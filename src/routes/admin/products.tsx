@@ -30,6 +30,8 @@ import type { ProductInput } from "@/lib/database.types";
 
 const MotionTableRow = motion(TableRow);
 
+const MotionTableRow = motion(TableRow);
+
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
 });
