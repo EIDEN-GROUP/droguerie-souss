@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { LayoutDashboard, Package, Receipt, LogOut, Store, X } from "lucide-react";
@@ -13,9 +14,10 @@ const links = [
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const logout = useAdminAuth((s) => s.logout);
+  const layoutId = useId();
 
   return (
-    <div className="flex h-full flex-col bg-brand-secondary text-paper lg:rounded-r-3xl">
+    <div className="flex h-full flex-col bg-brand-secondary text-paper">
       <div className="flex items-center gap-3 px-6 py-7">
         <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full bg-paper/10">
           <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
@@ -26,7 +28,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1.5 px-4">
+      <nav className="flex-1 space-y-1.5 pl-4 rounded-r-lg">
         {links.map((l) => {
           const active = l.to === "/admin" ? pathname === "/admin" : pathname.startsWith(l.to);
           return (
@@ -34,14 +36,22 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
               key={l.to}
               to={l.to}
               onClick={onNavigate}
-              className={`flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition ${
-                active
-                  ? "bg-mint text-brand-secondary shadow-sm"
-                  : "text-paper/75 hover:bg-paper/10 hover:text-paper"
+              className={`relative flex items-center gap-3 rounded-l-3xl px-4 py-2.5 text-sm font-semibold transition-colors duration-300 ${
+                active ? "text-brand-secondary" : "text-paper/75 hover:bg-paper/10 hover:text-paper"
               }`}
             >
-              <l.icon className="h-4 w-4" />
-              {l.label}
+              {active && (
+                <motion.div
+                  layoutId={layoutId}
+                  transition={{ type: "spring", stiffness: 400, damping: 35 }}
+                  className="absolute inset-0 rounded-l-3xl bg-cream"
+                >
+                  <div className="pointer-events-none absolute -top-4 right-0 h-4 w-4 bg-[radial-gradient(circle_at_top_left,transparent_15.5px,theme(colors.cream)_16px)]" />
+                  <div className="pointer-events-none absolute -bottom-4 right-0 h-4 w-4 bg-[radial-gradient(circle_at_bottom_left,transparent_15.5px,theme(colors.cream)_16px)]" />
+                </motion.div>
+              )}
+              <l.icon className="relative z-10 h-4 w-4" />
+              <span className="relative z-10">{l.label}</span>
             </Link>
           );
         })}

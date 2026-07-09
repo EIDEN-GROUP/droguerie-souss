@@ -14,7 +14,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
   const title = titles[pathname] ?? "Dashboard";
 
   return (
-    <div className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-paper/95 px-4 backdrop-blur sm:px-6">
+    <div className="flex h-16 shrink-0 items-center gap-4 border-b border-ink/10 px-4 sm:px-6">
       <button
         onClick={onMenuClick}
         aria-label="Ouvrir le menu"
@@ -26,7 +26,7 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
       <div className="ml-auto">
         <button
           onClick={() => logout()}
-          className="rounded-full border border-border px-4 py-2 text-xs font-bold uppercase tracking-wider text-ink-soft transition hover:border-accent-red hover:text-accent-red"
+          className="rounded-full bg-accent-red px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-accent-red/70"
         >
           Déconnexion
         </button>

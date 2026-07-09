@@ -22,13 +22,15 @@ function AdminLayout() {
   if (!isAuthed) return <AdminLogin />;
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-screen bg-brand-secondary">
       <AdminSidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
-      <div className="flex min-h-screen flex-col lg:pl-64">
-        <AdminTopbar onMenuClick={() => setMobileOpen(true)} />
-        <main className="flex-1 p-4 sm:p-6">
-          <Outlet />
-        </main>
+      <div className="flex h-screen flex-col lg:pl-64">
+        <div className="m-2 flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl bg-cream shadow-2xl sm:m-3 lg:ml-0">
+          <AdminTopbar onMenuClick={() => setMobileOpen(true)} />
+          <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+            <Outlet />
+          </main>
+        </div>
       </div>
     </div>
   );
