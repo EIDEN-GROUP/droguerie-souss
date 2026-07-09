@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Boxes, PackageX, Receipt, ShoppingBag, Users } from "lucide-react";
+import { Boxes, Loader2, PackageX, Receipt, ShoppingBag, Users } from "lucide-react";
 import { useMemo } from "react";
 import {
   Area,
@@ -16,7 +16,7 @@ import {
   YAxis,
 } from "recharts";
 import { StatCard } from "@/components/admin/StatCard";
-import { useAdminStore } from "@/lib/adminStore";
+import { useProducts, useOrders } from "@/lib/adminStore";
 import { revenueByMonth, soldUnits, topProducts, uniqueCustomers } from "@/lib/orders";
 
 export const Route = createFileRoute("/admin/")({
@@ -26,15 +26,15 @@ export const Route = createFileRoute("/admin/")({
 const PIE_COLORS = ["#4274d9", "#d0e7e6"];
 
 function AdminDashboard() {
-  const products = useAdminStore((s) => s.products);
-  const orders = useAdminStore((s) => s.orders);
+  const { data: products, isLoading: productsLoading, isError: productsError } = useProducts();
+  const { data: orders, isLoading: ordersLoading, isError: ordersError } = useOrders();
 
-  const totalStock = useMemo(() => products.reduce((s, p) => s + p.stock, 0), [products]);
-  const outOfStock = useMemo(() => products.filter((p) => p.stock === 0).length, [products]);
-  const sold = useMemo(() => soldUnits(orders), [orders]);
-  const clients = useMemo(() => uniqueCustomers(orders), [orders]);
-  const revenue = useMemo(() => revenueByMonth(orders), [orders]);
-  const bestProducts = useMemo(() => topProducts(orders), [orders]);
+  const totalStock = useMemo(() => (products || []).reduce((s: number, p: any) => s + p.stock, 0), [products]);
+  const outOfStock = useMemo(() => (products || []).filter((p: any) => p.stock === 0).length, [products]);
+  const sold = useMemo(() => soldUnits(orders || []), [orders]);
+  const clients = useMemo(() => uniqueCustomers(orders || []), [orders]);
+  const revenue = useMemo(() => revenueByMonth(orders || []), [orders]);
+  const bestProducts = useMemo(() => topProducts(orders || []), [orders]);
 
   const pieData = [
     { name: "Unités vendues", value: sold },
@@ -42,11 +42,24 @@ function AdminDashboard() {
   ];
   const pieTotal = sold + totalStock;
 
+  if (productsLoading || ordersLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-brand" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-5">
+      {(productsError || ordersError) && (
+        <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+          Erreur de chargement. Veuillez réessayer.
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <StatCard label="Total produits" value={products.length} icon={Boxes} tint="brand" />
-        <StatCard label="Commandes" value={orders.length} icon={ShoppingBag} tint="mint" />
+        <StatCard label="Total produits" value={products?.length ?? 0} icon={Boxes} tint="brand" />
+        <StatCard label="Commandes" value={orders?.length ?? 0} icon={ShoppingBag} tint="mint" />
         <StatCard label="Stock total" value={totalStock} icon={Receipt} tint="sky" />
         <StatCard label="Rupture de stock" value={outOfStock} icon={PackageX} tint="red" />
       </div>
@@ -129,7 +142,7 @@ function AdminDashboard() {
 
       <div className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]">
         <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
-          Chiffre d'affaires   6 derniers mois
+          Chiffre d'affaires &mdash; 6 derniers mois
         </h3>
         <div className="mt-2 h-64">
           <ResponsiveContainer width="100%" height="100%">

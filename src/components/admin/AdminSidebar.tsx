@@ -1,14 +1,16 @@
 import { useId } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, Package, Receipt, LogOut, Store, X } from "lucide-react";
+import { LayoutDashboard, Package, Receipt, Tags, LogOut, Store, X, MessageSquare } from "lucide-react";
 import logo from "@/assets/logo.png";
 import { useAdminAuth } from "@/lib/adminAuth";
 
 const links = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { to: "/admin/products", label: "Produits", icon: Package },
+  { to: "/admin/categories", label: "Catégories", icon: Tags },
   { to: "/admin/orders", label: "Ventes", icon: Receipt },
+  { to: "/admin/contacts", label: "Contacts", icon: MessageSquare },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {

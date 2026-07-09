@@ -11,17 +11,18 @@ import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 import promoImg from "@/assets/promo-collection.jpg";
-import { useAdminStore } from "@/lib/adminStore";
+import { useProducts } from "@/lib/adminStore";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 function Home() {
-  const products = useAdminStore((s) => s.products);
-  const bestSellers = products.filter((p) => p.bestseller);
+  const { data: products, isLoading } = useProducts();
+  const productList = products || [];
+  const bestSellers = productList.filter((p: any) => p.bestseller);
 
   return (
     <Layout>
@@ -30,17 +31,23 @@ function Home() {
 
       <section className="container-x py-20">
         <SectionHeader kicker="Best-sellers" title="Nos produits populaires" />
-        <Carousel opts={{ align: "start", loop: true }} className="mt-12">
-          <CarouselContent>
-            {bestSellers.map((p, i) => (
-              <CarouselItem key={p.id} className="basis-1/2 sm:basis-1/3 lg:basis-1/4">
-                <ProductCard product={p} index={i} />
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious className="left-2" />
-          <CarouselNext className="right-2" />
-        </Carousel>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-brand" />
+          </div>
+        ) : (
+          <Carousel opts={{ align: "start", loop: true }} className="mt-12">
+            <CarouselContent>
+              {bestSellers.map((p: any, i: number) => (
+                <CarouselItem key={p.id} className="basis-1/2 sm:basis-1/3 lg:basis-1/4">
+                  <ProductCard product={p} index={i} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="left-2" />
+            <CarouselNext className="right-2" />
+          </Carousel>
+        )}
       </section>
 
       <SuppliersCarousel />
@@ -49,9 +56,15 @@ function Home() {
 
       <section className="container-x py-16">
         <SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" />
-        <div className="mt-12">
-          <ProductGrid items={products.slice(0, 8)} />
-        </div>
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-8 w-8 animate-spin text-brand" />
+          </div>
+        ) : (
+          <div className="mt-12">
+            <ProductGrid items={productList.slice(0, 8)} />
+          </div>
+        )}
       </section>
 
       <section  className="container-x py-20">

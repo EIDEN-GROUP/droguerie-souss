@@ -8,6 +8,7 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.env
 dist
 dist-ssr
 .output
@@ -30,3 +31,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vercel build output
+.vercel/
+
+# Supabase local
+supabase/.temp/

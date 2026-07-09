@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Eye, Search, Trash2 } from "lucide-react";
+import { Eye, Loader2, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
   AlertDialog,
@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderDetailSheet } from "@/components/admin/OrderDetailSheet";
-import { useAdminStore } from "@/lib/adminStore";
+import { useOrders, useDeleteOrder } from "@/lib/adminStore";
 import type { Order, OrderStatus } from "@/lib/orders";
 
 export const Route = createFileRoute("/admin/orders")({
@@ -41,15 +41,17 @@ const statusLabel: Record<OrderStatus, string> = {
 };
 
 function AdminOrders() {
-  const orders = useAdminStore((s) => s.orders);
-  const deleteOrder = useAdminStore((s) => s.deleteOrder);
+  const { data: orders, isLoading, isError } = useOrders();
+  const deleteOrder = useDeleteOrder();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<OrderStatus | "all">("all");
   const [viewing, setViewing] = useState<Order | null>(null);
   const [toDelete, setToDelete] = useState<Order | null>(null);
 
+  const orderList = useMemo(() => (orders || []) as unknown as Order[], [orders]);
+
   const filtered = useMemo(() => {
-    let list = orders;
+    let list = orderList;
     if (status !== "all") list = list.filter((o) => o.status === status);
     if (query.trim()) {
       const q = query.toLowerCase();
@@ -58,10 +60,23 @@ function AdminOrders() {
       );
     }
     return list;
-  }, [orders, status, query]);
+  }, [orderList, status, query]);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-20">
+        <Loader2 className="h-8 w-8 animate-spin text-brand" />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
+      {isError && (
+        <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+          Erreur de chargement. Veuillez réessayer.
+        </div>
+      )}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex flex-1 flex-col gap-3 sm:flex-row sm:items-center">
           <div className="relative sm:max-w-xs">
@@ -103,7 +118,7 @@ function AdminOrders() {
             {filtered.map((o) => (
               <TableRow key={o.id}>
                 <TableCell className="text-sm font-semibold text-ink">
-                  #{o.id.split("-")[1]}
+                  #{o.id.slice(0, 8)}
                   <div className="text-xs font-normal text-ink-soft">
                     {new Date(o.createdAt).toLocaleDateString("fr-FR")}
                   </div>
@@ -142,8 +157,8 @@ function AdminOrders() {
         </Table>
         {filtered.length === 0 && (
           <div className="py-16 text-center text-sm text-ink-soft">
-            {orders.length === 0
-              ? "Aucune commande pour le moment   les commandes du checkout apparaîtront ici."
+            {orderList.length === 0
+              ? "Aucune commande pour le moment — les commandes du checkout apparaîtront ici."
               : "Aucune commande ne correspond à votre recherche."}
           </div>
         )}
@@ -164,7 +179,7 @@ function AdminOrders() {
             <AlertDialogAction
               className="bg-accent-red text-accent-red-foreground hover:bg-accent-red/90"
               onClick={() => {
-                if (toDelete) deleteOrder(toDelete.id);
+                if (toDelete) deleteOrder.mutate(toDelete.id);
                 setToDelete(null);
               }}
             >

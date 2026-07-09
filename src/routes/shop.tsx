@@ -4,9 +4,9 @@ import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
-import { useAdminStore } from "@/lib/adminStore";
+import { useProducts } from "@/lib/adminStore";
 import { categories, type Category } from "@/lib/products";
-import { ChevronDown, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
   cat: z.string().optional(),
@@ -26,7 +26,7 @@ export const Route = createFileRoute("/shop")({
 
 function Shop() {
   const { cat: initialCat, q: initialQ } = Route.useSearch();
-  const products = useAdminStore((s) => s.products);
+  const { data: products, isLoading, isError } = useProducts();
   const [activeCat, setActiveCat] = useState<Category | "all">(
     (initialCat as Category) || "all",
   );
@@ -35,14 +35,15 @@ function Shop() {
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   const filtered = useMemo(() => {
-    let list = products;
-    if (activeCat !== "all") list = list.filter((p) => p.category === activeCat);
+    if (!products) return [];
+    let list = [...products] as unknown as any[];
+    if (activeCat !== "all") list = list.filter((p: any) => p.category === activeCat);
     if (query.trim())
-      list = list.filter((p) =>
+      list = list.filter((p: any) =>
         p.name.toLowerCase().includes(query.toLowerCase()),
       );
-    if (sort === "asc") list = [...list].sort((a, b) => a.price - b.price);
-    if (sort === "desc") list = [...list].sort((a, b) => b.price - a.price);
+    if (sort === "asc") list = [...list].sort((a: any, b: any) => a.price - b.price);
+    if (sort === "desc") list = [...list].sort((a: any, b: any) => b.price - a.price);
     return list;
   }, [products, activeCat, query, sort]);
 
@@ -61,7 +62,7 @@ function Shop() {
               Boutique
             </h1>
             <p className="mt-3 max-w-xl text-paper/80">
-              {products.length} produits sélectionnés pour tous vos projets de construction.
+              {products?.length ?? 0} produits sélectionnés pour tous vos projets de construction.
             </p>
           </motion.div>
         </div>
@@ -109,7 +110,7 @@ function Shop() {
           className={`container-x mt-4 ${filtersOpen ? "flex" : "hidden"} gap-2 overflow-x-auto no-scrollbar md:flex`}
         >
           <CatChip active={activeCat === "all"} onClick={() => setActiveCat("all")}>
-            Toutes ({products.length})
+            Toutes ({products?.length ?? 0})
           </CatChip>
           {categories.map((c) => (
             <CatChip
@@ -124,8 +125,17 @@ function Shop() {
       </div>
 
       <div className="container-x py-10">
-        {filtered.length > 0 ? (
-          <ProductGrid items={filtered} />
+        {isError && (
+          <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+            Erreur de chargement. Veuillez réessayer.
+          </div>
+        )}
+        {isLoading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="h-8 w-8 animate-spin text-brand" />
+          </div>
+        ) : filtered.length > 0 ? (
+          <ProductGrid items={filtered as any} />
         ) : (
           <div className="rounded-2xl border-2 border-dashed py-20 text-center text-ink-soft">
             Aucun produit ne correspond à votre recherche.

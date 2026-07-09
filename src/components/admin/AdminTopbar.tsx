@@ -1,5 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { useAdminAuth } from "@/lib/adminAuth";
 
 const titles: Record<string, string> = {
@@ -10,7 +10,7 @@ const titles: Record<string, string> = {
 
 export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const logout = useAdminAuth((s) => s.logout);
+  const { logout, userEmail } = useAdminAuth();
   const title = titles[pathname] ?? "Dashboard";
 
   return (
@@ -23,11 +23,15 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
         <Menu className="h-5 w-5" />
       </button>
       <h1 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">{title}</h1>
-      <div className="ml-auto">
+      <div className="ml-auto flex items-center gap-4">
+        {userEmail && (
+          <span className="hidden text-xs text-ink-soft sm:block">{userEmail}</span>
+        )}
         <button
           onClick={() => logout()}
-          className="rounded-full bg-accent-red px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-accent-red/70"
+          className="flex items-center gap-2 rounded-full bg-accent-red px-4 py-2 text-xs font-bold uppercase tracking-wider text-cream transition hover:bg-accent-red/70"
         >
+          <LogOut className="h-3.5 w-3.5" />
           Déconnexion
         </button>
       </div>

@@ -1,27 +1,44 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
-
-// Soft client-side gate only   not real security. Change this to update the
-// dashboard password.
-const ADMIN_PASSWORD = "souss2026";
+import { createClient } from "@/lib/supabase";
 
 interface AdminAuthState {
   isAuthed: boolean;
-  login: (password: string) => boolean;
-  logout: () => void;
+  loading: boolean;
+  userEmail: string | null;
+  checkSession: () => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
 }
 
-export const useAdminAuth = create<AdminAuthState>()(
-  persist(
-    (set) => ({
-      isAuthed: false,
-      login: (password) => {
-        const ok = password === ADMIN_PASSWORD;
-        if (ok) set({ isAuthed: true });
-        return ok;
-      },
-      logout: () => set({ isAuthed: false }),
-    }),
-    { name: "droguerie-admin-auth" },
-  ),
-);
+export const useAdminAuth = create<AdminAuthState>()((set) => ({
+  isAuthed: false,
+  loading: true,
+  userEmail: null,
+
+  checkSession: async () => {
+    try {
+      const supabase = createClient();
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        set({ isAuthed: true, userEmail: data.user.email, loading: false });
+      } else {
+        set({ isAuthed: false, userEmail: null, loading: false });
+      }
+    } catch {
+      set({ isAuthed: false, userEmail: null, loading: false });
+    }
+  },
+
+  login: async (email, password) => {
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) throw new Error("Email ou mot de passe incorrect");
+    set({ isAuthed: true, userEmail: data.user.email, loading: false });
+  },
+
+  logout: async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    set({ isAuthed: false, userEmail: null, loading: false });
+  },
+}));

@@ -1,9 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, ChevronRight, ShoppingBag } from "lucide-react";
+import { CheckCircle2, ChevronRight, Loader2, ShoppingBag } from "lucide-react";
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { useAdminStore } from "@/lib/adminStore";
+import { createOrder } from "@/lib/api/orders";
 import type { PaymentMethod } from "@/lib/orders";
 import { cartTotal, useApp } from "@/lib/store";
 
@@ -14,37 +14,42 @@ export const Route = createFileRoute("/checkout")({
 
 function Checkout() {
   const { cart, clearCart } = useApp();
-  const addOrder = useAdminStore((s) => s.addOrder);
   const navigate = useNavigate();
   const [payment, setPayment] = useState<PaymentMethod>("cod");
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", email: "", city: "", address: "" });
   const total = cartTotal(cart);
 
   const updateField = (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [field]: e.target.value }));
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    addOrder({
-      customer: {
-        name: form.name,
-        phone: form.phone,
-        email: form.email || undefined,
-        city: form.city,
-        address: form.address,
-      },
-      payment,
-      items: cart.map((i) => {
-        const price = i.product.promo ? i.product.price * (1 - i.product.promo / 100) : i.product.price;
-        return { productId: i.product.id, name: i.product.name, image: i.product.image, price, qty: i.qty };
-      }),
-    });
-    setTimeout(() => {
+    setError("");
+    try {
+      await createOrder({
+        data: {
+          customer_name: form.name,
+          customer_phone: form.phone,
+          customer_email: form.email || undefined,
+          customer_city: form.city,
+          customer_address: form.address,
+          payment_method: payment,
+          items: cart.map((i) => {
+            const price = i.product.promo ? i.product.price * (1 - i.product.promo / 100) : i.product.price;
+            return { product_id: i.product.id, product_name: i.product.name, product_image: i.product.image, price, qty: i.qty };
+          }),
+        },
+      });
       clearCart();
       navigate({ to: "/confirmation" });
-    }, 800);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -89,13 +94,13 @@ function Checkout() {
             <div className="space-y-6 lg:col-span-2">
               <Card title="Informations client">
                 <div className="grid gap-4 sm:grid-cols-2 mb-4">
-                  <Field label="Nom complet" required><input required value={form.name} onChange={updateField("name")} className="ci" /></Field>
-                  <Field label="Téléphone" required><input required type="tel" value={form.phone} onChange={updateField("phone")} className="ci" /></Field>
-                  <Field label="Email (optionnel)"><input type="email" value={form.email} onChange={updateField("email")} className="ci" /></Field>
-                  <Field label="Ville" required><input required value={form.city} onChange={updateField("city")} className="ci" /></Field>
+                  <Field label="Nom complet" required><input required value={form.name} onChange={updateField("name")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" /></Field>
+                  <Field label="Téléphone" required><input required type="tel" value={form.phone} onChange={updateField("phone")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" /></Field>
+                  <Field label="Email (optionnel)"><input type="email" value={form.email} onChange={updateField("email")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" /></Field>
+                  <Field label="Ville" required><input required value={form.city} onChange={updateField("city")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" /></Field>
                 </div>
                 <Field label="Adresse de livraison" required >
-                  <textarea required rows={3} value={form.address} onChange={updateField("address")} className="ci" />
+                  <textarea required rows={3} value={form.address} onChange={updateField("address")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
                 </Field>
               </Card>
 
@@ -161,19 +166,26 @@ function Checkout() {
                 <p className="mt-2 text-[11px] text-ink-soft">
                   Prix indicatifs. Le devis final sera confirmé par notre équipe.
                 </p>
+                {error && (
+                  <p className="mt-2 text-xs font-semibold text-accent-red">{error}</p>
+                )}
                 <button
                   type="submit"
                   disabled={submitting}
                   className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-5 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 disabled:opacity-60"
                 >
-                  {submitting ? "Envoi..." : <><CheckCircle2 className="h-4 w-4" /> Confirmer la demande</>}
+                  {submitting ? (
+                    <><Loader2 className="h-4 w-4 animate-spin" /> Envoi...</>
+                  ) : (
+                    <><CheckCircle2 className="h-4 w-4" /> Confirmer la demande</>
+                  )}
                 </button>
               </Card>
             </div>
           </form>
         )}
       </div>
-      <style>{`.ci{width:100%;border:1px solid var(--color-border);border-radius:0.5rem;padding:0.7rem 0.9rem;font-size:0.875rem;outline:none;background:white}.ci:focus{border-color:var(--color-brand)}`}</style>
+
     </Layout>
   );
 }
