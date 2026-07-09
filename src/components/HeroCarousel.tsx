@@ -76,9 +76,9 @@ export function HeroCarousel() {
               <p className="mt-5 max-w-lg text-base text-paper/80 sm:text-lg">
                 {s.subtitle}
               </p>
-              <div className="mt-8 mb-8 flex flex-wrap items-center gap-3">
+              <div className="mt-8 flex flex-wrap items-center gap-3">
                 <Link
-                  to="/produits"
+                  to="/shop"
                   className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
                 >
                   {s.cta}

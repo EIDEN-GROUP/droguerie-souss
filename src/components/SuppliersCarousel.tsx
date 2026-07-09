@@ -14,7 +14,7 @@ export function SuppliersCarousel() {
         <SectionHeader kicker="Ils nous font confiance" title="Nos fournisseurs partenaires" />
       </div>
       <div className="mt-10 relative">
-        <div className="flex marquee gap-4">
+        <div className="flex gap-4 animate-[marquee_4s_linear_infinite] lg:animate-[marquee_10s_linear_infinite]">
           {doubled.map((s, i) => (
             <div
               key={i}
