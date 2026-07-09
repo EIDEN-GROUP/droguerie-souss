@@ -58,7 +58,7 @@ function AdminDashboard() {
           Erreur de chargement. Veuillez réessayer.
         </div>
       )}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
         <StatCard label="Total produits" value={products?.length ?? 0} icon={Boxes} tint="brand" />
         <StatCard label="Commandes" value={orders?.length ?? 0} icon={ShoppingBag} tint="mint" />
         <StatCard label="Clients" value={clients} icon={User} tint="gold" />
@@ -66,15 +66,15 @@ function AdminDashboard() {
         <StatCard label="Rupture de stock" value={outOfStock} icon={PackageX} tint="red" />
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <motion.div
+      <div className="grid gap-4 lg:grid-cols-2">
+        {/* <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.0 }}
           className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]"
         >
-          {/* <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
             <div className="grid h-12 w-12 place-items-center rounded-xl bg-mint text-brand-secondary">
               <Users className="h-6 w-6" />
             </div>
@@ -82,8 +82,8 @@ function AdminDashboard() {
               <p className="font-display text-2xl font-bold text-ink">{clients}</p>
               <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Clients</p>
             </div>
-          </div> */}
-        </motion.div>
+          </div>
+        </motion.div> */}
 
         <motion.div
           initial={{ opacity: 0, y: 24 }}
