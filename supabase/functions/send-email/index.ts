@@ -41,11 +41,11 @@ Deno.serve(async (req) => {
       });
     }
 
-    const SMTP_HOST = Deno.env.get("SMTP_HOSTNAME");
+    const SMTP_HOST = Deno.env.get("SMTP_HOST") || "";
     const SMTP_PORT = Deno.env.get("SMTP_PORT") || "587";
-    const SMTP_USER = Deno.env.get("SMTP_USERNAME");
-    const SMTP_PASS = Deno.env.get("SMTP_PASSWORD");
-    const SMTP_FROM = Deno.env.get("SMTP_FROM") || "Droguerie Souss <noreply@drogueriesouss.ma>";
+    const SMTP_USER = Deno.env.get("SMTP_USER") || "";
+    const SMTP_PASS = Deno.env.get("SMTP_PASS") || "";
+    const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "Droguerie Souss <noreply@drogueriesouss.ma>";
 
     if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
       return new Response(JSON.stringify({ error: "SMTP not fully configured" }), {
@@ -61,7 +61,7 @@ Deno.serve(async (req) => {
       auth: { user: SMTP_USER, pass: SMTP_PASS },
     });
 
-    await transporter.sendMail({ from: SMTP_FROM, to: ADMIN_EMAIL, subject, html });
+    await transporter.sendMail({ from: FROM_EMAIL, to: ADMIN_EMAIL, subject, html });
     transporter.close();
 
     return new Response(JSON.stringify({ success: true }), {

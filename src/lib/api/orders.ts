@@ -75,7 +75,7 @@ export const createOrder = createServerFn({ method: "POST" })
           price: i.price,
         })),
       }),
-    );
+    ).catch((err) => console.error("sendAdminEmail (order) failed:", err));
 
     return { id: order.id, total };
   });

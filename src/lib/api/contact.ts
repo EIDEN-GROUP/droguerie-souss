@@ -30,7 +30,7 @@ export const submitContact = createServerFn({ method: "POST" })
         city: ctx.data.city,
         message: ctx.data.message,
       }),
-    );
+    ).catch((err) => console.error("sendAdminEmail (contact) failed:", err));
 
     return { success: true, id: record.id };
   });
