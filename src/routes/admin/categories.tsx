@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Download, FileDown, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
+import { FileDown, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import Papa from "papaparse";
 import {

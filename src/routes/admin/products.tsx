@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Pencil, Plus, Search, Trash2, Upload, Loader2, FileDown } from "lucide-react";
+import { motion } from "framer-motion";
+import { FileDown, Loader2, Pencil, Plus, Search, Trash2, Upload } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import {
@@ -22,10 +23,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
-import { useProducts, useDeleteProduct, useCreateProduct, useCategories } from "@/lib/adminStore";
+import { useProducts, useDeleteProduct, useCategories } from "@/lib/adminStore";
 import { importProductsCsv, exportProductsCsv } from "@/lib/api/products";
 import { categories as defaultCategories, type Category, type Product } from "@/lib/products";
 import type { ProductInput } from "@/lib/database.types";
+
+const MotionTableRow = motion(TableRow);
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
@@ -34,7 +37,6 @@ export const Route = createFileRoute("/admin/products")({
 function AdminProducts() {
   const { data: products, isLoading, isError } = useProducts();
   const deleteProduct = useDeleteProduct();
-  const createProduct = useCreateProduct();
   const { data: dbCategories } = useCategories();
   const catOptions = (dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories).map((c: any) => ({
     value: c.category ?? c.name,
@@ -224,8 +226,13 @@ function AdminProducts() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((p) => (
-              <TableRow key={p.id}>
+            {filtered.map((p, i) => (
+              <MotionTableRow
+                key={p.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.04 }}
+              >
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <img src={p.image} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
@@ -270,7 +277,7 @@ function AdminProducts() {
                     </button>
                   </div>
                 </TableCell>
-              </TableRow>
+              </MotionTableRow>
             ))}
           </TableBody>
         </Table>

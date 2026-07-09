@@ -1,11 +1,14 @@
 import { useRouterState } from "@tanstack/react-router";
-import { Menu, LogOut } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { LogOut, Menu } from "lucide-react";
 import { useAdminAuth } from "@/lib/adminAuth";
 
 const titles: Record<string, string> = {
   "/admin": "Tableau de bord",
   "/admin/products": "Produits",
   "/admin/orders": "Ventes",
+  "/admin/categories": "Catégories",
+  "/admin/contacts": "Contacts",
 };
 
 export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
@@ -22,7 +25,20 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </button>
-      <h1 className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl">{title}</h1>
+
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.h1
+          key={pathname}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 10 }}
+          transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+          className="font-display text-lg font-bold uppercase tracking-wide sm:text-xl"
+        >
+          {title}
+        </motion.h1>
+      </AnimatePresence>
+
       <div className="ml-auto flex items-center gap-4">
         {userEmail && (
           <span className="hidden text-xs text-ink-soft sm:block">{userEmail}</span>

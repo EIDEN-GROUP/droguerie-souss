@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { Boxes, Loader2, PackageX, Receipt, ShoppingBag, Users } from "lucide-react";
 import { useMemo } from "react";
 import {
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
 });
 
-const PIE_COLORS = ["#4274d9", "#d0e7e6"];
+const PIE_COLORS = ["#2f378d", "#dddfec"];
 
 function AdminDashboard() {
   const { data: products, isLoading: productsLoading, isError: productsError } = useProducts();
@@ -65,7 +66,13 @@ function AdminDashboard() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.0 }}
+          className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]"
+        >
           <div className="flex items-center gap-3">
             <div className="grid h-12 w-12 place-items-center rounded-xl bg-mint text-brand-secondary">
               <Users className="h-6 w-6" />
@@ -75,9 +82,15 @@ function AdminDashboard() {
               <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">Clients</p>
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        <div className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)] lg:col-span-1">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.08 }}
+          className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)] lg:col-span-1"
+        >
           <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
             Valeur de l'inventaire
           </h3>
@@ -111,9 +124,15 @@ function AdminDashboard() {
               </ul>
             </div>
           )}
-        </div>
+        </motion.div>
 
-        <div className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.16 }}
+          className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)] lg:col-span-1"
+        >
           <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
             Top produits vendus
           </h3>
@@ -132,15 +151,21 @@ function AdminDashboard() {
                     tickFormatter={(v: string) => (v.length > 16 ? `${v.slice(0, 16)}…` : v)}
                   />
                   <Tooltip />
-                  <Bar dataKey="qty" fill="#4274d9" radius={[0, 6, 6, 0]} />
+                  <Bar dataKey="qty" fill="#2f378d" radius={[0, 6, 6, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           )}
-        </div>
+        </motion.div>
       </div>
 
-      <div className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]">
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 0.1 }}
+        className="rounded-2xl border bg-paper p-5 shadow-[var(--shadow-card)]"
+      >
         <h3 className="font-display text-sm font-bold uppercase tracking-wider text-ink">
           Chiffre d'affaires &mdash; 6 derniers mois
         </h3>
@@ -149,19 +174,19 @@ function AdminDashboard() {
             <AreaChart data={revenue} margin={{ left: 0, right: 8, top: 8 }}>
               <defs>
                 <linearGradient id="revenueFill" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#4274d9" stopOpacity={0.35} />
-                  <stop offset="100%" stopColor="#4274d9" stopOpacity={0} />
+                  <stop offset="0%" stopColor="#2f378d" stopOpacity={0.35} />
+                  <stop offset="100%" stopColor="#2f378d" stopOpacity={0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e6e8ec" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e0e1ee" />
               <XAxis dataKey="label" tick={{ fontSize: 12 }} />
               <YAxis tick={{ fontSize: 12 }} width={48} />
               <Tooltip formatter={(v: number) => `${v.toFixed(0)} MAD`} />
-              <Area type="monotone" dataKey="total" stroke="#4274d9" strokeWidth={2} fill="url(#revenueFill)" />
+              <Area type="monotone" dataKey="total" stroke="#2f378d" strokeWidth={2} fill="url(#revenueFill)" />
             </AreaChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

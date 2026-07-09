@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { motion } from "framer-motion";
 import { Eye, Loader2, Search, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import {
@@ -23,6 +24,8 @@ import {
 import { OrderDetailSheet } from "@/components/admin/OrderDetailSheet";
 import { useOrders, useDeleteOrder } from "@/lib/adminStore";
 import type { Order, OrderStatus } from "@/lib/orders";
+
+const MotionTableRow = motion(TableRow);
 
 export const Route = createFileRoute("/admin/orders")({
   component: AdminOrders,
@@ -115,8 +118,13 @@ function AdminOrders() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((o) => (
-              <TableRow key={o.id}>
+            {filtered.map((o, i) => (
+              <MotionTableRow
+                key={o.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, delay: i * 0.04 }}
+              >
                 <TableCell className="text-sm font-semibold text-ink">
                   #{o.id.slice(0, 8)}
                   <div className="text-xs font-normal text-ink-soft">
@@ -151,7 +159,7 @@ function AdminOrders() {
                     </button>
                   </div>
                 </TableCell>
-              </TableRow>
+              </MotionTableRow>
             ))}
           </TableBody>
         </Table>
