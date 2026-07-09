@@ -27,7 +27,7 @@ export function PromoCards() {
                 <p className="text-xs font-bold uppercase tracking-widest text-brand-cyan">Collection</p>
                 <h3 className="mt-2 font-display text-2xl font-bold">{c.label}</h3>
                 <p className="mt-1 text-sm text-white/80">{c.desc}</p>
-                <Link to="/shop" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-brand-cyan">
+                <Link to="/produits" className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-brand-cyan">
                   Voir la collection <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>

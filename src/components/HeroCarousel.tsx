@@ -76,16 +76,16 @@ export function HeroCarousel() {
               <p className="mt-5 max-w-lg text-base text-paper/80 sm:text-lg">
                 {s.subtitle}
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-3">
+              <div className="mt-8 mb-8 flex flex-wrap items-center gap-3">
                 <Link
-                  to="/shop"
+                  to="/produits"
                   className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
                 >
                   {s.cta}
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  to="/contact"
+                  to="/contactez-nous"
                   className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper backdrop-blur transition hover:bg-paper hover:text-ink"
                 >
                   Demander un devis

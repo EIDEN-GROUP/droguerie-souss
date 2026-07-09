@@ -16,19 +16,19 @@ export function Footer() {
             Votre partenaire de confiance en matériaux de construction dans la région
             du Souss depuis plus de 20 ans.
           </p>
-          <div className="mt-4 flex gap-2">
+          {/* <div className="mt-4 flex gap-2">
             <a href="#" className="grid h-9 w-9 place-items-center rounded-full bg-paper/10 hover:bg-brand"><Facebook className="h-4 w-4" /></a>
             <a href="#" className="grid h-9 w-9 place-items-center rounded-full bg-paper/10 hover:bg-brand"><Instagram className="h-4 w-4" /></a>
-          </div>
+          </div> */}
         </div>
 
         <div className="min-w-0">
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Boutique</h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
-            <li><Link to="/shop" className="hover:text-sky">Tous les produits</Link></li>
-            <li><Link to="/shop" className="hover:text-sky">Carrelage & Marbre</Link></li>
-            <li><Link to="/shop" className="hover:text-sky">Peinture</Link></li>
-            <li><Link to="/shop" className="hover:text-sky">Électricité & Plomberie</Link></li>
+            <li><Link to="/produits" className="hover:text-sky">Tous les produits</Link></li>
+            <li><Link to="/produits" className="hover:text-sky">Carrelage & Marbre</Link></li>
+            <li><Link to="/produits" className="hover:text-sky">Peinture</Link></li>
+            <li><Link to="/produits" className="hover:text-sky">Électricité & Plomberie</Link></li>
           </ul>
         </div>
 
@@ -36,7 +36,7 @@ export function Footer() {
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Entreprise</h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
             <li><Link to="/" className="hover:text-sky">Accueil</Link></li>
-            <li><Link to="/contact" className="hover:text-sky">Contact</Link></li>
+            <li><Link to="/contactez-nous" className="hover:text-sky">Contact</Link></li>
             <li><Link to="/checkout" className="hover:text-sky">Devis</Link></li>
           </ul>
         </div>
@@ -44,9 +44,9 @@ export function Footer() {
         <div className="min-w-0">
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Contact</h4>
           <ul className="mt-4 space-y-3 text-sm text-paper/70">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> <span className="min-w-0 break-words">Zone industrielle, Agadir, Maroc</span></li>
-            <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> <span className="min-w-0 break-words">+212 528 000 000</span></li>
-            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-brand" /> <span className="min-w-0 break-words">contact@drogueriesouss.ma</span></li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="https://maps.app.goo.gl/q54qmxeEv752bJMTA" className="min-w-0 break-words hover:text-white">Zone industrielle, Agadir, Maroc</a></li>
+            <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="tel:+212528000000" className="min-w-0 break-words hover:text-white">+212 528 000 000</a></li>
+            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="mailto:contact@drogueriesouss.ma" className="min-w-0 break-words hover:text-white">contact@drogueriesouss.ma</a></li>
           </ul>
         </div>
       </div>

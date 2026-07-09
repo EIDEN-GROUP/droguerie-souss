@@ -18,7 +18,7 @@ export function CategoriesSection() {
                 transition={{ delay: i * 0.04 }}
               >
                 <Link
-                  to="/shop"
+                  to="/produits"
                   search={{ cat: c.category }}
                   className="group block relative aspect-[4/3] overflow-hidden rounded-2xl"
                 >
@@ -40,7 +40,7 @@ export function CategoriesSection() {
       </Carousel>
       <div className="mt-10 text-center">
         <Link
-          to="/shop"
+          to="/produits"
           className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
         >
           Voir tous les produits <ArrowRight className="h-4 w-4" />

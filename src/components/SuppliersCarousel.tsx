@@ -18,9 +18,9 @@ export function SuppliersCarousel() {
           {doubled.map((s, i) => (
             <div
               key={i}
-              className="grid h-24 min-w-[200px] shrink-0 place-items-center rounded-xl border bg-paper px-8 shadow-sm"
+              className="grid h-16 min-w-[140px] shrink-0 place-items-center rounded-xl border bg-paper px-4 shadow-sm md:h-24 md:min-w-[200px] md:px-8"
             >
-              <span className="font-display text-2xl font-bold tracking-widest text-ink-soft transition hover:text-brand">
+              <span className="font-display text-sm font-bold tracking-widest text-ink-soft transition hover:text-brand md:text-2xl">
                 {s}
               </span>
             </div>

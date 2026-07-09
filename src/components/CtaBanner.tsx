@@ -39,7 +39,7 @@ export function CtaBanner() {
             className="flex flex-col flex-wrap gap-3 sm:flex-row md:justify-end"
           >
             <Link
-              to="/contact"
+              to="/contactez-nous"
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full bg-accent-red px-7 py-4 text-sm font-bold uppercase tracking-wider text-paper hover:bg-accent-red/90"
             >
               Demander un devis

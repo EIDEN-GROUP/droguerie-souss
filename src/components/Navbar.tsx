@@ -4,6 +4,7 @@ import { ChevronRight, Heart, Menu, Phone, ShoppingBag, X } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/store";
 import logo from "@/assets/logo.png";
+import logoMobile from "@/assets/icon-blue.png";
 
 const links = [
   { to: "/", label: "Accueil" },
@@ -139,16 +140,8 @@ export function Navbar() {
             >
               <div className="flex items-center justify-between border-b px-5 py-4">
                 <div className="flex items-center gap-3">
-                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-brand text-brand-foreground font-display text-lg font-bold">
-                    DS
-                  </div>
-                  <div className="leading-tight">
-                    <div className="font-display text-sm font-bold tracking-wide">
-                      DROGUERIE SOUSS
-                    </div>
-                    <div className="text-[9px] uppercase tracking-[0.2em] text-ink-soft">
-                      S.A.R.L
-                    </div>
+                  <div className="h-10 w-10">
+                    <img src={logoMobile} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
                   </div>
                 </div>
                 <button

@@ -28,7 +28,7 @@ export function PageLoader() {
               <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
             </div>
               <motion.div
-                className="absolute -inset-2 rounded-2xl border-2 border-accent-red border-t-transparent"
+                className="absolute -inset-2 rounded-2xl border-2 border-accent-red"
                 animate={{ rotate: 360 }}
                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               />

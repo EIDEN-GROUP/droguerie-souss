@@ -108,13 +108,13 @@ function AdminOrders() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Commande</TableHead>
+              <TableHead className="pl-2">Commande</TableHead>
               <TableHead>Client</TableHead>
               <TableHead>Ville</TableHead>
               <TableHead>Articles</TableHead>
               <TableHead>Total</TableHead>
               <TableHead>Statut</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right pr-2">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

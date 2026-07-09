@@ -55,7 +55,7 @@ function ProductDetail() {
           <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
           <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
           <Link
-            to="/shop"
+            to="/produits"
             className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
           >
             Voir la boutique
@@ -90,7 +90,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
         <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
           <Link to="/" className="hover:text-brand">Accueil</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/shop" className="hover:text-brand">Shop</Link>
+          <Link to="/produits" className="hover:text-brand">Shop</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">{product.name}</span>
         </div>

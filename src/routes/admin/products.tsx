@@ -217,12 +217,12 @@ function AdminProducts() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Produit</TableHead>
+              <TableHead className="pl-2">Produit</TableHead>
               <TableHead>Catégorie</TableHead>
               <TableHead>Prix</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Statut</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead className="text-right pr-4">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -238,7 +238,7 @@ function AdminProducts() {
                     <img src={p.image} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
                     <div className="min-w-0">
                       <p className="max-w-[220px] truncate text-sm font-semibold text-ink">{p.name}</p>
-                      <div className="mt-0.5 flex gap-1.5">
+                      <div className="mt-2 flex gap-1.5">
                         {p.bestseller && <Badge className="bg-brand text-brand-foreground">Best-seller</Badge>}
                         {p.promo && <Badge className="bg-accent-red text-accent-red-foreground">-{p.promo}%</Badge>}
                       </div>

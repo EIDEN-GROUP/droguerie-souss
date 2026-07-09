@@ -76,14 +76,14 @@ function Home() {
             className="h-full w-full object-cover aspect-[4/3] lg:aspect-auto"
           />
           <div className="p-10 lg:p-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-brand-blue">Collection de saison</span>
+            <span className="text-xs font-semibold uppercase tracking-widest text-accent-red">Collection de saison</span>
             <h2 className="mt-3 font-display text-4xl md:text-5xl uppercase text-brand-navy leading-tight">
               L'élégance marocaine, du sol au plafond
             </h2>
             <p className="mt-4 text-brand-ink/80">
               Zellige émaillé, marbre poli et carrelage grand format   sélectionnés pour vos projets résidentiels et hôteliers.
             </p>
-            <Link to="/shop" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
+            <Link to="/produits" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
               Explorer la collection <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>
           </div>

@@ -97,7 +97,7 @@ function AdminDashboard() {
           {pieTotal === 0 ? (
             <EmptyChart label="Aucune donnée d'inventaire" />
           ) : (
-            <div className="mt-2 flex items-center gap-4">
+            <div className="mt-2 flex flex-col xl:flex-row items-center gap-4">
               <div className="h-40 w-40 shrink-0">
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>

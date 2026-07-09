@@ -7,7 +7,7 @@
 /* Souss Droguerie brand palette (from brand_guide.html)
  * Indigo #2F378D primary · #202560 deep · #272D74 hover
  * Periwinkle #8E93C3 · Mist #DDDFEC · Indigo-50 #F3F3F8 surface
- * Ink #30313D · Ink-soft #757783 · Error #B24242
+ * Ink #30313D · Ink-soft #757783 · Error #B8001F
  * Type: Fraunces (display), Inter (body), IBM Plex Mono (labels)
  */
 
@@ -20,7 +20,7 @@
   --color-brand: #2f378d;
   --color-brand-foreground: #ffffff;
   --color-brand-dark: #272d74;
-  --color-accent-red: #b24242;
+  --color-accent-red: #B8001F;
   --color-accent-red-foreground: #ffffff;
   --color-sky: #8e93c3;
   --color-mint: #dddfec;
@@ -75,7 +75,7 @@
   --muted-foreground: #757783;
   --accent: #dddfec;
   --accent-foreground: #30313d;
-  --destructive: #b24242;
+  --destructive: #B8001F;
   --destructive-foreground: #ffffff;
   --border: #e0e1ee;
   --input: #e0e1ee;
