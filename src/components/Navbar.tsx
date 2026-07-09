@@ -8,8 +8,8 @@ import logoMobile from "@/assets/icon-blue.png";
 
 const links = [
   { to: "/", label: "Accueil" },
-  { to: "/shop", label: "Shop" },
-  { to: "/contact", label: "Contact" },
+  { to: "/produits", label: "Produits" },
+  { to: "/contactez-nousez-nous", label: "Contactez-nous" },
 ];
 
 export function Navbar() {

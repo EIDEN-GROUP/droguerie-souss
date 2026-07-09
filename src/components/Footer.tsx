@@ -36,7 +36,7 @@ export function Footer() {
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Entreprise</h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
             <li><Link to="/" className="hover:text-sky">Accueil</Link></li>
-            <li><Link to="/contactez-nous" className="hover:text-sky">Contact</Link></li>
+            <li><Link to="/contactez-nousez-nous" className="hover:text-sky">Contact</Link></li>
             <li><Link to="/checkout" className="hover:text-sky">Devis</Link></li>
           </ul>
         </div>

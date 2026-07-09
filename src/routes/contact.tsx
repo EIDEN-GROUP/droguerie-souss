@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
-import { submitContact } from "@/lib/api/contact";
+import { submitContact } from "@/lib/api/contactez-nous";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,

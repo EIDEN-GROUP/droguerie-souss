@@ -37,7 +37,7 @@ function ProductDetail() {
           <p className="mt-4 font-display text-xl font-bold uppercase">Erreur de chargement</p>
           <p className="mt-1 text-sm text-ink-soft">Impossible de charger le produit. Veuillez réessayer.</p>
           <Link
-            to="/shop"
+            to="/produits"
             className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
           >
             Retour à la boutique

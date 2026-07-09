@@ -58,7 +58,7 @@ function Checkout() {
         <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
           <Link to="/" className="hover:text-brand">Accueil</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/shop" className="hover:text-brand">Shop</Link>
+          <Link to="/produits" className="hover:text-brand">Shop</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">Demande de devis</span>
         </div>
@@ -83,7 +83,7 @@ function Checkout() {
             <p className="mt-4 font-display text-lg font-bold uppercase">Votre panier est vide</p>
             <p className="mt-1 text-sm text-ink-soft">Ajoutez des produits avant de demander un devis.</p>
             <Link
-              to="/shop"
+              to="/produits"
               className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
             >
               Voir la boutique
