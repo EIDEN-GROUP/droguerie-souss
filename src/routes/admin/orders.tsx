@@ -166,7 +166,7 @@ function AdminOrders() {
         {filtered.length === 0 && (
           <div className="py-16 text-center text-sm text-ink-soft">
             {orderList.length === 0
-              ? "Aucune commande pour le moment — les commandes du checkout apparaîtront ici."
+              ? "Aucune commande pour le moment   les commandes du checkout apparaîtront ici."
               : "Aucune commande ne correspond à votre recherche."}
           </div>
         )}

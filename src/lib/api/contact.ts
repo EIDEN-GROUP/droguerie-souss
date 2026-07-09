@@ -22,7 +22,7 @@ export const submitContact = createServerFn({ method: "POST" })
     if (error) throw new Error("Erreur lors de l'envoi du message.");
 
     sendEmail({
-      adminSubject: "Nouveau message de contact — Droguerie Souss",
+      adminSubject: "Nouveau message de contact   Droguerie Souss",
       adminHtml: contactNotificationEmail({
         name: ctx.data.name,
         phone: ctx.data.phone,
@@ -31,7 +31,7 @@ export const submitContact = createServerFn({ method: "POST" })
         message: ctx.data.message,
       }),
       customerTo: ctx.data.email || undefined,
-      customerSubject: "Nous avons bien reçu votre message — Droguerie Souss",
+      customerSubject: "Nous avons bien reçu votre message   Droguerie Souss",
       customerHtml: ctx.data.email ? contactCustomerConfirmation({ name: ctx.data.name }) : undefined,
     }).catch((err) => console.error("sendEmail (contact) failed:", err));
 

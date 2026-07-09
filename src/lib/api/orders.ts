@@ -59,7 +59,7 @@ export const createOrder = createServerFn({ method: "POST" })
     }
 
     sendEmail({
-      adminSubject: "Nouvelle commande — Droguerie Souss",
+      adminSubject: "Nouvelle commande   Droguerie Souss",
       adminHtml: orderConfirmationEmail({
         id: order.id,
         customer_name: ctx.data.customer_name,
@@ -76,7 +76,7 @@ export const createOrder = createServerFn({ method: "POST" })
         })),
       }),
       customerTo: ctx.data.customer_email || undefined,
-      customerSubject: ctx.data.customer_email ? "Confirmation de votre demande de devis — Droguerie Souss" : undefined,
+      customerSubject: ctx.data.customer_email ? "Confirmation de votre demande de devis   Droguerie Souss" : undefined,
       customerHtml: ctx.data.customer_email ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total }) : undefined,
     }).catch((err) => console.error("sendEmail (order) failed:", err));
 
