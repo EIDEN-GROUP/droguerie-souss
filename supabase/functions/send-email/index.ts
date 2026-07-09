@@ -2,9 +2,11 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 import nodemailer from "npm:nodemailer@6.9.16";
 
 interface EmailPayload {
-  to: string;
-  subject: string;
-  html: string;
+  adminSubject: string;
+  adminHtml: string;
+  customerTo?: string;
+  customerSubject?: string;
+  customerHtml?: string;
 }
 
 const SMTP_HOST = Deno.env.get("SMTP_HOST") || "";
@@ -12,6 +14,7 @@ const SMTP_PORT = Deno.env.get("SMTP_PORT") || "587";
 const SMTP_USER = Deno.env.get("SMTP_USER") || "";
 const SMTP_PASS = Deno.env.get("SMTP_PASS") || "";
 const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "Droguerie Souss <noreply@drogueriesouss.ma>";
+const ADMIN_EMAIL = Deno.env.get("ADMIN_EMAIL") || "";
 
 Deno.serve(async (req: Request) => {
   if (req.method !== "POST") {
@@ -26,6 +29,14 @@ Deno.serve(async (req: Request) => {
     });
   }
 
+  if (!ADMIN_EMAIL) {
+    console.error("[send-email] ADMIN_EMAIL not configured");
+    return new Response(JSON.stringify({ ok: false, error: "ADMIN_EMAIL not configured" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
   let payload: EmailPayload;
   try {
     payload = await req.json();
@@ -33,8 +44,15 @@ Deno.serve(async (req: Request) => {
     return new Response("Invalid JSON", { status: 400 });
   }
 
-  if (!payload.to || !payload.subject || !payload.html) {
-    return new Response(JSON.stringify({ ok: false, error: "Missing to, subject, or html" }), {
+  if (!payload.adminSubject || !payload.adminHtml) {
+    return new Response(JSON.stringify({ ok: false, error: "Missing adminSubject or adminHtml" }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+
+  if (payload.customerTo && (!payload.customerSubject || !payload.customerHtml)) {
+    return new Response(JSON.stringify({ ok: false, error: "Missing customerSubject or customerHtml" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
     });
@@ -47,23 +65,30 @@ Deno.serve(async (req: Request) => {
     auth: { user: SMTP_USER, pass: SMTP_PASS },
   });
 
-  try {
-    await transport.sendMail({
-      from: FROM_EMAIL,
-      to: payload.to,
-      subject: payload.subject,
-      html: payload.html,
-    });
-  } catch (err) {
-    console.error("[send-email] Failed:", err);
-    await transport.close();
-    return new Response(JSON.stringify({ ok: false, error: err instanceof Error ? err.message : String(err) }), {
+  const errors: string[] = [];
+
+  const send = async (to: string, subject: string, html: string) => {
+    try {
+      await transport.sendMail({ from: FROM_EMAIL, to, subject, html });
+    } catch (err) {
+      errors.push(`Failed to send to ${to}: ${err instanceof Error ? err.message : String(err)}`);
+    }
+  };
+
+  await Promise.all([
+    send(ADMIN_EMAIL, payload.adminSubject, payload.adminHtml),
+    payload.customerTo ? send(payload.customerTo, payload.customerSubject!, payload.customerHtml!) : Promise.resolve(),
+  ]);
+
+  await transport.close();
+
+  if (errors.length > 0) {
+    console.error("[send-email]", errors.join("; "));
+    return new Response(JSON.stringify({ ok: false, errors }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });
   }
-
-  await transport.close();
 
   return new Response(JSON.stringify({ ok: true }), {
     headers: { "Content-Type": "application/json" },

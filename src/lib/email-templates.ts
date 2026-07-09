@@ -114,6 +114,47 @@ export function orderConfirmationEmail(order: {
   `);
 }
 
+export function contactCustomerConfirmation(contact: {
+  name: string;
+}): string {
+  return baseHtml(`
+    ${heading("Merci de nous avoir contactés")}
+    <p style="margin:0 0 20px;font-size:14px;color:${BRAND.ink};line-height:1.6;">
+      Bonjour <strong>${contact.name}</strong>,
+    </p>
+    <p style="margin:0 0 16px;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
+      Nous avons bien reçu votre message. Notre équipe vous recontactera
+      dans les plus brefs délais (sous 24h ouvrées).
+    </p>
+    <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
+    <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
+      Droguerie Souss S.A.R.L &mdash; Zone Industrielle, Agadir 80000, Maroc
+    </p>
+  `);
+}
+
+export function orderCustomerConfirmation(order: {
+  customer_name: string;
+  total: number;
+}): string {
+  return baseHtml(`
+    ${heading("Confirmation de votre demande")}
+    <p style="margin:0 0 20px;font-size:14px;color:${BRAND.ink};line-height:1.6;">
+      Bonjour <strong>${order.customer_name}</strong>,
+    </p>
+    <p style="margin:0 0 16px;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
+      Nous avons bien reçu votre demande de devis d&rsquo;un montant de
+      <strong>${order.total.toFixed(2)} MAD</strong>.
+      Notre équipe vous contactera sous 24h pour confirmer les disponibilités
+      et organiser la livraison.
+    </p>
+    <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
+    <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
+      Droguerie Souss S.A.R.L &mdash; Zone Industrielle, Agadir 80000, Maroc
+    </p>
+  `);
+}
+
 export function contactNotificationEmail(contact: {
   name: string;
   phone: string;

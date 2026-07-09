@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { createAdminClient, sendAdminEmail } from "./db";
-import { contactNotificationEmail } from "@/lib/email-templates";
+import { createAdminClient, sendEmail } from "./db";
+import { contactCustomerConfirmation, contactNotificationEmail } from "@/lib/email-templates";
 
 export const submitContact = createServerFn({ method: "POST" })
   .validator((data: { name: string; phone: string; email?: string; city?: string; message: string }) => data)
@@ -21,17 +21,19 @@ export const submitContact = createServerFn({ method: "POST" })
 
     if (error) throw new Error("Erreur lors de l'envoi du message.");
 
-    sendAdminEmail(
-      "y.brox95@gmail.com",
-      "Nouveau message de contact — Droguerie Souss",
-      contactNotificationEmail({
+    sendEmail({
+      adminSubject: "Nouveau message de contact — Droguerie Souss",
+      adminHtml: contactNotificationEmail({
         name: ctx.data.name,
         phone: ctx.data.phone,
         email: ctx.data.email,
         city: ctx.data.city,
         message: ctx.data.message,
       }),
-    ).catch((err) => console.error("sendAdminEmail (contact) failed:", err));
+      customerTo: ctx.data.email || undefined,
+      customerSubject: "Nous avons bien reçu votre message — Droguerie Souss",
+      customerHtml: ctx.data.email ? contactCustomerConfirmation({ name: ctx.data.name }) : undefined,
+    }).catch((err) => console.error("sendEmail (contact) failed:", err));
 
     return { success: true, id: record.id };
   });

@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { OrderInput } from "@/lib/database.types";
-import { createAdminClient, sendAdminEmail } from "./db";
-import { orderConfirmationEmail } from "@/lib/email-templates";
+import { createAdminClient, sendEmail } from "./db";
+import { orderConfirmationEmail, orderCustomerConfirmation } from "@/lib/email-templates";
 
 export const createOrder = createServerFn({ method: "POST" })
   .validator((data: OrderInput) => data)
@@ -58,10 +58,9 @@ export const createOrder = createServerFn({ method: "POST" })
       console.error("stock decrement failed:", stockError);
     }
 
-    sendAdminEmail(
-      "y.brox95@gmail.com",
-      "Nouvelle commande — Droguerie Souss",
-      orderConfirmationEmail({
+    sendEmail({
+      adminSubject: "Nouvelle commande — Droguerie Souss",
+      adminHtml: orderConfirmationEmail({
         id: order.id,
         customer_name: ctx.data.customer_name,
         customer_phone: ctx.data.customer_phone,
@@ -76,7 +75,10 @@ export const createOrder = createServerFn({ method: "POST" })
           price: i.price,
         })),
       }),
-    ).catch((err) => console.error("sendAdminEmail (order) failed:", err));
+      customerTo: ctx.data.customer_email || undefined,
+      customerSubject: ctx.data.customer_email ? "Confirmation de votre demande de devis — Droguerie Souss" : undefined,
+      customerHtml: ctx.data.customer_email ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total }) : undefined,
+    }).catch((err) => console.error("sendEmail (order) failed:", err));
 
     return { id: order.id, total };
   });

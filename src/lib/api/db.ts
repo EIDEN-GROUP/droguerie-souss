@@ -7,12 +7,17 @@ export function createAdminClient() {
   return createClient(url, key);
 }
 
-export async function sendAdminEmail(to: string, subject: string, html: string) {
+export async function sendEmail(params: {
+  adminSubject: string;
+  adminHtml: string;
+  customerTo?: string;
+  customerSubject?: string;
+  customerHtml?: string;
+}) {
   if (import.meta.env.DEV) {
     console.log("--- EMAIL NOTIFICATION (dev mode) ---");
-    console.log("To:", to);
-    console.log("Subject:", subject);
-    console.log("Body:", html.replace(/<[^>]*>/g, "").slice(0, 500));
+    console.log("Admin:", params.adminSubject);
+    if (params.customerTo) console.log("Customer:", params.customerTo, "-", params.customerSubject);
     console.log("--- END EMAIL ---");
     return;
   }
@@ -26,7 +31,7 @@ export async function sendAdminEmail(to: string, subject: string, html: string) 
       "Content-Type": "application/json",
       Authorization: `Bearer ${anonKey}`,
     },
-    body: JSON.stringify({ to, subject, html }),
+    body: JSON.stringify(params),
   });
 
   if (!res.ok) {
@@ -35,5 +40,5 @@ export async function sendAdminEmail(to: string, subject: string, html: string) 
     return;
   }
 
-  console.log(`Email sent to ${to}: "${subject}"`);
+  console.log("Email sent (admin + customer)");
 }
