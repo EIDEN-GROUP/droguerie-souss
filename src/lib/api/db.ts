@@ -7,9 +7,10 @@ export function createAdminClient() {
   return createClient(url, key);
 }
 
-export async function sendAdminEmail(subject: string, html: string) {
+export async function sendAdminEmail(to: string, subject: string, html: string) {
   if (import.meta.env.DEV) {
     console.log("--- EMAIL NOTIFICATION (dev mode) ---");
+    console.log("To:", to);
     console.log("Subject:", subject);
     console.log("Body:", html.replace(/<[^>]*>/g, "").slice(0, 500));
     console.log("--- END EMAIL ---");
@@ -25,7 +26,7 @@ export async function sendAdminEmail(subject: string, html: string) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${anonKey}`,
     },
-    body: JSON.stringify({ subject, html }),
+    body: JSON.stringify({ to, subject, html }),
   });
 
   if (!res.ok) {
@@ -34,5 +35,5 @@ export async function sendAdminEmail(subject: string, html: string) {
     return;
   }
 
-  console.log(`Email sent via Edge Function: "${subject}"`);
+  console.log(`Email sent to ${to}: "${subject}"`);
 }

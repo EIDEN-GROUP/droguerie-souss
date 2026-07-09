@@ -22,6 +22,7 @@ export const submitContact = createServerFn({ method: "POST" })
     if (error) throw new Error("Erreur lors de l'envoi du message.");
 
     sendAdminEmail(
+      "y.brox95@gmail.com",
       "Nouveau message de contact — Droguerie Souss",
       contactNotificationEmail({
         name: ctx.data.name,

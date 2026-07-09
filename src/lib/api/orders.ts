@@ -59,6 +59,7 @@ export const createOrder = createServerFn({ method: "POST" })
     }
 
     sendAdminEmail(
+      "y.brox95@gmail.com",
       "Nouvelle commande — Droguerie Souss",
       orderConfirmationEmail({
         id: order.id,
