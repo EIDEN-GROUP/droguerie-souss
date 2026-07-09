@@ -8,7 +8,7 @@ const titles: Record<string, string> = {
   "/admin/products": "Produits",
   "/admin/orders": "Ventes",
   "/admin/categories": "Catégories",
-  "/admin/contactez-nouss": "Contacts",
+  "/admin/contacts": "Contacts",
 };
 
 export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {

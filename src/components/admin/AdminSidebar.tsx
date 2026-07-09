@@ -9,7 +9,7 @@ const links = [
   { to: "/admin/products", label: "Produits", icon: Package },
   { to: "/admin/categories", label: "Catégories", icon: Tags },
   { to: "/admin/orders", label: "Ventes", icon: Receipt },
-  { to: "/admin/contactez-nouss", label: "Contacts", icon: MessageSquare },
+  { to: "/admin/contacts", label: "Contacts", icon: MessageSquare },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {

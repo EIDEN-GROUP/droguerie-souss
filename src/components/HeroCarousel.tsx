@@ -85,7 +85,7 @@ export function HeroCarousel() {
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </Link>
                 <Link
-                  to="/contactez-nousez-nous"
+                  to="/contact"
                   className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper backdrop-blur transition hover:bg-paper hover:text-ink"
                 >
                   Demander un devis

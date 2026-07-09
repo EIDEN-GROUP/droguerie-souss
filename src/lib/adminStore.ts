@@ -20,7 +20,7 @@ import {
 import {
   getContactMessages as getContactMessagesFn,
   deleteContactMessage as deleteContactMessageFn,
-} from "@/lib/api/contactez-nous";
+} from "@/lib/api/contact";
 import type { ProductInput } from "./database.types";
 
 function mapDbProduct(p: any) {
