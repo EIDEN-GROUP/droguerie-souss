@@ -172,7 +172,7 @@ function Checkout() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent-orange px-5 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-orange/90 disabled:opacity-60"
+                  className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-5 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 disabled:opacity-60"
                 >
                   {submitting ? (
                     <><Loader2 className="h-4 w-4 animate-spin" /> Envoi...</>
