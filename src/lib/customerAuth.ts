@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-// Static customer accounts — stored in the browser's localStorage, no backend.
+// Static customer accounts   stored in the browser's localStorage, no backend.
 // An account only exists in the browser where it was created.
 
 export interface CustomerUser {

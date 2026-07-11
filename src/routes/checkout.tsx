@@ -118,7 +118,7 @@ function Checkout() {
           </p>
           {user ? (
             <p className="mt-2 text-xs font-semibold text-brand">
-              Connecté en tant que {user.email} — cette commande sera liée à votre compte.
+              Connecté en tant que {user.email}   cette commande sera liée à votre compte.
             </p>
           ) : (
             <p className="mt-2 text-xs text-ink-soft">

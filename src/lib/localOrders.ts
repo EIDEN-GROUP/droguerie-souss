@@ -1,4 +1,4 @@
-// Static order history — each logged-in customer's orders are recorded in
+// Static order history   each logged-in customer's orders are recorded in
 // localStorage at checkout time, keyed by their email.
 
 export interface LocalOrderItem {
