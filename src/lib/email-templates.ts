@@ -156,7 +156,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
     </p>
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
     <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
-      Droguerie Souss S.A.R.L &mdash; Zone Industrielle, Agadir 80000, Maroc
+      Droguerie Souss S.A.R.L Zone Industrielle, Agadir 80000, Maroc
     </p>
   `);
 }
@@ -192,7 +192,7 @@ export function orderCustomerConfirmation(order: { customer_name: string; total:
             </tr>
           </table>
           <p style="margin:10px 0 0;font-size:12px;color:${BRAND.inkSoft};line-height:1.5;">
-            Montant indicatif. Aucun paiement en ligne &mdash; le devis final sera
+            Montant indicatif. Aucun paiement en ligne le devis final sera
             confirmé par notre équipe.
           </p>
         </td>
