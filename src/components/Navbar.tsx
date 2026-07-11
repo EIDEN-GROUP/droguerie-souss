@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
-import { ChevronRight, Heart, Menu, Phone, ShoppingBag, X } from "lucide-react";
+import { ChevronRight, Heart, Menu, Phone, ShoppingBag, UserRound, X } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/store";
+import { useCustomerAuth } from "@/lib/customerAuth";
 import logo from "@/assets/logo.png";
 import logoMobile from "@/assets/icon-blue.png";
 
@@ -14,6 +15,7 @@ const links = [
 
 export function Navbar() {
   const { cart, favorites, setCartOpen, setFavOpen } = useApp();
+  const { user, setAuthOpen } = useCustomerAuth();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { scrollY } = useScroll();
@@ -50,7 +52,11 @@ export function Navbar() {
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <div className="h-16 w-auto">
-              <img src={logo} alt="Droguerie Souss Logo" className="max-h-16 w-auto object-contain" />
+              <img
+                src={logo}
+                alt="Droguerie Souss Logo"
+                className="max-h-16 w-auto object-contain"
+              />
             </div>
           </Link>
 
@@ -82,6 +88,25 @@ export function Navbar() {
             >
               <Phone className="h-4 w-4" /> +212 528 000 000
             </a>
+
+            {user ? (
+              <Link
+                to="/compte"
+                aria-label="Mon compte"
+                className="relative grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
+              >
+                <UserRound className="h-5 w-5" />
+                <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-green-500" />
+              </Link>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                aria-label="Se connecter"
+                className="grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
+              >
+                <UserRound className="h-5 w-5" />
+              </button>
+            )}
 
             <button
               onClick={() => setFavOpen(true)}
@@ -141,7 +166,11 @@ export function Navbar() {
               <div className="flex items-center justify-between border-b px-5 py-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10">
-                    <img src={logoMobile} alt="Droguerie Souss Logo" className="max-h-10 w-auto object-contain" />
+                    <img
+                      src={logoMobile}
+                      alt="Droguerie Souss Logo"
+                      className="max-h-10 w-auto object-contain"
+                    />
                   </div>
                 </div>
                 <button
@@ -173,6 +202,25 @@ export function Navbar() {
               </div>
 
               <div className="space-y-3 border-t p-4">
+                {user ? (
+                  <Link
+                    to="/compte"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center justify-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-semibold text-brand"
+                  >
+                    <UserRound className="h-4 w-4" /> Mon compte
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setOpen(false);
+                      setAuthOpen(true);
+                    }}
+                    className="flex w-full items-center justify-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-4 py-3 text-sm font-semibold text-brand"
+                  >
+                    <UserRound className="h-4 w-4" /> Se connecter
+                  </button>
+                )}
                 <a
                   href="tel:+212528000000"
                   className="flex items-center justify-center gap-2 rounded-full bg-brand px-4 py-3 text-sm font-semibold text-brand-foreground"

@@ -33,21 +33,16 @@ export const useApp = create<AppState>()(
           const existing = s.cart.find((i) => i.product.id === p.id);
           if (existing) {
             return {
-              cart: s.cart.map((i) =>
-                i.product.id === p.id ? { ...i, qty: i.qty + qty } : i,
-              ),
+              cart: s.cart.map((i) => (i.product.id === p.id ? { ...i, qty: i.qty + qty } : i)),
               cartOpen: true,
             };
           }
           return { cart: [...s.cart, { product: p, qty }], cartOpen: true };
         }),
-      removeFromCart: (id) =>
-        set((s) => ({ cart: s.cart.filter((i) => i.product.id !== id) })),
+      removeFromCart: (id) => set((s) => ({ cart: s.cart.filter((i) => i.product.id !== id) })),
       updateQty: (id, qty) =>
         set((s) => ({
-          cart: s.cart.map((i) =>
-            i.product.id === id ? { ...i, qty: Math.max(1, qty) } : i,
-          ),
+          cart: s.cart.map((i) => (i.product.id === id ? { ...i, qty: Math.max(1, qty) } : i)),
         })),
       clearCart: () => set({ cart: [] }),
       toggleFavorite: (id) =>
@@ -65,8 +60,6 @@ export const useApp = create<AppState>()(
 
 export const cartTotal = (items: CartItem[]) =>
   items.reduce((sum, i) => {
-    const price = i.product.promo
-      ? i.product.price * (1 - i.product.promo / 100)
-      : i.product.price;
+    const price = i.product.promo ? i.product.price * (1 - i.product.promo / 100) : i.product.price;
     return sum + price * i.qty;
   }, 0);

@@ -8,9 +8,7 @@ export const createOrder = createServerFn({ method: "POST" })
   .handler(async (ctx) => {
     const supabase = createAdminClient();
 
-    const total = ctx.data.items.reduce(
-      (sum, i) => sum + i.price * i.qty, 0
-    );
+    const total = ctx.data.items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
     const { data: order, error: orderError } = await supabase
       .from("orders")
@@ -38,9 +36,7 @@ export const createOrder = createServerFn({ method: "POST" })
       qty: i.qty,
     }));
 
-    const { error: itemsError } = await supabase
-      .from("order_items")
-      .insert(items);
+    const { error: itemsError } = await supabase.from("order_items").insert(items);
 
     if (itemsError) {
       await supabase.from("orders").delete().eq("id", order.id);
@@ -76,8 +72,12 @@ export const createOrder = createServerFn({ method: "POST" })
         })),
       }),
       customerTo: ctx.data.customer_email || undefined,
-      customerSubject: ctx.data.customer_email ? "Confirmation de votre demande de devis   Droguerie Souss" : undefined,
-      customerHtml: ctx.data.customer_email ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total }) : undefined,
+      customerSubject: ctx.data.customer_email
+        ? "Confirmation de votre demande de devis   Droguerie Souss"
+        : undefined,
+      customerHtml: ctx.data.customer_email
+        ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total })
+        : undefined,
     }).catch((err) => console.error("sendEmail (order) failed:", err));
 
     return { id: order.id, total };
@@ -142,10 +142,7 @@ export const deleteOrder = createServerFn({ method: "POST" })
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("orders")
-      .delete()
-      .eq("id", ctx.data.id);
+    const { error } = await supabase.from("orders").delete().eq("id", ctx.data.id);
     if (error) throw error;
     return { success: true };
   });
