@@ -7,9 +7,8 @@ import { useApp } from "@/lib/store";
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { addToCart, toggleFavorite, favorites } = useApp();
   const isFav = favorites.includes(product.id);
-  const promoPrice = product.promo
-    ? product.price * (1 - product.promo / 100)
-    : null;
+  const pct = product.promo ?? 0;
+  const promoPrice = pct > 0 ? product.price * (1 - pct / 100) : null;
 
   return (
     <Link to="/product/$id" params={{ id: product.id }}>
@@ -28,9 +27,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             className="h-full w-full object-cover transition duration-700 group-hover:scale-110"
           />
           <div className="absolute left-3 top-3 flex flex-col gap-1.5">
-            {product.promo && (
+            {pct > 0 && (
               <span className="rounded bg-accent-red px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-paper">
-                -{product.promo}%
+                -{pct}%
               </span>
             )}
             {product.bestseller && (

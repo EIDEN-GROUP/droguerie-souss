@@ -48,7 +48,7 @@ function AdminLayout() {
       >
         <div className="relative my-4 mr-0 md:mr-4 flex min-h-0 flex-1 flex-col overflow-hidden rounded-3xl bg-cream shadow-2xl lg:ml-0">
           <AdminTopbar onMenuClick={() => setMobileOpen((o) => !o)} />
-          <main className="styled-scrollbar flex-1 overflow-y-auto p-4 sm:p-6">
+          <main className="styled-scrollbar flex-1 overflow-y-auto p-4 sm:p-6 [scrollbar-gutter:stable]">
             <Outlet />
           </main>
           {mobileOpen && (

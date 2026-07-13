@@ -60,6 +60,7 @@ export const useApp = create<AppState>()(
 
 export const cartTotal = (items: CartItem[]) =>
   items.reduce((sum, i) => {
-    const price = i.product.promo ? i.product.price * (1 - i.product.promo / 100) : i.product.price;
+    const pct = i.product.promo ?? 0;
+    const price = pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price;
     return sum + price * i.qty;
   }, 0);

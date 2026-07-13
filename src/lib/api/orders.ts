@@ -112,6 +112,38 @@ export const getOrders = createServerFn({ method: "GET" }).handler(async () => {
   }));
 });
 
+export const getOrdersByEmail = createServerFn({ method: "GET" })
+  .validator((data: { email: string }) => data)
+  .handler(async (ctx) => {
+    const supabase = createAdminClient();
+    const { data: orders, error } = await supabase
+      .from("orders")
+      .select("*")
+      .eq("customer_email", ctx.data.email)
+      .order("created_at", { ascending: false });
+    if (error) throw error;
+
+    const orderIds = orders.map((o: any) => o.id);
+    const { data: items, error: itemsError } = await supabase
+      .from("order_items")
+      .select("*")
+      .in("order_id", orderIds);
+
+    if (itemsError) throw itemsError;
+
+    const itemsByOrder = new Map<string, any[]>();
+    for (const item of items || []) {
+      const list = itemsByOrder.get(item.order_id) || [];
+      list.push(item);
+      itemsByOrder.set(item.order_id, list);
+    }
+
+    return (orders || []).map((o: any) => ({
+      ...o,
+      items: itemsByOrder.get(o.id) || [],
+    }));
+  });
+
 export const getOrderItems = createServerFn({ method: "GET" })
   .validator((data: { orderId: string }) => data)
   .handler(async (ctx) => {

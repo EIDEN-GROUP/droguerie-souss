@@ -240,7 +240,7 @@ function AdminProducts() {
                       <p className="max-w-[220px] truncate text-sm font-semibold text-ink">{p.name}</p>
                       <div className="mt-2 flex gap-1.5">
                         {p.bestseller && <Badge className="bg-brand text-brand-foreground">Best-seller</Badge>}
-                        {p.promo && <Badge className="bg-accent-red text-accent-red-foreground">-{p.promo}%</Badge>}
+                        {(p.promo ?? 0) > 0 && <Badge className="bg-accent-red text-accent-red-foreground">-{p.promo}%</Badge>}
                       </div>
                     </div>
                   </div>

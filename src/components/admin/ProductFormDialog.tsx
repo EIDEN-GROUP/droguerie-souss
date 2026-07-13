@@ -122,6 +122,7 @@ export function ProductFormDialog({
       image_url: imageUrls[0],
       images_urls: imageUrls,
     };
+    if (!payload.promo || payload.promo <= 0) delete payload.promo;
     try {
       if (product) {
         await updateProduct.mutateAsync({ id: product.id, patch: payload });

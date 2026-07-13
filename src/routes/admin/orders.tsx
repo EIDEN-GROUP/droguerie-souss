@@ -48,10 +48,15 @@ function AdminOrders() {
   const deleteOrder = useDeleteOrder();
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<OrderStatus | "all">("all");
-  const [viewing, setViewing] = useState<Order | null>(null);
+  const [viewingId, setViewingId] = useState<string | null>(null);
   const [toDelete, setToDelete] = useState<Order | null>(null);
 
   const orderList = useMemo(() => (orders || []) as unknown as Order[], [orders]);
+
+  const viewing = useMemo(
+    () => (viewingId ? (orderList.find((o) => o.id === viewingId) ?? null) : null),
+    [viewingId, orderList],
+  );
 
   const filtered = useMemo(() => {
     let list = orderList;
@@ -144,7 +149,7 @@ function AdminOrders() {
                 <TableCell>
                   <div className="flex justify-end gap-1.5">
                     <button
-                      onClick={() => setViewing(o)}
+                      onClick={() => setViewingId(o.id)}
                       aria-label="Voir"
                       className="grid h-8 w-8 place-items-center rounded-full text-ink-soft hover:bg-mint hover:text-brand"
                     >
@@ -172,7 +177,7 @@ function AdminOrders() {
         )}
       </div>
 
-      <OrderDetailSheet order={viewing} onOpenChange={(o) => !o && setViewing(null)} />
+      <OrderDetailSheet order={viewing} onOpenChange={(o) => !o && setViewingId(null)} />
 
       <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
         <AlertDialogContent>

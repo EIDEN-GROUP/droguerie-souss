@@ -66,8 +66,9 @@ export function CartSidebar() {
               ) : (
                 <ul className="space-y-3">
                   {cart.map((item) => {
-                    const price = item.product.promo
-                      ? item.product.price * (1 - item.product.promo / 100)
+                    const pct = item.product.promo ?? 0;
+                    const price = pct > 0
+                      ? item.product.price * (1 - pct / 100)
                       : item.product.price;
                     return (
                       <motion.li

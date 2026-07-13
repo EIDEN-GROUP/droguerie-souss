@@ -13,9 +13,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { Layout } from "@/components/Layout";
-import { useProducts } from "@/lib/adminStore";
+import { useProducts, useCustomerOrders } from "@/lib/adminStore";
 import { useCustomerAuth } from "@/lib/customerAuth";
-import { getLocalOrders } from "@/lib/localOrders";
 import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/compte")({
@@ -133,9 +132,17 @@ function AccountPage() {
 }
 
 function MyOrders({ email }: { email: string }) {
-  const [orders] = useState(() => getLocalOrders(email));
+  const { data: orders, isLoading } = useCustomerOrders(email);
 
-  if (orders.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-16">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-brand border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (!orders || orders.length === 0) {
     return (
       <div className="rounded-2xl border-2 border-dashed py-16 text-center">
         <Package className="mx-auto h-12 w-12 text-ink-soft" />

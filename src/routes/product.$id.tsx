@@ -77,7 +77,8 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const sameCategory = products.filter((p) => p.category === product.category && p.id !== product.id);
   const otherProducts = products.filter((p) => p.category !== product.category && p.id !== product.id);
   const related = [...sameCategory, ...otherProducts].slice(0, 4);
-  const price = product.promo ? product.price * (1 - product.promo / 100) : product.price;
+  const pct = product.promo ?? 0;
+  const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
 
   useEffect(() => {
     setActiveImage(0);
@@ -142,7 +143,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
             </h1>
 
             <div className="mt-5 flex items-baseline gap-3">
-              {product.promo ? (
+              {pct > 0 ? (
                 <>
                   <span className="font-display text-4xl font-bold text-accent-red">
                     {price.toFixed(0)} MAD
@@ -151,7 +152,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                     {product.price} MAD
                   </span>
                   <span className="rounded bg-accent-red px-2 py-0.5 text-xs font-bold text-paper">
-                    -{product.promo}%
+                    -{pct}%
                   </span>
                 </>
               ) : (

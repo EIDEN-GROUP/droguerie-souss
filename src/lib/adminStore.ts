@@ -8,6 +8,7 @@ import {
 } from "@/lib/api/products";
 import {
   getOrders,
+  getOrdersByEmail,
   updateOrderStatus as updateOrderStatusFn,
   deleteOrder as deleteOrderFn,
 } from "@/lib/api/orders";
@@ -144,6 +145,7 @@ export function useOrders() {
       }
       return (data || []).map((o: any) => ({
         ...o,
+        createdAt: o.created_at,
         customer: {
           name: o.customer_name,
           phone: o.customer_phone,
@@ -161,6 +163,14 @@ export function useOrders() {
         })),
       }));
     },
+  });
+}
+
+export function useCustomerOrders(email: string) {
+  return useQuery({
+    queryKey: ["orders", "customer", email],
+    queryFn: () => getOrdersByEmail({ data: { email } }),
+    enabled: !!email,
   });
 }
 

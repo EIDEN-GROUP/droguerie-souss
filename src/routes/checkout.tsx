@@ -44,8 +44,9 @@ function Checkout() {
     setError("");
     try {
       const items = cart.map((i) => {
-        const price = i.product.promo
-          ? i.product.price * (1 - i.product.promo / 100)
+        const pct = i.product.promo ?? 0;
+        const price = pct > 0
+          ? i.product.price * (1 - pct / 100)
           : i.product.price;
         return {
           product_id: i.product.id,
@@ -246,8 +247,9 @@ function Checkout() {
               <Card title="Récapitulatif">
                 <ul className="divide-y">
                   {cart.map((i) => {
-                    const price = i.product.promo
-                      ? i.product.price * (1 - i.product.promo / 100)
+                    const pct2 = i.product.promo ?? 0;
+                    const price = pct2 > 0
+                      ? i.product.price * (1 - pct2 / 100)
                       : i.product.price;
                     return (
                       <li key={i.product.id} className="flex gap-3 py-3">
