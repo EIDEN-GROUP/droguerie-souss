@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { ProductInput } from "@/lib/database.types";
+import type { DbProductGift, ProductInput } from "@/lib/database.types";
 import { createAdminClient } from "./db";
 
 export const getProducts = createServerFn({ method: "GET" }).handler(async () => {
@@ -85,6 +85,32 @@ export const exportProductsCsv = createServerFn({ method: "GET" }).handler(async
   if (error) throw error;
   return data;
 });
+
+/* ── Gifts ── */
+
+export const getProductGifts = createServerFn({ method: "GET" })
+  .validator((data: { product_id: string }) => data)
+  .handler(async (ctx) => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("product_gifts")
+      .select("*")
+      .eq("product_id", ctx.data.product_id);
+    if (error) throw error;
+    return data as DbProductGift[];
+  });
+
+export const setProductGifts = createServerFn({ method: "POST" })
+  .validator((data: { product_id: string; gifts: Omit<DbProductGift, "id" | "product_id">[] }) => data)
+  .handler(async (ctx) => {
+    const supabase = createAdminClient();
+    await supabase.from("product_gifts").delete().eq("product_id", ctx.data.product_id);
+    if (ctx.data.gifts.length === 0) return [];
+    const rows = ctx.data.gifts.map((g) => ({ ...g, product_id: ctx.data.product_id }));
+    const { data, error } = await supabase.from("product_gifts").insert(rows).select();
+    if (error) throw error;
+    return data as DbProductGift[];
+  });
 
 
 

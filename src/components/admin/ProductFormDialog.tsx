@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImagePlus, Loader2, X } from "lucide-react";
+import { Gift, ImagePlus, Link, Loader2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,16 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCreateProduct, useUpdateProduct, useCategories } from "@/lib/adminStore";
+import { useCreateProduct, useUpdateProduct, useCategories, useProductGifts, useSetProductGifts } from "@/lib/adminStore";
 import { getUploadUrl } from "@/lib/api/uploads";
 import { categories as defaultCategories, type Product } from "@/lib/products";
+import type { DbProductGift, ProductInput } from "@/lib/database.types";
+import { GiftPicker } from "./GiftPicker";
 
 const MAX_IMAGE_BYTES = 1_500_000;
 
 const schema = z.object({
   name: z.string().min(2, "Nom trop court"),
   category: z.string().min(1, "Catégorie requise"),
-  price: z.coerce.number().positive("Le prix doit être positif"),
+  price_mode: z.enum(["fixed", "quote"]),
+  price: z.coerce.number().min(0, "Le prix ne peut pas être négatif"),
   unit: z.string().min(1, "Unité requise"),
   stock: z.coerce.number().int().min(0, "Le stock ne peut pas être négatif"),
   description: z.string().min(5, "Description trop courte"),
@@ -41,6 +44,7 @@ export function ProductFormDialog({
   const createProduct = useCreateProduct();
   const updateProduct = useUpdateProduct();
   const { data: dbCategories } = useCategories();
+
   const catOptions = (dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories).map((c) => ({
     value: "category" in c ? (c as any).category : c.name,
     label: "name" in c ? c.name : (c as any).name,
@@ -48,16 +52,43 @@ export function ProductFormDialog({
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [imageError, setImageError] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [urlInput, setUrlInput] = useState("");
+  const { data: loadedGifts } = useProductGifts(product?.id ?? "");
+  const saveGifts = useSetProductGifts();
+  const [gifts, setGifts] = useState<Omit<DbProductGift, "id" | "product_id">[]>([]);
+
+  useEffect(() => {
+    if (loadedGifts) {
+      setGifts(loadedGifts.map((g) => ({ gift_product_id: g.gift_product_id, min_qty: g.min_qty, gift_qty: g.gift_qty })));
+    }
+  }, [loadedGifts]);
+
+  const addUrl = () => {
+    const trimmed = urlInput.trim();
+    if (!trimmed) return;
+    try {
+      new URL(trimmed);
+      setImageUrls((prev) => [...prev, trimmed]);
+      setUrlInput("");
+      setImageError("");
+    } catch {
+      setImageError("URL invalide");
+    }
+  };
 
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", category: catOptions[0]?.value ?? "", price: 0, unit: "", stock: 0, description: "" },
+    defaultValues: { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
   });
+
+  const currentPriceMode = watch("price_mode");
+  const isQuote = currentPriceMode === "quote";
 
   useEffect(() => {
     if (open) {
@@ -66,6 +97,7 @@ export function ProductFormDialog({
           ? {
               name: product.name,
               category: product.category,
+              price_mode: (product as any).price_mode || "fixed",
               price: product.price,
               unit: product.unit,
               stock: product.stock,
@@ -74,7 +106,7 @@ export function ProductFormDialog({
               seasonal: product.seasonal,
               promo: product.promo,
             }
-          : { name: "", category: catOptions[0]?.value ?? "", price: 0, unit: "", stock: 0, description: "" },
+          : { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
       );
       setImageUrls(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
       setImageError("");
@@ -112,22 +144,28 @@ export function ProductFormDialog({
   const removeImage = (i: number) => setImageUrls((prev) => prev.filter((_, idx) => idx !== i));
 
   const onSubmit = async (values: FormValues) => {
-    if (imageUrls.length === 0) {
+    if (values.price_mode !== "quote" && imageUrls.length === 0) {
       setImageError("Ajoutez au moins une image du produit.");
       return;
     }
-    const payload = {
+    const payload: ProductInput = {
       ...values,
+      price: values.price_mode === "quote" ? 0 : values.price,
       category: values.category,
       image_url: imageUrls[0],
       images_urls: imageUrls,
     };
-    if (!payload.promo || payload.promo <= 0) delete payload.promo;
+    if (!payload.promo || (payload.promo as number) <= 0) delete payload.promo;
     try {
+      let savedId = product?.id ?? "";
       if (product) {
         await updateProduct.mutateAsync({ id: product.id, patch: payload });
       } else {
-        await createProduct.mutateAsync(payload);
+        const created = await createProduct.mutateAsync(payload);
+        savedId = created.id;
+      }
+      if (gifts.length > 0 && savedId) {
+        await saveGifts.mutateAsync({ product_id: savedId, gifts });
       }
       onOpenChange(false);
     } catch (err) {
@@ -180,6 +218,19 @@ export function ProductFormDialog({
               </label>
             </div>
             {imageError && <p className="mt-1.5 text-xs font-semibold text-accent-red">{imageError}</p>}
+            <div className="mt-2 flex gap-2">
+              <input
+                type="url"
+                placeholder="Coller une URL d'image..."
+                value={urlInput}
+                onChange={(e) => setUrlInput(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addUrl())}
+                className="flex-1 rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition focus:border-brand"
+              />
+              <button type="button" onClick={addUrl} className="flex items-center gap-1.5 rounded-lg bg-mint px-3 py-2 text-sm font-semibold text-ink hover:bg-mint/70">
+                <Link className="h-3.5 w-3.5" /> URL
+              </button>
+            </div>
           </div>
 
           <Field label="Nom du produit" error={errors.name?.message}>
@@ -199,8 +250,14 @@ export function ProductFormDialog({
             <Field label="Unité (m², sac, boîte...)" error={errors.unit?.message}>
               <input {...register("unit")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
+            <Field label="Mode de prix" error={errors.price_mode?.message}>
+              <select {...register("price_mode")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand">
+                <option value="fixed">Prix fixe</option>
+                <option value="quote">Prix sur demande</option>
+              </select>
+            </Field>
             <Field label="Prix (MAD)" error={errors.price?.message}>
-              <input type="number" step="0.01" {...register("price")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+              <input type="number" step="0.01" {...register("price")} disabled={isQuote} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand disabled:cursor-not-allowed disabled:opacity-50" />
             </Field>
             <Field label="Stock" error={errors.stock?.message}>
               <input type="number" {...register("stock")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
@@ -209,6 +266,8 @@ export function ProductFormDialog({
               <input type="number" {...register("promo")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
           </div>
+
+          <GiftPicker gifts={gifts} onChange={setGifts} />
 
           <Field label="Description" error={errors.description?.message}>
             <textarea rows={3} {...register("description")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />

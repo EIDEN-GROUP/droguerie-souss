@@ -2,6 +2,7 @@ export interface DbProduct {
   id: string;
   name: string;
   category: string;
+  price_mode: "fixed" | "quote";
   price: number;
   unit: string;
   image_url: string | null;
@@ -13,6 +14,14 @@ export interface DbProduct {
   stock: number;
   created_at: string;
   updated_at: string;
+}
+
+export interface DbProductGift {
+  id: string;
+  product_id: string;
+  gift_product_id: string;
+  min_qty: number;
+  gift_qty: number;
 }
 
 export interface DbOrder {
@@ -42,6 +51,7 @@ export interface DbOrderItem {
 export interface ProductInput {
   name: string;
   category: string;
+  price_mode?: "fixed" | "quote";
   price: number;
   unit: string;
   image_url?: string;

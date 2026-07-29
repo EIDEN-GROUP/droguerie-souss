@@ -30,6 +30,7 @@ export const useApp = create<AppState>()(
       favOpen: false,
       addToCart: (p, qty = 1) =>
         set((s) => {
+          if (p.price_mode === "quote") return s;
           const existing = s.cart.find((i) => i.product.id === p.id);
           if (existing) {
             return {

@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { Heart, ShoppingBag, X } from "lucide-react";
+import { Heart, Mail, ShoppingBag, X } from "lucide-react";
 import { useApp } from "@/lib/store";
 import { useProducts } from "@/lib/adminStore";
+import { ProductPrice } from "@/components/ProductPrice";
 
 export function FavoritesSidebar() {
   const { favorites, favOpen, setFavOpen, toggleFavorite, addToCart } = useApp();
@@ -81,16 +82,20 @@ export function FavoritesSidebar() {
                       />
                       <div className="flex min-w-0 flex-1 flex-col">
                         <p className="line-clamp-2 text-sm font-semibold">{p.name}</p>
-                        <p className="text-xs text-ink-soft">
-                          {p.price} MAD / {p.unit}
-                        </p>
+                          <ProductPrice priceMode={p.price_mode} price={p.price} unit={p.unit} size="sm" />
                         <div className="mt-auto flex items-center gap-2 pt-2">
-                          <button
-                            onClick={() => addToCart(p as any)}
-                            className="flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-brand-foreground hover:bg-brand-dark"
-                          >
-                            <ShoppingBag className="h-3 w-3" /> Ajouter
-                          </button>
+                          {p.price_mode === "quote" ? (
+                            <button className="flex items-center gap-1 rounded-full bg-brand/10 px-3 py-1.5 text-xs font-semibold text-brand">
+                              <Mail className="h-3 w-3" /> Devis
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => addToCart(p as any)}
+                              className="flex items-center gap-1 rounded-full bg-brand px-3 py-1.5 text-xs font-semibold text-brand-foreground hover:bg-brand-dark"
+                            >
+                              <ShoppingBag className="h-3 w-3" /> Ajouter
+                            </button>
+                          )}
                           <button
                             onClick={() => toggleFavorite(p.id)}
                             className="text-xs text-ink-soft hover:text-accent-red"

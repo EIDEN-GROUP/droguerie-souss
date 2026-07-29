@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Eye, Loader2, Search, Trash2 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { Eye, FileDown, Loader2, Search, Trash2 } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import Papa from "papaparse";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -50,6 +51,7 @@ function AdminOrders() {
   const [status, setStatus] = useState<OrderStatus | "all">("all");
   const [viewingId, setViewingId] = useState<string | null>(null);
   const [toDelete, setToDelete] = useState<Order | null>(null);
+  const [exportBusy, setExportBusy] = useState(false);
 
   const orderList = useMemo(() => (orders || []) as unknown as Order[], [orders]);
 
@@ -69,6 +71,35 @@ function AdminOrders() {
     }
     return list;
   }, [orderList, status, query]);
+
+  const handleExport = () => {
+    setExportBusy(true);
+    try {
+      const data = filtered.map((o) => ({
+        id: o.id,
+        date: new Date(o.createdAt).toLocaleDateString("fr-FR"),
+        client: o.customer.name,
+        phone: o.customer.phone,
+        email: o.customer.email,
+        city: o.customer.city,
+        address: o.customer.address,
+        total: o.total,
+        status: statusLabel[o.status],
+      }));
+      const csv = Papa.unparse(data);
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `ventes-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed", err);
+    } finally {
+      setExportBusy(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -107,6 +138,14 @@ function AdminOrders() {
             <option value="cancelled">Annulée</option>
           </select>
         </div>
+        <button
+          onClick={handleExport}
+          disabled={exportBusy}
+          className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+        >
+          {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+          Exporter CSV
+        </button>
       </div>
 
       <div className="overflow-x-auto rounded-2xl border bg-paper shadow-[var(--shadow-card)]">

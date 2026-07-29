@@ -10,10 +10,19 @@ import zellige from "@/assets/cat-zellige.jpg";
 
 export type Category = string;
 
+export interface ProductGift {
+  id: string;
+  product_id: string;
+  gift_product_id: string;
+  min_qty: number;
+  gift_qty: number;
+}
+
 export interface Product {
   id: string;
   name: string;
   category: Category;
+  price_mode?: "fixed" | "quote";
   price: number;
   unit: string;
   image: string;
@@ -23,6 +32,7 @@ export interface Product {
   seasonal?: boolean;
   promo?: number;
   stock: number;
+  gifts?: ProductGift[];
 }
 
 export interface CategoryInfo {

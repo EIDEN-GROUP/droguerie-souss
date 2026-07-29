@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FileDown, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
+import { FileDown, FileText, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import Papa from "papaparse";
 import {
@@ -100,6 +100,22 @@ function AdminCategories() {
     }
   };
 
+  const handleExample = () => {
+    const rows = [
+      "name,slug,description",
+      '"Carrelage","carrelage","Carreaux céramiques et grès cérame"',
+      '"Peinture","peinture","Peintures intérieures et extérieures"',
+      '"Plomberie","plomberie","Plomberie et évacuation"',
+    ];
+    const blob = new Blob(["\ufeff" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "exemple-categories.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const handleExport = async () => {
     setExportBusy(true);
     try {
@@ -176,6 +192,12 @@ function AdminCategories() {
             className="hidden"
             onChange={handleImport}
           />
+          <button
+            onClick={handleExample}
+            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream"
+          >
+            <FileText className="h-4 w-4" /> Exemple CSV
+          </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importBusy}

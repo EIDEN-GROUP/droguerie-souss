@@ -5,6 +5,8 @@ import {
   createProduct as createProductFn,
   updateProduct as updateProductFn,
   deleteProduct as deleteProductFn,
+  getProductGifts,
+  setProductGifts,
 } from "@/lib/api/products";
 import {
   getOrders,
@@ -22,11 +24,12 @@ import {
   getContactMessages as getContactMessagesFn,
   deleteContactMessage as deleteContactMessageFn,
 } from "@/lib/api/contact";
-import type { ProductInput } from "./database.types";
+import type { DbProductGift, ProductInput } from "./database.types";
 
 function mapDbProduct(p: any) {
   return {
     ...p,
+    price_mode: p.price_mode || "fixed",
     image: p.image_url || p.image || "",
     images: (p.images_urls || p.images || []).filter(Boolean),
   };
@@ -131,6 +134,25 @@ export function useDeleteContactMessage() {
   return useMutation({
     mutationFn: (id: string) => deleteContactMessageFn({ data: { id } }),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.contacts }),
+  });
+}
+
+/* ── Gifts ── */
+
+export function useProductGifts(productId: string) {
+  return useQuery({
+    queryKey: ["productGifts", productId],
+    queryFn: () => getProductGifts({ data: { product_id: productId } }),
+    enabled: !!productId,
+  });
+}
+
+export function useSetProductGifts() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ product_id, gifts }: { product_id: string; gifts: Omit<DbProductGift, "id" | "product_id">[] }) =>
+      setProductGifts({ data: { product_id, gifts } }),
+    onSuccess: (_, vars) => qc.invalidateQueries({ queryKey: ["productGifts", vars.product_id] }),
   });
 }
 

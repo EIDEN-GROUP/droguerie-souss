@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FileDown, Loader2, Pencil, Plus, Search, Trash2, Upload } from "lucide-react";
+import { Check, FileDown, FileText, Loader2, Pencil, Plus, Search, Trash2, Upload, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import {
@@ -13,6 +13,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -27,8 +33,17 @@ import { useProducts, useDeleteProduct, useCategories } from "@/lib/adminStore";
 import { importProductsCsv, exportProductsCsv } from "@/lib/api/products";
 import { categories as defaultCategories, type Category, type Product } from "@/lib/products";
 import type { ProductInput } from "@/lib/database.types";
+import { ProductPrice } from "@/components/ProductPrice";
 
 const MotionTableRow = motion(TableRow);
+
+interface CsvPreviewRow {
+  rowNum: number;
+  name: string;
+  category: string;
+  price: string;
+  errors: string[];
+}
 
 export const Route = createFileRoute("/admin/products")({
   component: AdminProducts,
@@ -51,6 +66,7 @@ function AdminProducts() {
   const [exportBusy, setExportBusy] = useState(false);
   const [importError, setImportError] = useState("");
   const [importSuccess, setImportSuccess] = useState("");
+  const [preview, setPreview] = useState<{ rows: CsvPreviewRow[]; productInputs: ProductInput[] } | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   const productList = useMemo(() => (products || []) as unknown as Product[], [products]);
@@ -76,7 +92,7 @@ function AdminProducts() {
     try {
       const data = await exportProductsCsv();
       const csv = Papa.unparse(data, {
-        columns: ["name", "category", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"],
+        columns: ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"],
       });
       const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -101,32 +117,76 @@ function AdminProducts() {
     try {
       const text = await file.text();
       const result = Papa.parse(text, { header: true, skipEmptyLines: true });
-      const rows = result.data as Record<string, string>[];
-      const products: ProductInput[] = rows.map((row, i) => {
-        if (!row.name || !row.category || !row.price) {
-          throw new Error(`Ligne ${i + 2} : le nom, la catégorie et le prix sont obligatoires.`);
+      const rawRows = result.data as Record<string, string>[];
+      const previewRows: CsvPreviewRow[] = [];
+      const goodRows: ProductInput[] = [];
+
+      for (let i = 0; i < rawRows.length; i++) {
+        const row = rawRows[i];
+        const errors: string[] = [];
+        if (!row.name?.trim()) errors.push("Nom manquant");
+        if (!row.category?.trim()) errors.push("Catégorie manquante");
+        const priceMode = (row.price_mode?.trim() as "fixed" | "quote" | undefined) || "fixed";
+        const priceRaw = row.price?.trim();
+        if (priceMode === "fixed" && (!priceRaw || isNaN(parseFloat(priceRaw)) || parseFloat(priceRaw) < 0))
+          errors.push("Prix invalide");
+        previewRows.push({ rowNum: i + 2, name: row.name?.trim() || "", category: row.category?.trim() || "", price: priceRaw || "", errors });
+        if (errors.length === 0) {
+          goodRows.push({
+            name: row.name.trim(),
+            category: row.category.trim(),
+            price_mode: priceMode,
+            price: priceMode === "quote" ? 0 : parseFloat(priceRaw!),
+            unit: (row.unit || "unité").trim(),
+            description: (row.description || "").trim(),
+            stock: parseInt(row.stock || "0", 10) || 0,
+            bestseller: row.bestseller === "true" || row.bestseller === "1" || row.bestseller === "oui",
+            seasonal: row.seasonal === "true" || row.seasonal === "1" || row.seasonal === "oui",
+            promo: row.promo ? parseInt(row.promo, 10) : null,
+            image_url: row.image_url?.trim() || undefined,
+            images_urls: row.image_url ? [row.image_url.trim()] : [],
+          });
         }
-        return {
-          name: row.name.trim(),
-          category: row.category.trim(),
-          price: parseFloat(row.price),
-          unit: (row.unit || "unité").trim(),
-          description: (row.description || "").trim(),
-          stock: parseInt(row.stock || "0", 10) || 0,
-          bestseller: row.bestseller === "true" || row.bestseller === "1" || row.bestseller === "oui",
-          seasonal: row.seasonal === "true" || row.seasonal === "1" || row.seasonal === "oui",
-          promo: row.promo ? parseInt(row.promo, 10) : null,
-          image_url: row.image_url?.trim() || undefined,
-          images_urls: row.image_url ? [row.image_url.trim()] : [],
-        };
-      });
-      await importProductsCsv({ data: { products } });
-      setImportSuccess(`${products.length} produit(s) importé(s) avec succès.`);
+      }
+      setPreview({ rows: previewRows, productInputs: goodRows });
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : "Erreur lors de l'import CSV.");
+      setImportError(err instanceof Error ? err.message : "Erreur lors de la lecture du fichier.");
     } finally {
       setImportBusy(false);
       if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const handleExample = () => {
+    const headers = ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"];
+    const rows = [
+      headers.join(","),
+      '"Carreau céramique 30x30","Carrelage","fixed","89.00","m²","Carreau de sol beige 30×30 cm","50","true","false","","https://example.com/carrelage.jpg"',
+      '"Peinture mate blanche","Peinture","fixed","145.00","L","Peinture acrylique mate blanc pur","20","false","false","10",""',
+      '"Marbre beige","Marbre","quote","0","m²","Marbre beige importé d Italie","0","true","false","",""',
+    ];
+    const blob = new Blob(["\ufeff" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "exemple-produits.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const confirmImport = async () => {
+    if (!preview) return;
+    setImportBusy(true);
+    setImportError("");
+    setImportSuccess("");
+    try {
+      const { count } = await importProductsCsv({ data: { products: preview.productInputs } });
+      setImportSuccess(`${count} produit(s) importé(s) avec succès.`);
+      setPreview(null);
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : "Erreur lors de l'import.");
+    } finally {
+      setImportBusy(false);
     }
   };
 
@@ -177,6 +237,12 @@ function AdminProducts() {
             className="hidden"
             onChange={handleImport}
           />
+          <button
+            onClick={handleExample}
+            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream"
+          >
+            <FileText className="h-4 w-4" /> Exemple CSV
+          </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importBusy}
@@ -247,7 +313,7 @@ function AdminProducts() {
                 </TableCell>
                 <TableCell className="text-sm text-ink-soft">{p.category}</TableCell>
                 <TableCell className="text-sm font-semibold">
-                  {p.price} MAD <span className="text-xs text-ink-soft">/ {p.unit}</span>
+                  <ProductPrice priceMode={p.price_mode} price={p.price} unit={p.unit} size="md" />
                 </TableCell>
                 <TableCell className="text-sm font-semibold">{p.stock}</TableCell>
                 <TableCell>
@@ -287,6 +353,78 @@ function AdminProducts() {
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} />
+
+      <Dialog open={!!preview} onOpenChange={(o) => { if (!o) setPreview(null); }}>
+        <DialogContent className="max-h-[85vh] max-w-3xl overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="font-display uppercase tracking-wide">Aperçu de l'import</DialogTitle>
+          </DialogHeader>
+          {preview && (
+            <div className="space-y-4">
+              {preview.rows.filter((r) => r.errors.length > 0).length > 0 && (
+                <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3">
+                  <p className="text-xs font-bold text-accent-red">
+                    {preview.rows.filter((r) => r.errors.length > 0).length} ligne(s) avec des erreurs — elles seront ignorées.
+                  </p>
+                </div>
+              )}
+              <p className="text-xs text-ink-soft">
+                {preview.productInputs.length} produit(s) valide(s) sur {preview.rows.length} ligne(s).
+              </p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-8">#</TableHead>
+                    <TableHead>Nom</TableHead>
+                    <TableHead>Catégorie</TableHead>
+                    <TableHead>Prix</TableHead>
+                    <TableHead>Erreurs</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {preview.rows.map((r) => (
+                    <TableRow key={r.rowNum} className={r.errors.length > 0 ? "bg-accent-red/5" : ""}>
+                      <TableCell className="text-xs text-ink-soft">{r.rowNum}</TableCell>
+                      <TableCell className="text-sm font-semibold">{r.name}</TableCell>
+                      <TableCell className="text-xs text-ink-soft">{r.category}</TableCell>
+                      <TableCell className="text-sm">{r.price || "—"}</TableCell>
+                      <TableCell>
+                        {r.errors.length > 0 ? (
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-red">
+                            <X className="h-3 w-3" /> {r.errors.join(", ")}
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-mint-dark">
+                            <Check className="h-3 w-3" /> OK
+                          </span>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+              <div className="flex justify-end gap-3 border-t pt-4">
+                <button
+                  type="button"
+                  onClick={() => setPreview(null)}
+                  className="rounded-full border border-border px-5 py-2.5 text-sm font-bold uppercase tracking-wider text-ink-soft hover:bg-cream"
+                >
+                  Annuler
+                </button>
+                <button
+                  type="button"
+                  disabled={importBusy || preview.productInputs.length === 0}
+                  onClick={confirmImport}
+                  className="flex items-center gap-2 rounded-full bg-brand px-6 py-2.5 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark disabled:opacity-60"
+                >
+                  {importBusy && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Importer {preview.productInputs.length} produit(s)
+                </button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={!!toDelete} onOpenChange={(o) => !o && setToDelete(null)}>
         <AlertDialogContent>

@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Eye, Heart, ShoppingBag } from "lucide-react";
+import { Eye, Heart, Mail, ShoppingBag } from "lucide-react";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
+import { ProductPromoPrice } from "./ProductPrice";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { addToCart, toggleFavorite, favorites } = useApp();
@@ -55,12 +56,21 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
               <Eye className="h-4 w-4" />
             </span>
           </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); addToCart(product); }}
-            className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-paper transition-all duration-300 hover:bg-brand lg:translate-y-16 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100"
-          >
-            <ShoppingBag className="h-3.5 w-3.5" /> Ajouter
-          </button>
+          {product.price_mode === "quote" ? (
+            <button
+              onClick={(e) => { e.stopPropagation(); }}
+              className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-brand/10 px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-brand transition-all duration-300 hover:bg-brand hover:text-paper lg:translate-y-16 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100"
+            >
+              <Mail className="h-3.5 w-3.5" /> Devis
+            </button>
+          ) : (
+            <button
+              onClick={(e) => { e.stopPropagation(); addToCart(product); }}
+              className="absolute inset-x-3 bottom-3 flex items-center justify-center gap-2 rounded-full bg-ink px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-paper transition-all duration-300 hover:bg-brand lg:translate-y-16 lg:opacity-0 lg:group-hover:translate-y-0 lg:group-hover:opacity-100"
+            >
+              <ShoppingBag className="h-3.5 w-3.5" /> Ajouter
+            </button>
+          )}
         </div>
         <div className="flex flex-1 flex-col p-4">
           <span className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
@@ -69,22 +79,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <span className="mt-1 line-clamp-2 text-sm font-semibold text-ink">
             {product.name}
           </span>
-          <div className="mt-2 flex items-baseline gap-2">
-            {promoPrice ? (
-              <>
-                <span className="font-display text-lg font-bold text-accent-red">
-                  {promoPrice.toFixed(0)} MAD
-                </span>
-                <span className="text-xs text-ink-soft line-through">
-                  {product.price} MAD
-                </span>
-              </>
-            ) : (
-              <span className="font-display text-lg font-bold text-ink">
-                {product.price} MAD
-              </span>
-            )}
-            <span className="text-xs text-ink-soft">/ {product.unit}</span>
+          <div className="mt-2">
+            <ProductPromoPrice
+              priceMode={product.price_mode}
+              price={product.price}
+              promoPrice={promoPrice}
+              unit={product.unit}
+              size="lg"
+            />
           </div>
         </div>
       </motion.div>

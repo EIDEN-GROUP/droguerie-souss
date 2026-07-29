@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ChevronRight, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
+import { ChevronRight, Gift, Heart, Mail, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -9,6 +9,7 @@ import { useProducts } from "@/lib/adminStore";
 import { useProduct } from "@/lib/adminStore";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
+import { ProductPromoPrice } from "@/components/ProductPrice";
 
 export const Route = createFileRoute("/product/$id")({
   component: ProductDetail,
@@ -142,25 +143,19 @@ function ProductDetailContent({ product, products }: { product: Product; product
               {product.name}
             </h1>
 
-            <div className="mt-5 flex items-baseline gap-3">
-              {pct > 0 ? (
-                <>
-                  <span className="font-display text-4xl font-bold text-accent-red">
-                    {price.toFixed(0)} MAD
-                  </span>
-                  <span className="text-lg text-ink-soft line-through">
-                    {product.price} MAD
-                  </span>
-                  <span className="rounded bg-accent-red px-2 py-0.5 text-xs font-bold text-paper">
-                    -{pct}%
-                  </span>
-                </>
-              ) : (
-                <span className="font-display text-4xl font-bold text-brand">
-                  {product.price} MAD
+            <div className="mt-5">
+              <ProductPromoPrice
+                priceMode={product.price_mode}
+                price={product.price}
+                promoPrice={pct > 0 ? price : null}
+                unit={product.unit}
+                size="xl"
+              />
+              {pct > 0 && (
+                <span className="ml-3 rounded bg-accent-red px-2 py-0.5 text-xs font-bold text-paper">
+                  -{pct}%
                 </span>
               )}
-              <span className="text-sm text-ink-soft">/ {product.unit}</span>
             </div>
 
             <p className="mt-6 leading-relaxed text-ink-soft">{product.description}</p>
@@ -183,13 +178,37 @@ function ProductDetailContent({ product, products }: { product: Product; product
               >
                 <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
               </button>
-              <button
-                onClick={() => addToCart(product, qty)}
-                className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
-              >
-                <ShoppingBag className="h-4 w-4" /> Ajouter au panier
-              </button>
+              {product.price_mode === "quote" ? (
+                <button className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-brand/10 px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-brand transition hover:bg-brand hover:text-paper sm:order-none sm:w-auto sm:flex-1">
+                  <Mail className="h-4 w-4" /> Demander un devis
+                </button>
+              ) : (
+                <button
+                  onClick={() => addToCart(product, qty)}
+                  className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
+                >
+                  <ShoppingBag className="h-4 w-4" /> Ajouter au panier
+                </button>
+              )}
             </div>
+
+            {product.gifts && product.gifts.length > 0 && (
+              <div className="mt-6 rounded-lg border border-mint bg-mint/30 p-4">
+                <div className="flex items-center gap-2 text-sm font-bold text-brand">
+                  <Gift className="h-4 w-4" /> Cadeau offert
+                </div>
+                <ul className="mt-2 space-y-1">
+                  {product.gifts.map((g) => {
+                    const giftProduct = related.find((p: Product) => p.id === g.gift_product_id) || products?.find((p: Product) => p.id === g.gift_product_id);
+                    return (
+                      <li key={g.id} className="text-xs text-ink-soft">
+                        Dès {g.min_qty} acheté{g.min_qty > 1 ? "s" : ""} → <span className="font-semibold text-ink">{g.gift_qty} × {giftProduct?.name ?? "Cadeau"}</span> offert{g.gift_qty > 1 ? "s" : ""}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
 
             <div className="mt-8 grid grid-cols-3 gap-3 border-t pt-6">
               {[

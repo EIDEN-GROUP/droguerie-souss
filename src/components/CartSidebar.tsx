@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
 import { useApp, cartTotal } from "@/lib/store";
+import { ProductPrice } from "@/components/ProductPrice";
 
 export function CartSidebar() {
   const { cart, cartOpen, setCartOpen, removeFromCart, updateQty } = useApp();
@@ -88,9 +89,7 @@ export function CartSidebar() {
                           <p className="line-clamp-2 text-sm font-semibold">
                             {item.product.name}
                           </p>
-                          <p className="text-xs text-ink-soft">
-                            {price.toFixed(2)} MAD / {item.product.unit}
-                          </p>
+                          <ProductPrice priceMode={item.product.price_mode} price={price} unit={item.product.unit} size="sm" />
                           <div className="mt-auto flex items-center justify-between pt-2">
                             <div className="flex items-center gap-1 rounded-full border">
                               <button

@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, Mail, Phone, MapPin, Trash2, MessageSquare } from "lucide-react";
+import { FileDown, Loader2, Mail, Phone, MapPin, Trash2, MessageSquare } from "lucide-react";
 import { useState } from "react";
+import Papa from "papaparse";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -30,6 +31,33 @@ function AdminContacts() {
   const deleteMessage = useDeleteContactMessage();
   const [toDelete, setToDelete] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [exportBusy, setExportBusy] = useState(false);
+
+  const handleExport = () => {
+    setExportBusy(true);
+    try {
+      const data = (messages || []).map((m) => ({
+        date: new Date(m.created_at).toLocaleDateString("fr-FR"),
+        name: m.name,
+        phone: m.phone,
+        email: m.email || "",
+        city: m.city || "",
+        message: m.message,
+      }));
+      const csv = Papa.unparse(data);
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `contacts-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed", err);
+    } finally {
+      setExportBusy(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -43,6 +71,14 @@ function AdminContacts() {
     <div className="space-y-4">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h2 className="font-display text-lg font-bold uppercase text-ink">Messages reçus</h2>
+        <button
+          onClick={handleExport}
+          disabled={exportBusy}
+          className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+        >
+          {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
+          Exporter CSV
+        </button>
       </div>
 
       {isError && (
