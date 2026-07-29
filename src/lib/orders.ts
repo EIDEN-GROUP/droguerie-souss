@@ -22,6 +22,7 @@ export interface Order {
   createdAt: string; // ISO date
   customer: OrderCustomer;
   payment: PaymentMethod;
+  type?: "order" | "quote";
   items: OrderItem[];
   total: number;
   status: OrderStatus;

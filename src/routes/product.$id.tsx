@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ChevronRight, Gift, Heart, Mail, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
+import { ChevronRight, Gift, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -178,18 +178,12 @@ function ProductDetailContent({ product, products }: { product: Product; product
               >
                 <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
               </button>
-              {product.price_mode === "quote" ? (
-                <button className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-brand/10 px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-brand transition hover:bg-brand hover:text-paper sm:order-none sm:w-auto sm:flex-1">
-                  <Mail className="h-4 w-4" /> Demander un devis
-                </button>
-              ) : (
-                <button
-                  onClick={() => addToCart(product, qty)}
-                  className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
-                >
-                  <ShoppingBag className="h-4 w-4" /> Ajouter au panier
-                </button>
-              )}
+              <button
+                onClick={() => addToCart(product, qty)}
+                className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
+              >
+                <ShoppingBag className="h-4 w-4" /> Ajouter au panier
+              </button>
             </div>
 
             {product.gifts && product.gifts.length > 0 && (

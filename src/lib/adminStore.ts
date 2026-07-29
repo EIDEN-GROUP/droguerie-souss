@@ -167,6 +167,7 @@ export function useOrders() {
       }
       return (data || []).map((o: any) => ({
         ...o,
+        type: o.type || "order",
         createdAt: o.created_at,
         customer: {
           name: o.customer_name,

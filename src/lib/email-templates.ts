@@ -102,21 +102,29 @@ export function orderConfirmationEmail(order: {
   customer_address: string;
   payment_method: string;
   total: number;
+  type?: "order" | "quote";
   items: { product_name: string; qty: number; price: number }[];
 }): string {
+  const isQuote = order.type === "quote";
+  const allZero = order.items.every(i => i.price === 0);
+  const pricedTotal = order.items.reduce((s, i) => s + i.price * i.qty, 0);
+  const priceFmt = (v: number, qty?: number) => (v === 0 ? "Prix à confirmer" : (v * (qty || 1)).toFixed(2) + " MAD");
+
   const itemsHtml = order.items
     .map(
-      (i) =>
-        `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${i.product_name}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${i.price.toFixed(2)} MAD</td></tr>`,
+      (i) => {
+        const itemPrice = i.price === 0 ? "Prix à confirmer" : (i.price * i.qty).toFixed(2) + " MAD";
+        return `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${i.product_name}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${itemPrice}</td></tr>`;
+      },
     )
     .join("");
 
   return baseHtml(`
-    ${heading("Nouvelle commande")}
-    <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">Une nouvelle commande a été passée sur Droguerie Souss.</p>
+    ${heading(isQuote ? "Nouvelle demande de devis" : "Nouvelle commande")}
+    <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">${isQuote ? "Une nouvelle demande de devis a été soumise sur Droguerie Souss." : "Une nouvelle commande a été passée sur Droguerie Souss."}</p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      ${labelValue("Commande", `#${order.id.slice(0, 8)}`)}
+      ${labelValue(isQuote ? "Devis" : "Commande", `#${order.id.slice(0, 8)}`)}
       ${labelValue("Client", order.customer_name)}
       ${labelValue("Téléphone", order.customer_phone)}
       ${order.customer_email ? labelValue("Email", order.customer_email) : ""}
@@ -139,7 +147,7 @@ export function orderConfirmationEmail(order: {
     <hr style="border:none;border-top:2px solid ${BRAND.primary};margin:16px 0;" />
 
     <p style="margin:0;font-size:16px;font-weight:700;text-align:right;color:${BRAND.ink};">
-      Total : ${order.total.toFixed(2)} MAD
+      ${allZero ? "Total : Prix à confirmer" : `Total : ${pricedTotal.toFixed(2)} MAD`}
     </p>
   `);
 }
@@ -161,7 +169,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
   `);
 }
 
-export function orderCustomerConfirmation(order: { customer_name: string; total: number }): string {
+export function orderCustomerConfirmation(order: { customer_name: string; total: number; type?: "order" | "quote"; items?: { price: number; qty: number }[] }): string {
   return baseHtml(`
     <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${BRAND.accent};">
       Demande bien reçue
@@ -187,7 +195,9 @@ export function orderCustomerConfirmation(order: { customer_name: string; total:
                 Montant estimé
               </td>
               <td style="text-align:right;font-family:${DISPLAY_FONT};font-size:26px;font-weight:600;color:${BRAND.primary};">
-                ${order.total.toFixed(2)} MAD
+                ${order.items && order.items.every(i => i.price === 0)
+                  ? "Prix à confirmer"
+                  : (order.items || []).reduce((s, i) => s + i.price * i.qty, 0).toFixed(2) + " MAD"}
               </td>
             </tr>
           </table>

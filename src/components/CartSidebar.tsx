@@ -128,7 +128,18 @@ export function CartSidebar() {
                 <div className="mb-3 flex items-baseline justify-between">
                   <span className="text-sm text-ink-soft">Total estimé</span>
                   <span className="font-display text-2xl font-bold text-brand">
-                    {total.toFixed(2)} MAD
+                    {(() => {
+                      const quoteItems = cart.filter(i => i.product.price_mode === "quote");
+                      if (quoteItems.length === cart.length) return "Prix à confirmer";
+                      const pricedTotal = cart
+                        .filter(i => i.product.price_mode !== "quote")
+                        .reduce((s, i) => {
+                          const pct = i.product.promo ?? 0;
+                          const price = pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price;
+                          return s + price * i.qty;
+                        }, 0);
+                      return pricedTotal.toFixed(2) + " MAD";
+                    })()}
                   </span>
                 </div>
                 <p className="mb-3 text-[11px] text-ink-soft">

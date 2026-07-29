@@ -27,7 +27,7 @@ export function ProductPrice({
   if (priceMode === "quote") {
     return (
       <span className={cn("inline-flex items-center gap-1 rounded bg-brand/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-brand", s.price, className)}>
-        Prix sur demande
+        Prix à confirmer
       </span>
     );
   }

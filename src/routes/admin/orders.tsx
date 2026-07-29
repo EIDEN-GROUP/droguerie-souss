@@ -181,7 +181,7 @@ function AdminOrders() {
                 </TableCell>
                 <TableCell className="text-sm text-ink-soft">{o.customer.city}</TableCell>
                 <TableCell className="text-sm">{o.items.reduce((s, i) => s + i.qty, 0)}</TableCell>
-                <TableCell className="text-sm font-bold text-brand">{o.total.toFixed(0)} MAD</TableCell>
+                <TableCell className="text-sm font-bold text-brand">{o.items.every((i: any) => i.price === 0) ? "Prix à confirmer" : o.items.reduce((s: number, i: any) => s + i.price * i.qty, 0).toFixed(0) + " MAD"}</TableCell>
                 <TableCell>
                   <Badge className={statusBadge[o.status]}>{statusLabel[o.status]}</Badge>
                 </TableCell>

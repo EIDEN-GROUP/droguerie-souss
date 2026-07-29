@@ -44,10 +44,9 @@ function Checkout() {
     setError("");
     try {
       const items = cart.map((i) => {
+        const isQuoteItem = i.product.price_mode === "quote";
         const pct = i.product.promo ?? 0;
-        const price = pct > 0
-          ? i.product.price * (1 - pct / 100)
-          : i.product.price;
+        const price = isQuoteItem ? 0 : (pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price);
         return {
           product_id: i.product.id,
           product_name: i.product.name,
@@ -56,6 +55,7 @@ function Checkout() {
           qty: i.qty,
         };
       });
+      const type = cart.some((i) => i.product.price_mode === "quote") ? "quote" : "order";
       const order = await createOrder({
         data: {
           customer_name: form.name,
@@ -64,6 +64,7 @@ function Checkout() {
           customer_city: form.city,
           customer_address: form.address,
           payment_method: payment,
+          type,
           items,
         },
       });
@@ -246,7 +247,8 @@ function Checkout() {
             <div className="lg:sticky lg:top-28 self-start">
               <Card title="Récapitulatif">
                 <ul className="divide-y">
-                  {cart.map((i) => {
+                    {cart.map((i) => {
+                    const isQuote = i.product.price_mode === "quote";
                     const pct2 = i.product.promo ?? 0;
                     const price = pct2 > 0
                       ? i.product.price * (1 - pct2 / 100)
@@ -261,10 +263,10 @@ function Checkout() {
                         <div className="flex-1 min-w-0">
                           <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
                           <p className="text-[11px] text-ink-soft">
-                            {i.qty} × {price.toFixed(0)} MAD
+                            {i.qty} × {isQuote ? "Prix à confirmer" : price.toFixed(0) + " MAD"}
                           </p>
                         </div>
-                        <p className="text-xs font-bold">{(price * i.qty).toFixed(0)} MAD</p>
+                        <p className="text-xs font-bold">{isQuote ? "Prix à confirmer" : (price * i.qty).toFixed(0) + " MAD"}</p>
                       </li>
                     );
                   })}
@@ -272,7 +274,18 @@ function Checkout() {
                 <div className="mt-4 flex items-baseline justify-between border-t pt-4">
                   <span className="text-sm text-ink-soft">Total estimé</span>
                   <span className="font-display text-2xl font-bold text-brand">
-                    {total.toFixed(0)} MAD
+                    {(() => {
+                    const quoteItems = cart.filter(i => i.product.price_mode === "quote");
+                    if (quoteItems.length === cart.length) return "Prix à confirmer";
+                    const pricedTotal = cart
+                      .filter(i => i.product.price_mode !== "quote")
+                      .reduce((s, i) => {
+                        const pct = i.product.promo ?? 0;
+                        const price = pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price;
+                        return s + price * i.qty;
+                      }, 0);
+                    return pricedTotal.toFixed(0) + " MAD";
+                  })()}
                   </span>
                 </div>
                 <p className="mt-2 text-[11px] text-ink-soft">

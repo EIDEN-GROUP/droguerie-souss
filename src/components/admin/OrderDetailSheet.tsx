@@ -73,15 +73,15 @@ export function OrderDetailSheet({
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-soft">Articles</p>
                 <ul className="divide-y rounded-xl border">
                   {order.items.map((item) => (
-                    <li key={item.productId} className="flex gap-3 p-3">
+                      <li key={item.productId} className="flex gap-3 p-3">
                       <img src={item.image} alt="" className="h-12 w-12 rounded-lg object-cover" />
                       <div className="min-w-0 flex-1">
                         <p className="line-clamp-2 text-xs font-semibold">{item.name}</p>
                         <p className="text-[11px] text-ink-soft">
-                          {item.qty} × {item.price.toFixed(0)} MAD
+                          {item.qty} × {item.price === 0 ? "Prix à confirmer" : item.price.toFixed(0) + " MAD"}
                         </p>
                       </div>
-                      <p className="text-xs font-bold">{(item.price * item.qty).toFixed(0)} MAD</p>
+                      <p className="text-xs font-bold">{item.price === 0 ? "Prix à confirmer" : (item.price * item.qty).toFixed(0) + " MAD"}</p>
                     </li>
                   ))}
                 </ul>
@@ -89,7 +89,11 @@ export function OrderDetailSheet({
 
               <div className="flex items-baseline justify-between border-t pt-4">
                 <span className="text-sm text-ink-soft">Total</span>
-                <span className="font-display text-2xl font-bold text-brand">{order.total.toFixed(0)} MAD</span>
+                <span className="font-display text-2xl font-bold text-brand">
+                  {order.items.every(i => i.price === 0)
+                    ? "Prix à confirmer"
+                    : order.items.reduce((s, i) => s + i.price * i.qty, 0).toFixed(0) + " MAD"}
+                </span>
               </div>
             </div>
           </>

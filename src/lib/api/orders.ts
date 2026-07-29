@@ -10,6 +10,7 @@ export const createOrder = createServerFn({ method: "POST" })
 
     const total = ctx.data.items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
+    const type = ctx.data.type || "order";
     const { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({
@@ -20,6 +21,7 @@ export const createOrder = createServerFn({ method: "POST" })
         customer_address: ctx.data.customer_address,
         payment_method: ctx.data.payment_method,
         total,
+        type,
         status: "pending",
       })
       .select()
@@ -54,8 +56,9 @@ export const createOrder = createServerFn({ method: "POST" })
       console.error("stock decrement failed:", stockError);
     }
 
+    const isQuote = type === "quote";
     sendEmail({
-      adminSubject: "Nouvelle commande   Droguerie Souss",
+      adminSubject: isQuote ? "Nouvelle demande de devis   Droguerie Souss" : "Nouvelle commande   Droguerie Souss",
       adminHtml: orderConfirmationEmail({
         id: order.id,
         customer_name: ctx.data.customer_name,
@@ -65,6 +68,7 @@ export const createOrder = createServerFn({ method: "POST" })
         customer_address: ctx.data.customer_address,
         payment_method: ctx.data.payment_method,
         total,
+        type,
         items: ctx.data.items.map((i) => ({
           product_name: i.product_name,
           qty: i.qty,
@@ -73,10 +77,10 @@ export const createOrder = createServerFn({ method: "POST" })
       }),
       customerTo: ctx.data.customer_email || undefined,
       customerSubject: ctx.data.customer_email
-        ? "Confirmation de votre demande de devis   Droguerie Souss"
+        ? (isQuote ? "Confirmation de votre demande de devis   Droguerie Souss" : "Confirmation de votre commande   Droguerie Souss")
         : undefined,
       customerHtml: ctx.data.customer_email
-        ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total })
+        ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total, type, items: ctx.data.items })
         : undefined,
     }).catch((err) => console.error("sendEmail (order) failed:", err));
 
