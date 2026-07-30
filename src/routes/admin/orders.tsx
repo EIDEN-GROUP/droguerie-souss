@@ -23,6 +23,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { OrderDetailSheet } from "@/components/admin/OrderDetailSheet";
+import { TablePagination } from "@/components/admin/TablePagination";
+import { usePagination } from "@/hooks/usePagination";
 import { useOrders, useDeleteOrder } from "@/lib/adminStore";
 import type { Order, OrderStatus } from "@/lib/orders";
 
@@ -71,6 +73,8 @@ function AdminOrders() {
     }
     return list;
   }, [orderList, status, query]);
+
+  const pagination = usePagination(filtered, 10);
 
   const handleExport = () => {
     setExportBusy(true);
@@ -141,19 +145,20 @@ function AdminOrders() {
         <button
           onClick={handleExport}
           disabled={exportBusy}
-          className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+          className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand disabled:pointer-events-none disabled:opacity-60"
         >
           {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
           Exporter CSV
         </button>
       </div>
 
-      <div className="overflow-x-auto rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
+      <div className="rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
         <Table>
           <TableHeader>
             <TableRow>
               <TableHead className="pl-2">Commande</TableHead>
               <TableHead>Client</TableHead>
+              <TableHead>Téléphone</TableHead>
               <TableHead>Ville</TableHead>
               <TableHead>Articles</TableHead>
               <TableHead>Total</TableHead>
@@ -162,12 +167,12 @@ function AdminOrders() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((o, i) => (
+            {pagination.pageItems.map((o, i) => (
               <MotionTableRow
                 key={o.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: i * 0.04 }}
+                transition={{ duration: 0.35, delay: Math.min(i, 10) * 0.04 }}
               >
                 <TableCell className="text-sm font-semibold text-ink">
                   #{o.id.slice(0, 8)}
@@ -175,10 +180,8 @@ function AdminOrders() {
                     {new Date(o.createdAt).toLocaleDateString("fr-FR")}
                   </div>
                 </TableCell>
-                <TableCell className="text-sm">
-                  <p className="font-semibold text-ink">{o.customer.name}</p>
-                  <p className="text-xs text-ink-soft">{o.customer.phone}</p>
-                </TableCell>
+                <TableCell className="text-sm font-semibold text-ink">{o.customer.name}</TableCell>
+                <TableCell className="whitespace-nowrap text-sm text-ink-soft">{o.customer.phone}</TableCell>
                 <TableCell className="text-sm text-ink-soft">{o.customer.city}</TableCell>
                 <TableCell className="text-sm">{o.items.reduce((s, i) => s + i.qty, 0)}</TableCell>
                 <TableCell className="text-sm font-bold text-brand">{o.items.every((i: any) => i.price === 0) ? "Prix à confirmer" : o.items.reduce((s: number, i: any) => s + i.price * i.qty, 0).toFixed(0) + " MAD"}</TableCell>
@@ -214,6 +217,17 @@ function AdminOrders() {
               : "Aucune commande ne correspond à votre recherche."}
           </div>
         )}
+        <TablePagination
+          page={pagination.page}
+          pageCount={pagination.pageCount}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          from={pagination.from}
+          to={pagination.to}
+          label="commandes"
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.changePageSize}
+        />
       </div>
 
       <OrderDetailSheet order={viewing} onOpenChange={(o) => !o && setViewingId(null)} />

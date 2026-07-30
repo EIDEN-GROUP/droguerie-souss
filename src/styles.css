@@ -129,7 +129,13 @@
   }
   &::-webkit-scrollbar-track {
     background: transparent;
+  }
+  /* Inset the track along its own axis so the thumb stops short of the corners. */
+  &::-webkit-scrollbar-track:vertical {
     margin-block: 16px;
+  }
+  &::-webkit-scrollbar-track:horizontal {
+    margin-inline: 16px;
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 9999px;

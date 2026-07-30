@@ -29,6 +29,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ProductFormDialog } from "@/components/admin/ProductFormDialog";
+import { TablePagination } from "@/components/admin/TablePagination";
+import { usePagination } from "@/hooks/usePagination";
 import { useProducts, useDeleteProduct, useCategories } from "@/lib/adminStore";
 import { importProductsCsv, exportProductsCsv } from "@/lib/api/products";
 import { categories as defaultCategories, type Category, type Product } from "@/lib/products";
@@ -77,6 +79,8 @@ function AdminProducts() {
     if (query.trim()) list = list.filter((p) => p.name.toLowerCase().includes(query.toLowerCase()));
     return list;
   }, [productList, cat, query]);
+
+  const pagination = usePagination(filtered, 10);
 
   const openAdd = () => {
     setEditing(undefined);
@@ -239,14 +243,14 @@ function AdminProducts() {
           />
           <button
             onClick={handleExample}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand"
           >
             <FileText className="h-4 w-4" /> Exemple CSV
           </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importBusy}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand disabled:pointer-events-none disabled:opacity-60"
           >
             {importBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
             Importer CSV
@@ -254,7 +258,7 @@ function AdminProducts() {
           <button
             onClick={handleExport}
             disabled={exportBusy}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand disabled:pointer-events-none disabled:opacity-60"
           >
             {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
             Exporter CSV
@@ -279,7 +283,7 @@ function AdminProducts() {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
+      <div className="rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
         <Table>
           <TableHeader>
             <TableRow>
@@ -292,12 +296,12 @@ function AdminProducts() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filtered.map((p, i) => (
+            {pagination.pageItems.map((p, i) => (
               <MotionTableRow
                 key={p.id}
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: i * 0.04 }}
+                transition={{ duration: 0.35, delay: Math.min(i, 10) * 0.04 }}
               >
                 <TableCell>
                   <div className="flex items-center gap-3">
@@ -350,6 +354,17 @@ function AdminProducts() {
         {filtered.length === 0 && (
           <div className="py-16 text-center text-sm text-ink-soft">Aucun produit ne correspond à votre recherche.</div>
         )}
+        <TablePagination
+          page={pagination.page}
+          pageCount={pagination.pageCount}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          from={pagination.from}
+          to={pagination.to}
+          label="produits"
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.changePageSize}
+        />
       </div>
 
       <ProductFormDialog open={formOpen} onOpenChange={setFormOpen} product={editing} />

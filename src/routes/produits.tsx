@@ -1,12 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { useProducts } from "@/lib/adminStore";
 import { categories, type Category } from "@/lib/products";
-import { ChevronDown, Loader2, Search, SlidersHorizontal } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
   cat: z.string().optional(),
@@ -25,12 +25,11 @@ export const Route = createFileRoute("/produits")({
 });
 
 function Shop() {
-  const { cat: initialCat, q: initialQ } = Route.useSearch();
+  const { cat: urlCat, q: urlQ } = Route.useSearch();
+  const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
-  const [activeCat, setActiveCat] = useState<Category | "all">(
-    (initialCat as Category) || "all",
-  );
-  const [query, setQuery] = useState(initialQ || "");
+  const activeCat = (urlCat as Category) || "all";
+  const [query, setQuery] = useState(urlQ || "");
   const [sort, setSort] = useState<"default" | "asc" | "desc">("default");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
@@ -106,22 +105,20 @@ function Shop() {
           </select>
         </div>
 
-        <div
-          className={`container-x mt-4 ${filtersOpen ? "flex" : "hidden"} gap-2 overflow-x-auto no-scrollbar md:flex`}
-        >
-          <CatChip active={activeCat === "all"} onClick={() => setActiveCat("all")}>
+        <CatTabs open={filtersOpen}>
+          <CatChip active={activeCat === "all"} onClick={() => navigate({ to: "/produits", search: (prev) => ({ ...prev, cat: undefined }) })}>
             Toutes ({products?.length ?? 0})
           </CatChip>
           {categories.map((c) => (
             <CatChip
               key={c.slug}
               active={activeCat === c.category}
-              onClick={() => setActiveCat(c.category)}
+              onClick={() => navigate({ to: "/produits", search: (prev) => ({ ...prev, cat: c.category }) })}
             >
               {c.name}
             </CatChip>
           ))}
-        </div>
+        </CatTabs>
       </div>
 
       <div className="container-x py-10">
@@ -143,6 +140,90 @@ function Shop() {
         )}
       </div>
     </Layout>
+  );
+}
+
+/** Two 36px arrow buttons plus the flex gaps around them. */
+const ARROWS_WIDTH = 88;
+
+function CatTabs({ open, children }: { open: boolean; children: React.ReactNode }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canLeft, setCanLeft] = useState(false);
+  const [canRight, setCanRight] = useState(false);
+  const [scrollable, setScrollable] = useState(false);
+
+  const updateArrows = useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setCanLeft(el.scrollLeft > 1);
+    setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
+    // Showing the arrows narrows the strip, so require a clear margin before
+    // hiding them again - otherwise the two states flip-flop endlessly.
+    setScrollable((shown) =>
+      shown
+        ? el.scrollWidth > el.clientWidth + ARROWS_WIDTH
+        : el.scrollWidth > el.clientWidth + 1,
+    );
+  }, []);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(updateArrows);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [updateArrows]);
+
+  // Re-measure after every render so chip label changes (the "Toutes (n)"
+  // count) are picked up, not just container resizes.
+  useEffect(updateArrows);
+
+  const scrollBy = (dir: -1 | 1) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const delta = dir * Math.max(200, el.clientWidth * 0.7);
+    const target = Math.min(max, Math.max(0, el.scrollLeft + delta));
+    el.scrollTo({ left: target, behavior: "smooth" });
+    // Update straight away instead of waiting for the smooth scroll to settle.
+    setCanLeft(target > 1);
+    setCanRight(target < max - 1);
+  };
+
+  return (
+    <div className={`container-x mt-4 ${open ? "flex" : "hidden"} items-center gap-2 md:flex`}>
+      {scrollable && (
+        <button
+          type="button"
+          aria-label="Catégories précédentes"
+          onClick={() => scrollBy(-1)}
+          disabled={!canLeft}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+      )}
+
+      <div
+        ref={scrollRef}
+        onScroll={updateArrows}
+        className="flex flex-1 gap-2 overflow-x-auto no-scrollbar scroll-smooth"
+      >
+        {children}
+      </div>
+
+      {scrollable && (
+        <button
+          type="button"
+          aria-label="Catégories suivantes"
+          onClick={() => scrollBy(1)}
+          disabled={!canRight}
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
+      )}
+    </div>
   );
 }
 

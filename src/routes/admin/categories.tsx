@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { FileDown, FileText, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import {
   AlertDialog,
@@ -32,6 +32,8 @@ import {
   useUpdateCategory,
   useDeleteCategory,
 } from "@/lib/adminStore";
+import { TablePagination } from "@/components/admin/TablePagination";
+import { usePagination } from "@/hooks/usePagination";
 import { importCategoriesCsv, exportCategoriesCsv } from "@/lib/api/categories";
 
 export const Route = createFileRoute("/admin/categories")({
@@ -58,6 +60,9 @@ function AdminCategories() {
   const [importError, setImportError] = useState("");
   const [importSuccess, setImportSuccess] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const categoryList = useMemo(() => categories || [], [categories]);
+  const pagination = usePagination(categoryList, 10);
 
   const openAdd = () => {
     setEditing(undefined);
@@ -194,14 +199,14 @@ function AdminCategories() {
           />
           <button
             onClick={handleExample}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand"
           >
             <FileText className="h-4 w-4" /> Exemple CSV
           </button>
           <button
             onClick={() => fileRef.current?.click()}
             disabled={importBusy}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand disabled:pointer-events-none disabled:opacity-60"
           >
             {importBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
             Importer CSV
@@ -209,7 +214,7 @@ function AdminCategories() {
           <button
             onClick={handleExport}
             disabled={exportBusy}
-            className="flex items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink hover:bg-cream disabled:opacity-60"
+            className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand disabled:pointer-events-none disabled:opacity-60"
           >
             {exportBusy ? <Loader2 className="h-4 w-4 animate-spin" /> : <FileDown className="h-4 w-4" />}
             Exporter CSV
@@ -234,7 +239,7 @@ function AdminCategories() {
         </div>
       )}
 
-      <div className="overflow-x-auto rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
+      <div className="rounded-2xl border bg-paper shadow-[var(--shadow-card)]">
         <Table>
           <TableHeader>
             <TableRow>
@@ -245,7 +250,7 @@ function AdminCategories() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {(categories || []).map((c) => (
+            {pagination.pageItems.map((c) => (
               <TableRow key={c.name}>
                 <TableCell className="text-sm font-semibold text-ink">{c.name}</TableCell>
                 <TableCell className="text-sm text-ink-soft">{c.slug}</TableCell>
@@ -272,9 +277,20 @@ function AdminCategories() {
             ))}
           </TableBody>
         </Table>
-        {(!categories || categories.length === 0) && (
+        {categoryList.length === 0 && (
           <div className="py-16 text-center text-sm text-ink-soft">Aucune catégorie pour le moment.</div>
         )}
+        <TablePagination
+          page={pagination.page}
+          pageCount={pagination.pageCount}
+          pageSize={pagination.pageSize}
+          total={pagination.total}
+          from={pagination.from}
+          to={pagination.to}
+          label="catégories"
+          onPageChange={pagination.setPage}
+          onPageSizeChange={pagination.changePageSize}
+        />
       </div>
 
       <Dialog open={formOpen} onOpenChange={setFormOpen}>

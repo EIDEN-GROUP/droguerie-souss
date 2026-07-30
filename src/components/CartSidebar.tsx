@@ -44,7 +44,7 @@ export function CartSidebar() {
               </button>
             </header>
 
-            <div className="flex-1 overflow-y-auto px-5 py-4">
+            <div className="styled-scrollbar flex-1 overflow-y-auto px-5 py-4">
               {cart.length === 0 ? (
                 <div className="flex h-full flex-col items-center justify-center gap-4 text-center">
                   <div className="grid h-20 w-20 place-items-center rounded-full bg-mint">

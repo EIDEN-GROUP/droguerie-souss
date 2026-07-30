@@ -182,7 +182,7 @@ export function Navbar() {
                 </button>
               </div>
 
-              <div className="flex flex-1 flex-col gap-1 overflow-y-auto p-4">
+              <div className="styled-scrollbar flex flex-1 flex-col gap-1 overflow-y-auto p-4">
                 {links.map((l) => {
                   const active = pathname === l.to;
                   return (
