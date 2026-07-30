@@ -53,7 +53,7 @@ export function Footer() {
       <div className="border-t border-paper/10">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-5 text-xs text-paper/60 sm:flex-row">
           <span>© {new Date().getFullYear()} Souss Droguerie S.A.R.L. Tous droits réservés.</span>
-          <span>Matériaux de construction • Devis gratuit</span>
+          <span>Créé par <a href="https://eiden-group.com" className="hover:text-white">• EIDEN GROUP</a></span>
         </div>
       </div>
     </footer>
