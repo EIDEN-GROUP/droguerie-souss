@@ -48,7 +48,7 @@ export function CategoriesSection() {
           to="/produits"
           className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
         >
-          Voir tous les produits <ArrowRight className="h-4 w-4" />
+          Découvrir tous les produits <ArrowRight className="h-4 w-4" />
         </Link>
       </div>
     </section>

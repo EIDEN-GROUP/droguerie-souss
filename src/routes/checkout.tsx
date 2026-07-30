@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { CheckCircle2, ChevronRight, Loader2, ShoppingBag } from "lucide-react";
+import { CheckCircle2, ChevronRight, Info, Loader2, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { createOrder } from "@/lib/api/orders";
-import type { PaymentMethod } from "@/lib/orders";
+
 import { cartTotal, useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { saveLocalOrder } from "@/lib/localOrders";
@@ -17,7 +17,6 @@ export const Route = createFileRoute("/checkout")({
 function Checkout() {
   const { cart, clearCart } = useApp();
   const navigate = useNavigate();
-  const [payment, setPayment] = useState<PaymentMethod>("cod");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ name: "", phone: "", email: "", city: "", address: "" });
@@ -63,7 +62,7 @@ function Checkout() {
           customer_email: form.email || undefined,
           customer_city: form.city,
           customer_address: form.address,
-          payment_method: payment,
+          payment_method: "rep",
           type,
           items,
         },
@@ -201,45 +200,14 @@ function Checkout() {
               </Card>
 
               <Card title="Mode de règlement">
-                <div className="grid gap-3">
-                  {(
-                    [
-                      {
-                        id: "cod",
-                        label: "Paiement à la livraison",
-                        desc: "Réglez en espèces à la réception.",
-                      },
-                      {
-                        id: "bank",
-                        label: "Virement bancaire",
-                        desc: "Nos coordonnées vous seront transmises.",
-                      },
-                      {
-                        id: "rep",
-                        label: "À arranger avec le commercial",
-                        desc: "Modalités définies avec notre représentant.",
-                      },
-                    ] as { id: PaymentMethod; label: string; desc: string }[]
-                  ).map((p) => (
-                    <label
-                      key={p.id}
-                      className={`flex cursor-pointer items-start gap-3 rounded-xl border p-4 transition ${
-                        payment === p.id ? "border-brand bg-brand/5" : "hover:border-brand/50"
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="payment"
-                        checked={payment === p.id}
-                        onChange={() => setPayment(p.id)}
-                        className="mt-1 h-4 w-4 accent-[#2f378d]"
-                      />
-                      <div>
-                        <p className="text-sm font-bold">{p.label}</p>
-                        <p className="mt-0.5 text-xs text-ink-soft">{p.desc}</p>
-                      </div>
-                    </label>
-                  ))}
+                <div className="flex items-start gap-3 rounded-xl border border-brand/20 bg-brand/5 p-4">
+                  <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
+                  <div>
+                    <p className="text-sm font-bold text-ink">À arranger avec le commercial</p>
+                    <p className="mt-0.5 text-xs text-ink-soft">
+                      Modalités définies avec notre représentant.
+                    </p>
+                  </div>
                 </div>
               </Card>
             </div>

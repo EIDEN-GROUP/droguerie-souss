@@ -27,7 +27,9 @@ function Home() {
   return (
     <Layout>
       <HeroCarousel />
-      <ServiceBar />
+      {/* <ServiceBar /> */}
+
+      <CategoriesSection />
 
       <section className="container-x py-20">
         <SectionHeader kicker="Best-sellers" title="Nos produits populaires" />
@@ -57,7 +59,7 @@ function Home() {
 
       <SuppliersCarousel />
 
-      <PromoCards />
+      {/* <PromoCards /> */}
 
       <section className="container-x py-16">
         <SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" />
@@ -72,7 +74,7 @@ function Home() {
         )}
       </section>
 
-      <section  className="container-x py-20">
+      {/* <section  className="container-x py-20">
         <div className="grid gap-8 lg:grid-cols-2 items-center bg-mint/50 rounded-3xl overflow-hidden">
           <motion.img
             initial={{ scale: 1.1, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
@@ -93,9 +95,8 @@ function Home() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
-      <CategoriesSection />
 
       <CtaBanner />
     </Layout>

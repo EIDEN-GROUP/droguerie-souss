@@ -13,7 +13,7 @@ const searchSchema = z.object({
   q: z.string().optional(),
 });
 
-export const Route = createFileRoute("/produits")({
+export const Route = createFileRoute("/rubriques")({
   validateSearch: searchSchema,
   component: Shop,
   head: () => ({
