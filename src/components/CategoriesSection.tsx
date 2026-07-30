@@ -5,13 +5,23 @@ import { categories } from "@/lib/products";
 import { SectionHeader } from "./SectionHeader";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
-export function CategoriesSection() {
+export function CategoriesSection({
+  variant = "home",
+  onCategorySelect,
+  selectedCategory,
+}: {
+  variant?: "home" | "shop";
+  onCategorySelect?: (category: string) => void;
+  selectedCategory?: string;
+}) {
   return (
-    <section className="container-x py-20">
-      <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />
+    <section className={variant === "home" ? "container-x py-20" : ""}>
+      {variant === "home" && (
+        <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />
+      )}
       <Carousel
         opts={{ align: "start", loop: true }}
-        className="mt-10 mx-10 md:mx-14"
+        className={variant === "home" ? "mt-10 mx-10 md:mx-14" : "mx-10 md:mx-14"}
       >
         <CarouselContent>
           {categories.map((c, i) => (
@@ -21,20 +31,39 @@ export function CategoriesSection() {
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ delay: i * 0.04 }}
                 >
-                  <Link
-                    to="/rubriques"
-                    search={{ cat: c.category }}
-                    className="group block relative aspect-[4/3] overflow-hidden rounded-2xl"
-                  >
-                    <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                    <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                      <div className="font-display uppercase text-xl tracking-wide">{c.name}</div>
-                      <div className="text-xs text-white/80 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                        Voir les produits <ArrowRight className="h-3 w-3" />
+                  {variant === "shop" && onCategorySelect ? (
+                    <button
+                      type="button"
+                      onClick={() => onCategorySelect(c.category)}
+                      className={`group block relative w-full aspect-[4/3] overflow-hidden rounded-2xl text-left transition ${
+                        selectedCategory === c.category ? "ring-2 ring-brand ring-offset-2" : ""
+                      }`}
+                    >
+                      <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                        <div className="font-display uppercase text-xl tracking-wide">{c.name}</div>
+                        <div className="text-xs text-white/80 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                          Voir les produits <ArrowRight className="h-3 w-3" />
+                        </div>
                       </div>
-                    </div>
-                  </Link>
+                    </button>
+                  ) : (
+                    <Link
+                      to="/rubriques"
+                      search={{ cat: c.category }}
+                      className="group block relative aspect-[4/3] overflow-hidden rounded-2xl"
+                    >
+                      <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+                      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                        <div className="font-display uppercase text-xl tracking-wide">{c.name}</div>
+                        <div className="text-xs text-white/80 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+                          Voir les produits <ArrowRight className="h-3 w-3" />
+                        </div>
+                      </div>
+                    </Link>
+                  )}
                 </motion.div>
               </div>
             </CarouselItem>
@@ -43,14 +72,16 @@ export function CategoriesSection() {
         <CarouselPrevious className="-left-10 md:-left-14 h-10 w-10" />
         <CarouselNext className="-right-10 md:-right-14 h-10 w-10" />
       </Carousel>
-      <div className="mt-10 text-center">
-        <Link
-          to="/rubriques"
-          className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
-        >
-          Découvrir tous les produits <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
+      {variant === "home" && (
+        <div className="mt-10 text-center">
+          <Link
+            to="/rubriques"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
+          >
+            Découvrir tous les produits <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
+      )}
     </section>
   );
 }

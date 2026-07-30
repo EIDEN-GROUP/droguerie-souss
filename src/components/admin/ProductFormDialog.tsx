@@ -20,6 +20,7 @@ const MAX_IMAGE_BYTES = 1_500_000;
 const schema = z.object({
   name: z.string().min(2, "Nom trop court"),
   category: z.string().min(1, "Catégorie requise"),
+  subcategory: z.string().optional(),
   price_mode: z.enum(["fixed", "quote"]),
   price: z.coerce.number().min(0, "Le prix ne peut pas être négatif"),
   unit: z.string().min(1, "Unité requise"),
@@ -84,7 +85,7 @@ export function ProductFormDialog({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
+    defaultValues: { name: "", category: catOptions[0]?.value ?? "", subcategory: "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
   });
 
   const currentPriceMode = watch("price_mode");
@@ -97,6 +98,7 @@ export function ProductFormDialog({
           ? {
               name: product.name,
               category: product.category,
+              subcategory: product.subcategory || "",
               price_mode: (product as any).price_mode || "fixed",
               price: product.price,
               unit: product.unit,
@@ -152,10 +154,12 @@ export function ProductFormDialog({
       ...values,
       price: values.price_mode === "quote" ? 0 : values.price,
       category: values.category,
+      subcategory: values.subcategory || undefined,
       image_url: imageUrls[0],
       images_urls: imageUrls,
     };
     if (!payload.promo || (payload.promo as number) <= 0) delete payload.promo;
+    if (!payload.subcategory) delete payload.subcategory;
     try {
       let savedId = product?.id ?? "";
       if (product) {
@@ -246,6 +250,9 @@ export function ProductFormDialog({
                   </option>
                 ))}
               </select>
+            </Field>
+            <Field label="Sous-catégorie (optionnel)" error={errors.subcategory?.message}>
+              <input {...register("subcategory")} placeholder="ex: Carreaux de sol, Faïence..." className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
             <Field label="Unité (m², sac, boîte...)" error={errors.unit?.message}>
               <input {...register("unit")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />

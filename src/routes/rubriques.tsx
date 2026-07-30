@@ -4,14 +4,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
+import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts } from "@/lib/adminStore";
 import { categories, type Category } from "@/lib/products";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
   cat: z.string().optional(),
+  subcat: z.string().optional(),
   q: z.string().optional(),
 });
+
+type Search = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/rubriques")({
   validateSearch: searchSchema,
@@ -24,19 +28,48 @@ export const Route = createFileRoute("/rubriques")({
   }),
 });
 
+type SubcatTab = { label: string; value: string | undefined };
+
 function Shop() {
-  const { cat: urlCat, q: urlQ } = Route.useSearch();
+  const { cat: urlCat, subcat: urlSubcat, q: urlQ } = Route.useSearch();
   const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
-  const activeCat = (urlCat as Category) || "all";
+  const activeCat = (urlCat as Category) || undefined;
+  const activeSubcat = urlSubcat || undefined;
   const [query, setQuery] = useState(urlQ || "");
   const [sort, setSort] = useState<"default" | "asc" | "desc">("default");
   const [filtersOpen, setFiltersOpen] = useState(false);
 
+  const productList = useMemo(() => (products || []) as unknown as any[], [products]);
+
+  const subcategories = useMemo(() => {
+    if (!activeCat) return [];
+    const values = new Set<string>();
+    productList.forEach((p: any) => {
+      if (p.category === activeCat && p.subcategory) {
+        values.add(p.subcategory);
+      }
+    });
+    return Array.from(values).sort();
+  }, [activeCat, productList]);
+
+  const tabs: SubcatTab[] = useMemo(() => {
+    if (!activeCat) {
+      return [{ label: "Toutes", value: undefined } as SubcatTab, ...categories.map((c) => ({ label: c.name, value: c.category }))];
+    }
+    const subs = subcategories.map((s) => ({ label: s, value: s }));
+    return [{ label: "Toutes", value: undefined } as SubcatTab, ...subs];
+  }, [activeCat, subcategories]);
+
+  const activeTab = useMemo(() => {
+    if (!activeCat) return activeCat ?? undefined;
+    return activeSubcat ?? undefined;
+  }, [activeCat, activeSubcat]);
+
   const filtered = useMemo(() => {
-    if (!products) return [];
-    let list = [...products] as unknown as any[];
-    if (activeCat !== "all") list = list.filter((p: any) => p.category === activeCat);
+    let list = productList;
+    if (activeCat) list = list.filter((p: any) => p.category === activeCat);
+    if (activeSubcat) list = list.filter((p: any) => p.subcategory === activeSubcat);
     if (query.trim())
       list = list.filter((p: any) =>
         p.name.toLowerCase().includes(query.toLowerCase()),
@@ -44,7 +77,30 @@ function Shop() {
     if (sort === "asc") list = [...list].sort((a: any, b: any) => a.price - b.price);
     if (sort === "desc") list = [...list].sort((a: any, b: any) => b.price - a.price);
     return list;
-  }, [products, activeCat, query, sort]);
+  }, [productList, activeCat, activeSubcat, query, sort]);
+
+  const handleCategorySelect = useCallback(
+    (category: string) => {
+      if (category === activeCat) {
+        navigate({ search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }) });
+      } else {
+        navigate({ search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }) });
+      }
+    },
+    [activeCat, navigate],
+  );
+
+  const handleTabClick = useCallback(
+    (value: string | undefined) => {
+      const fromCat = value && categories.some((c) => c.category === value);
+      if (fromCat) {
+        navigate({ search: (prev: Search) => ({ ...prev, cat: value, subcat: undefined }) });
+      } else {
+        navigate({ search: (prev: Search) => ({ ...prev, subcat: value }) });
+      }
+    },
+    [navigate],
+  );
 
   return (
     <Layout>
@@ -66,6 +122,12 @@ function Shop() {
           </motion.div>
         </div>
       </div>
+
+      <CategoriesSection
+        variant="shop"
+        onCategorySelect={handleCategorySelect}
+        selectedCategory={activeCat}
+      />
 
       <div className="sticky top-20 z-30 w-full border-b bg-paper/95 py-4 backdrop-blur md:py-5">
         <div className="container-x flex items-center justify-between md:hidden">
@@ -106,16 +168,13 @@ function Shop() {
         </div>
 
         <CatTabs open={filtersOpen}>
-          <CatChip active={activeCat === "all"} onClick={() => navigate({ to: "/rubriques", search: (prev) => ({ ...prev, cat: undefined }) })}>
-            Toutes ({products?.length ?? 0})
-          </CatChip>
-          {categories.map((c) => (
+          {tabs.map((tab) => (
             <CatChip
-              key={c.slug}
-              active={activeCat === c.category}
-              onClick={() => navigate({ to: "/rubriques", search: (prev) => ({ ...prev, cat: c.category }) })}
+              key={tab.label}
+              active={tab.value === activeTab}
+              onClick={() => handleTabClick(tab.value)}
             >
-              {c.name}
+              {tab.label}{!activeCat && tab.value === undefined ? ` (${products?.length ?? 0})` : ""}
             </CatChip>
           ))}
         </CatTabs>
@@ -157,8 +216,6 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
     if (!el) return;
     setCanLeft(el.scrollLeft > 1);
     setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-    // Showing the arrows narrows the strip, so require a clear margin before
-    // hiding them again - otherwise the two states flip-flop endlessly.
     setScrollable((shown) =>
       shown
         ? el.scrollWidth > el.clientWidth + ARROWS_WIDTH
@@ -174,8 +231,6 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
     return () => observer.disconnect();
   }, [updateArrows]);
 
-  // Re-measure after every render so chip label changes (the "Toutes (n)"
-  // count) are picked up, not just container resizes.
   useEffect(updateArrows);
 
   const scrollBy = (dir: -1 | 1) => {
@@ -185,7 +240,6 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
     const delta = dir * Math.max(200, el.clientWidth * 0.7);
     const target = Math.min(max, Math.max(0, el.scrollLeft + delta));
     el.scrollTo({ left: target, behavior: "smooth" });
-    // Update straight away instead of waiting for the smooth scroll to settle.
     setCanLeft(target > 1);
     setCanRight(target < max - 1);
   };

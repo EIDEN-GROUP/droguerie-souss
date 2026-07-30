@@ -10,10 +10,10 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RubriquesRouteImport } from './routes/rubriques'
-import { Route as CommandeRapideRouteImport } from './routes/commande-rapide'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CompteRouteImport } from './routes/compte'
+import { Route as CommandeRapideRouteImport } from './routes/commande-rapide'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -29,11 +29,6 @@ const RubriquesRoute = RubriquesRouteImport.update({
   path: '/rubriques',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CommandeRapideRoute = CommandeRapideRouteImport.update({
-  id: '/commande-rapide',
-  path: '/commande-rapide',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -47,6 +42,11 @@ const ConfirmationRoute = ConfirmationRouteImport.update({
 const CompteRoute = CompteRouteImport.update({
   id: '/compte',
   path: '/compte',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommandeRapideRoute = CommandeRapideRouteImport.update({
+  id: '/commande-rapide',
+  path: '/commande-rapide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutRoute = CheckoutRouteImport.update({
@@ -214,13 +214,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RubriquesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/commande-rapide': {
-      id: '/commande-rapide'
-      path: '/commande-rapide'
-      fullPath: '/commande-rapide'
-      preLoaderRoute: typeof CommandeRapideRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -240,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/compte'
       fullPath: '/compte'
       preLoaderRoute: typeof CompteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/commande-rapide': {
+      id: '/commande-rapide'
+      path: '/commande-rapide'
+      fullPath: '/commande-rapide'
+      preLoaderRoute: typeof CommandeRapideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout': {

@@ -30,6 +30,7 @@ function mapDbProduct(p: any) {
   return {
     ...p,
     price_mode: p.price_mode || "fixed",
+    subcategory: p.subcategory || undefined,
     image: p.image_url || p.image || "",
     images: (p.images_urls || p.images || []).filter(Boolean),
   };

@@ -22,6 +22,7 @@ export interface Product {
   id: string;
   name: string;
   category: Category;
+  subcategory?: string;
   price_mode?: "fixed" | "quote";
   price: number;
   unit: string;
