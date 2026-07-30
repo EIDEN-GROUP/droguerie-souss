@@ -18,7 +18,7 @@ export const Route = createFileRoute("/rubriques")({
   component: Shop,
   head: () => ({
     meta: [
-      { title: "Boutique   Droguerie Souss" },
+      { title: "Boutique   Souss Droguerie" },
       { name: "description", content: "Catalogue complet de matériaux de construction : carrelage, marbre, peinture, ciment, plomberie et plus." },
     ],
   }),
@@ -106,14 +106,14 @@ function Shop() {
         </div>
 
         <CatTabs open={filtersOpen}>
-          <CatChip active={activeCat === "all"} onClick={() => navigate({ to: "/produits", search: (prev) => ({ ...prev, cat: undefined }) })}>
+          <CatChip active={activeCat === "all"} onClick={() => navigate({ to: "/rubriques", search: (prev) => ({ ...prev, cat: undefined }) })}>
             Toutes ({products?.length ?? 0})
           </CatChip>
           {categories.map((c) => (
             <CatChip
               key={c.slug}
               active={activeCat === c.category}
-              onClick={() => navigate({ to: "/produits", search: (prev) => ({ ...prev, cat: c.category }) })}
+              onClick={() => navigate({ to: "/rubriques", search: (prev) => ({ ...prev, cat: c.category }) })}
             >
               {c.name}
             </CatChip>

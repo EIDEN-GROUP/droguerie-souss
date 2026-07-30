@@ -7,11 +7,10 @@ import { createOrder } from "@/lib/api/orders";
 
 import { cartTotal, useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
-import { saveLocalOrder } from "@/lib/localOrders";
 
 export const Route = createFileRoute("/checkout")({
   component: Checkout,
-  head: () => ({ meta: [{ title: "Devis   Droguerie Souss" }] }),
+  head: () => ({ meta: [{ title: "Devis   Souss Droguerie" }] }),
 });
 
 function Checkout() {
@@ -67,20 +66,6 @@ function Checkout() {
           items,
         },
       });
-      if (user) {
-        saveLocalOrder(user.email, {
-          id: order.id,
-          created_at: new Date().toISOString(),
-          total: order.total,
-          status: "pending",
-          items: items.map((i) => ({
-            product_name: i.product_name,
-            product_image: i.product_image || null,
-            price: i.price,
-            qty: i.qty,
-          })),
-        });
-      }
       clearCart();
       navigate({ to: "/confirmation" });
     } catch (err) {
@@ -143,7 +128,7 @@ function Checkout() {
               Ajoutez des produits avant de demander un devis.
             </p>
             <Link
-              to="/produits"
+              to="/rubriques"
               className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
             >
               Voir la boutique

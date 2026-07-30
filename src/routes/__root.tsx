@@ -77,14 +77,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Droguerie Souss S.A.R.L   Matériaux de construction Agadir" },
+      { title: "Souss Droguerie S.A.R.L   Matériaux de construction Agadir" },
       {
         name: "description",
         content:
-          "Droguerie Souss S.A.R.L : votre fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plâtre, électricité, plomberie et quincaillerie.",
+          "Souss Droguerie S.A.R.L : votre fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plâtre, électricité, plomberie et quincaillerie.",
       },
-      { name: "author", content: "Droguerie Souss S.A.R.L" },
-      { property: "og:title", content: "Droguerie Souss S.A.R.L   Matériaux de construction" },
+      { name: "author", content: "Souss Droguerie S.A.R.L" },
+      { property: "og:title", content: "Souss Droguerie S.A.R.L   Matériaux de construction" },
       { property: "og:description", content: "Votre partenaire de confiance en matériaux de construction dans le Souss." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

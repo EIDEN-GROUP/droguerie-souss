@@ -9,7 +9,7 @@ export function Footer() {
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <div className="h-16 w-16">
-              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Souss Droguerie Logo" className="h-full w-full object-cover" />
             </div>
           </div>
           <p className="mt-4 text-sm text-paper/70">
@@ -25,10 +25,10 @@ export function Footer() {
         <div className="min-w-0">
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Boutique</h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
-            <li><Link to="/produits" className="hover:text-sky">Tous les produits</Link></li>
-            <li><Link to="/produits" className="hover:text-sky">Carrelage & Marbre</Link></li>
-            <li><Link to="/produits" className="hover:text-sky">Peinture</Link></li>
-            <li><Link to="/produits" className="hover:text-sky">Électricité & Plomberie</Link></li>
+            <li><Link to="/rubriques" className="hover:text-sky">Tous les produits</Link></li>
+            <li><Link to="/rubriques" className="hover:text-sky">Carrelage & Marbre</Link></li>
+            <li><Link to="/rubriques" className="hover:text-sky">Peinture</Link></li>
+            <li><Link to="/rubriques" className="hover:text-sky">Électricité & Plomberie</Link></li>
           </ul>
         </div>
 
@@ -46,13 +46,13 @@ export function Footer() {
           <ul className="mt-4 space-y-3 text-sm text-paper/70">
             <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="https://maps.app.goo.gl/q54qmxeEv752bJMTA" className="min-w-0 break-words hover:text-white">Zone industrielle, Agadir, Maroc</a></li>
             <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="tel:+212528000000" className="min-w-0 break-words hover:text-white">+212 528 000 000</a></li>
-            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="mailto:contact@drogueriesouss.ma" className="min-w-0 break-words hover:text-white">contact@drogueriesouss.ma</a></li>
+            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="mailto:contact@soussdroguerie.com" className="min-w-0 break-words hover:text-white">contact@soussdroguerie.com</a></li>
           </ul>
         </div>
       </div>
       <div className="border-t border-paper/10">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-5 text-xs text-paper/60 sm:flex-row">
-          <span>© {new Date().getFullYear()} Droguerie Souss S.A.R.L. Tous droits réservés.</span>
+          <span>© {new Date().getFullYear()} Souss Droguerie S.A.R.L. Tous droits réservés.</span>
           <span>Matériaux de construction • Devis gratuit</span>
         </div>
       </div>

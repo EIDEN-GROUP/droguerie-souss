@@ -25,7 +25,7 @@ export function PageLoader() {
               className="relative"
             >
               <div className="h-20 w-20 p-2">
-              <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Souss Droguerie Logo" className="h-full w-full object-cover" />
             </div>
               <motion.div
                 className="absolute -inset-2 rounded-2xl border-2 border-accent-red"

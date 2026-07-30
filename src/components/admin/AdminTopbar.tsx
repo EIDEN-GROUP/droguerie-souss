@@ -11,9 +11,14 @@ const titles: Record<string, string> = {
   "/admin/contacts": "Contacts",
 };
 
+const roleLabels: Record<string, string> = {
+  admin: "Admin",
+  sales: "Ventes",
+};
+
 export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { logout, userEmail } = useAdminAuth();
+  const { logout, userEmail, role } = useAdminAuth();
   const title = titles[pathname] ?? "Dashboard";
 
   return (
@@ -41,7 +46,14 @@ export function AdminTopbar({ onMenuClick }: { onMenuClick: () => void }) {
 
       <div className="ml-auto flex items-center gap-4">
         {userEmail && (
-          <span className="hidden text-xs text-ink-soft sm:block">{userEmail}</span>
+          <span className="hidden items-center gap-2 text-xs text-ink-soft sm:flex">
+            {userEmail}
+            {role && (
+              <span className="rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
+                {roleLabels[role] ?? role}
+              </span>
+            )}
+          </span>
         )}
         <button
           onClick={() => logout()}

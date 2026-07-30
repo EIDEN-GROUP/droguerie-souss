@@ -10,6 +10,7 @@ import logoMobile from "@/assets/icon-blue.png";
 const links = [
   { to: "/", label: "Accueil" },
   { to: "/rubriques", label: "Rubriques" },
+  { to: "/commande-rapide", label: "Commande rapide" },
   { to: "/contact", label: "Contactez-nous" },
 ];
 
@@ -34,8 +35,8 @@ export function Navbar() {
             <a href="tel:+212528000000" className="flex items-center gap-1.5 hover:text-sky">
               <Phone className="h-3 w-3" /> +212 528 000 000
             </a>
-            <a href="mailto:contact@drogueriesouss.ma" className="hover:text-sky">
-              contact@drogueriesouss.ma
+            <a href="mailto:contact@soussdroguerie.com" className="hover:text-sky">
+              contact@soussdroguerie.com
             </a>
           </div>
         </div>
@@ -54,7 +55,7 @@ export function Navbar() {
             <div className="h-16 w-auto">
               <img
                 src={logo}
-                alt="Droguerie Souss Logo"
+                alt="Souss Droguerie Logo"
                 className="max-h-16 w-auto object-contain"
               />
             </div>
@@ -168,7 +169,7 @@ export function Navbar() {
                   <div className="h-10 w-10">
                     <img
                       src={logoMobile}
-                      alt="Droguerie Souss Logo"
+                      alt="Souss Droguerie Logo"
                       className="max-h-10 w-auto object-contain"
                     />
                   </div>

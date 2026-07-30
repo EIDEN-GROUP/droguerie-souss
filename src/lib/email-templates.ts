@@ -30,7 +30,7 @@ function baseHtml(content: string): string {
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="light only" />
-  <title>Droguerie Souss</title>
+  <title>Souss Droguerie</title>
 </head>
 <body style="margin:0;padding:0;background:${BRAND.cream};font-family:${BODY_FONT};-webkit-font-smoothing:antialiased;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:${BRAND.cream};padding:32px 0;">
@@ -48,7 +48,7 @@ function baseHtml(content: string): string {
           <!-- Logo header -->
           <tr>
             <td style="background:${BRAND.paper};padding:28px 32px 20px;text-align:center;border-left:1px solid ${BRAND.border};border-right:1px solid ${BRAND.border};">
-              <img src="${LOGO_URL}" alt="Droguerie Souss" width="190" style="display:inline-block;width:190px;max-width:70%;height:auto;" />
+              <img src="${LOGO_URL}" alt="Souss Droguerie" width="190" style="display:inline-block;width:190px;max-width:70%;height:auto;" />
             </td>
           </tr>
           <!-- Accent divider -->
@@ -67,13 +67,13 @@ function baseHtml(content: string): string {
           <tr>
             <td style="padding:20px 32px 0;text-align:center;">
               <p style="margin:0;font-size:12px;line-height:1.6;color:${BRAND.inkSoft};">
-                <strong style="color:${BRAND.ink};">Droguerie Souss S.A.R.L</strong><br />
+                <strong style="color:${BRAND.ink};">Souss Droguerie S.A.R.L</strong><br />
                 Zone Industrielle, Agadir 80000, Maroc
               </p>
               <p style="margin:8px 0 0;font-size:12px;color:${BRAND.inkSoft};">
                 <a href="tel:+212528000000" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 000 000</a>
                 &nbsp;&middot;&nbsp;
-                <a href="mailto:contact@drogueriesouss.ma" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">contact@drogueriesouss.ma</a>
+                <a href="mailto:contact@soussdroguerie.com" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">contact@soussdroguerie.com</a>
               </p>
             </td>
           </tr>
@@ -121,7 +121,7 @@ export function orderConfirmationEmail(order: {
 
   return baseHtml(`
     ${heading(isQuote ? "Nouvelle demande de devis" : "Nouvelle commande")}
-    <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">${isQuote ? "Une nouvelle demande de devis a été soumise sur Droguerie Souss." : "Une nouvelle commande a été passée sur Droguerie Souss."}</p>
+    <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">${isQuote ? "Une nouvelle demande de devis a été soumise sur Souss Droguerie." : "Une nouvelle commande a été passée sur Souss Droguerie."}</p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       ${labelValue(isQuote ? "Devis" : "Commande", `#${order.id.slice(0, 8)}`)}
@@ -164,7 +164,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
     </p>
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
     <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
-      Droguerie Souss S.A.R.L Zone Industrielle, Agadir 80000, Maroc
+      Souss Droguerie S.A.R.L Zone Industrielle, Agadir 80000, Maroc
     </p>
   `);
 }

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as RubriquesRouteImport } from './routes/rubriques'
+import { Route as CommandeRapideRouteImport } from './routes/commande-rapide'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CompteRouteImport } from './routes/compte'
@@ -26,6 +27,11 @@ import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 const RubriquesRoute = RubriquesRouteImport.update({
   id: '/rubriques',
   path: '/rubriques',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommandeRapideRoute = CommandeRapideRouteImport.update({
+  id: '/commande-rapide',
+  path: '/commande-rapide',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRoute
+  '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
@@ -107,6 +114,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/checkout': typeof CheckoutRoute
+  '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
@@ -123,6 +131,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/checkout': typeof CheckoutRoute
+  '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
@@ -140,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/checkout'
+    | '/commande-rapide'
     | '/compte'
     | '/confirmation'
     | '/contact'
@@ -154,6 +164,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/checkout'
+    | '/commande-rapide'
     | '/compte'
     | '/confirmation'
     | '/contact'
@@ -169,6 +180,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/checkout'
+    | '/commande-rapide'
     | '/compte'
     | '/confirmation'
     | '/contact'
@@ -185,6 +197,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   CheckoutRoute: typeof CheckoutRoute
+  CommandeRapideRoute: typeof CommandeRapideRoute
   CompteRoute: typeof CompteRoute
   ConfirmationRoute: typeof ConfirmationRoute
   ContactRoute: typeof ContactRoute
@@ -199,6 +212,13 @@ declare module '@tanstack/react-router' {
       path: '/rubriques'
       fullPath: '/rubriques'
       preLoaderRoute: typeof RubriquesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/commande-rapide': {
+      id: '/commande-rapide'
+      path: '/commande-rapide'
+      fullPath: '/commande-rapide'
+      preLoaderRoute: typeof CommandeRapideRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -310,6 +330,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   CheckoutRoute: CheckoutRoute,
+  CommandeRapideRoute: CommandeRapideRoute,
   CompteRoute: CompteRoute,
   ConfirmationRoute: ConfirmationRoute,
   ContactRoute: ContactRoute,

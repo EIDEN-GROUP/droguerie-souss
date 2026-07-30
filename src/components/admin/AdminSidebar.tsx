@@ -3,18 +3,22 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { LayoutDashboard, Package, Receipt, Tags, Store, MessageSquare } from "lucide-react";
 import logo from "@/assets/icon-white.png";
+import { useAdminAuth } from "@/lib/adminAuth";
 
-const links = [
-  { to: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { to: "/admin/products", label: "Produits", icon: Package },
-  { to: "/admin/categories", label: "Catégories", icon: Tags },
-  { to: "/admin/orders", label: "Ventes", icon: Receipt },
-  { to: "/admin/contacts", label: "Contacts", icon: MessageSquare },
+const allLinks = [
+  { to: "/admin", label: "Dashboard", icon: LayoutDashboard, roles: ["admin", "sales"] as const },
+  { to: "/admin/products", label: "Produits", icon: Package, roles: ["admin"] as const },
+  { to: "/admin/categories", label: "Catégories", icon: Tags, roles: ["admin"] as const },
+  { to: "/admin/orders", label: "Ventes", icon: Receipt, roles: ["admin", "sales"] as const },
+  { to: "/admin/contacts", label: "Contacts", icon: MessageSquare, roles: ["admin", "sales"] as const },
 ];
 
 function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const layoutId = useId();
+  const { role } = useAdminAuth();
+
+  const links = allLinks.filter((l) => (l.roles as readonly string[]).includes(role ?? "admin"));
 
   return (
     <div className="flex h-full flex-col text-paper">
@@ -25,7 +29,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         className="flex items-center gap-3 px-6 py-7"
       >
         <div className="h-11 w-11 shrink-0 overflow-hidden">
-          <img src={logo} alt="Droguerie Souss Logo" className="h-full w-full object-cover" />
+          <img src={logo} alt="Souss Droguerie Logo" className="h-full w-full object-cover" />
         </div>
         <div className="leading-tight">
           <div className="font-display text-base font-bold tracking-wide">Espace admin</div>
@@ -80,7 +84,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         <motion.div
           initial={{ opacity: 0, x: -16 }}
           animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.35, delay: 0.05 + links.length * 0.06, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.35, delay: 0.05 + allLinks.length * 0.06, ease: [0.22, 1, 0.36, 1] }}
         >
           <Link
             to="/"

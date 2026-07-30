@@ -13,7 +13,7 @@ const SMTP_HOST = Deno.env.get("SMTP_HOST") || "";
 const SMTP_PORT = Deno.env.get("SMTP_PORT") || "587";
 const SMTP_USER = Deno.env.get("SMTP_USER") || "";
 const SMTP_PASS = Deno.env.get("SMTP_PASS") || "";
-const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "Droguerie Souss <noreply@drogueriesouss.ma>";
+const FROM_EMAIL = Deno.env.get("FROM_EMAIL") || "Souss Droguerie <noreply@soussdroguerie.com>";
 const ADMIN_EMAIL = Deno.env.get("ADMIN_EMAIL") || "";
 
 Deno.serve(async (req: Request) => {

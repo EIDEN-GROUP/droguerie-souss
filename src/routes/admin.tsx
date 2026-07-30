@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -8,18 +8,29 @@ import { PageLoader } from "@/components/Loader";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin Droguerie Souss" }] }),
+  head: () => ({ meta: [{ title: "Admin Souss Droguerie" }] }),
 });
 
 function AdminLayout() {
   const [mounted, setMounted] = useState(false);
-  const { isAuthed, loading, checkSession } = useAdminAuth();
+  const { isAuthed, loading, role, checkSession } = useAdminAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setMounted(true);
     checkSession();
   }, []);
+
+  useEffect(() => {
+    if (!loading && isAuthed && role === "sales") {
+      const restricted = ["/admin/products", "/admin/categories"];
+      const path = window.location.pathname;
+      if (restricted.some((p) => path.startsWith(p))) {
+        navigate({ to: "/admin" });
+      }
+    }
+  }, [loading, isAuthed, role]);
 
   if (!mounted || loading) {
     return (

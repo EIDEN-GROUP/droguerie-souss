@@ -19,7 +19,7 @@ import { useApp } from "@/lib/store";
 
 export const Route = createFileRoute("/compte")({
   component: AccountPage,
-  head: () => ({ meta: [{ title: "Mon compte   Droguerie Souss" }] }),
+  head: () => ({ meta: [{ title: "Mon compte   Souss Droguerie" }] }),
 });
 
 type Tab = "orders" | "favorites";
@@ -151,7 +151,7 @@ function MyOrders({ email }: { email: string }) {
           Vos demandes de devis passées avec ce compte apparaîtront ici.
         </p>
         <Link
-          to="/produits"
+          to="/rubriques"
           className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
         >
           Voir la boutique
@@ -241,7 +241,7 @@ function MyFavorites() {
           Cliquez sur le cœur d'un produit pour le sauvegarder.
         </p>
         <Link
-          to="/produits"
+          to="/rubriques"
           className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
         >
           Explorer les produits

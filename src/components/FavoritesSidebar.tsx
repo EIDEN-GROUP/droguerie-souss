@@ -57,7 +57,7 @@ export function FavoritesSidebar() {
                     </p>
                   </div>
                   <Link
-                    to="/produits"
+                    to="/rubriques"
                     onClick={() => setFavOpen(false)}
                     className="rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-foreground hover:bg-brand-dark"
                   >

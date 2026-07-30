@@ -58,7 +58,7 @@ export const createOrder = createServerFn({ method: "POST" })
 
     const isQuote = type === "quote";
     sendEmail({
-      adminSubject: isQuote ? "Nouvelle demande de devis   Droguerie Souss" : "Nouvelle commande   Droguerie Souss",
+      adminSubject: isQuote ? "Nouvelle demande de devis   Souss Droguerie" : "Nouvelle commande   Souss Droguerie",
       adminHtml: orderConfirmationEmail({
         id: order.id,
         customer_name: ctx.data.customer_name,
@@ -77,7 +77,7 @@ export const createOrder = createServerFn({ method: "POST" })
       }),
       customerTo: ctx.data.customer_email || undefined,
       customerSubject: ctx.data.customer_email
-        ? (isQuote ? "Confirmation de votre demande de devis   Droguerie Souss" : "Confirmation de votre commande   Droguerie Souss")
+        ? (isQuote ? "Confirmation de votre demande de devis   Souss Droguerie" : "Confirmation de votre commande   Souss Droguerie")
         : undefined,
       customerHtml: ctx.data.customer_email
         ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total, type, items: ctx.data.items })

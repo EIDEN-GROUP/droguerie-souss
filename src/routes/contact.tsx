@@ -9,8 +9,8 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
   head: () => ({
     meta: [
-      { title: "Contact   Droguerie Souss" },
-      { name: "description", content: "Contactez Droguerie Souss S.A.R.L pour vos devis en matériaux de construction." },
+      { title: "Contact   Souss Droguerie" },
+      { name: "description", content: "Contactez Souss Droguerie S.A.R.L pour vos devis en matériaux de construction." },
     ],
   }),
 });
@@ -75,7 +75,7 @@ function Contact() {
             {[
               { icon: MapPin, title: "Adresse", text: "Zone Industrielle, Agadir 80000, Maroc", href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7" },
               { icon: Phone, title: "Téléphone", text: "+212 528 000 000", href: "tel:+212528000000" },
-              { icon: Mail, title: "Email", text: "contact@drogueriesouss.ma", href: "mailto:contact@drogueriesouss.ma" },
+              { icon: Mail, title: "Email", text: "contact@soussdroguerie.com", href: "mailto:contact@soussdroguerie.com" },
             ].map((c) => (
               <a
                 key={c.title}

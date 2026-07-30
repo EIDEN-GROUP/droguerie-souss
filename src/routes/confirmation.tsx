@@ -5,7 +5,7 @@ import { Layout } from "@/components/Layout";
 
 export const Route = createFileRoute("/confirmation")({
   component: Confirmation,
-  head: () => ({ meta: [{ title: "Confirmation   Droguerie Souss" }] }),
+  head: () => ({ meta: [{ title: "Confirmation   Souss Droguerie" }] }),
 });
 
 function Confirmation() {
