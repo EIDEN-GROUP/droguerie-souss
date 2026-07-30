@@ -98,7 +98,7 @@ function Checkout() {
             Accueil
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/produits" className="hover:text-brand">
+          <Link to="/rubriques" className="hover:text-brand">
             Shop
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -199,13 +199,14 @@ function Checkout() {
                 </Field>
               </Card>
 
-              <Card title="Mode de règlement">
+              <Card title="Information importante">
                 <div className="flex items-start gap-3 rounded-xl border border-brand/20 bg-brand/5 p-4">
                   <Info className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
                   <div>
-                    <p className="text-sm font-bold text-ink">À arranger avec le commercial</p>
+                    <p className="text-sm font-bold text-ink">À noter</p>
                     <p className="mt-0.5 text-xs text-ink-soft">
-                      Modalités définies avec notre représentant.
+                      Notre équipe vous contactera après réception de votre demande afin de
+                      confirmer les informations et finaliser votre commande.
                     </p>
                   </div>
                 </div>
@@ -215,50 +216,25 @@ function Checkout() {
             <div className="lg:sticky lg:top-28 self-start">
               <Card title="Récapitulatif">
                 <ul className="divide-y">
-                    {cart.map((i) => {
-                    const isQuote = i.product.price_mode === "quote";
-                    const pct2 = i.product.promo ?? 0;
-                    const price = pct2 > 0
-                      ? i.product.price * (1 - pct2 / 100)
-                      : i.product.price;
-                    return (
-                      <li key={i.product.id} className="flex gap-3 py-3">
-                        <img
-                          src={i.product.image}
-                          alt=""
-                          className="h-14 w-14 rounded object-cover"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
-                          <p className="text-[11px] text-ink-soft">
-                            {i.qty} × {isQuote ? "Prix à confirmer" : price.toFixed(0) + " MAD"}
-                          </p>
-                        </div>
-                        <p className="text-xs font-bold">{isQuote ? "Prix à confirmer" : (price * i.qty).toFixed(0) + " MAD"}</p>
-                      </li>
-                    );
-                  })}
+                  {cart.map((i) => (
+                    <li key={i.product.id} className="flex gap-3 py-3">
+                      <img
+                        src={i.product.image}
+                        alt=""
+                        className="h-14 w-14 rounded object-cover"
+                      />
+                      <div className="flex min-w-0 flex-1">
+                        <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
+                        <p className="text-[11px] text-ink-soft">Qté: {i.qty}</p>
+                      </div>
+                    </li>
+                  ))}
                 </ul>
-                <div className="mt-4 flex items-baseline justify-between border-t pt-4">
-                  <span className="text-sm text-ink-soft">Total estimé</span>
-                  <span className="font-display text-2xl font-bold text-brand">
-                    {(() => {
-                    const quoteItems = cart.filter(i => i.product.price_mode === "quote");
-                    if (quoteItems.length === cart.length) return "Prix à confirmer";
-                    const pricedTotal = cart
-                      .filter(i => i.product.price_mode !== "quote")
-                      .reduce((s, i) => {
-                        const pct = i.product.promo ?? 0;
-                        const price = pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price;
-                        return s + price * i.qty;
-                      }, 0);
-                    return pricedTotal.toFixed(0) + " MAD";
-                  })()}
+                <div className="mt-4 flex justify-center border-t pt-4">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-brand">
+                    Demander un devis
                   </span>
                 </div>
-                <p className="mt-2 text-[11px] text-ink-soft">
-                  Prix indicatifs. Le devis final sera confirmé par notre équipe.
-                </p>
                 {error && <p className="mt-2 text-xs font-semibold text-accent-red">{error}</p>}
                 <button
                   type="submit"

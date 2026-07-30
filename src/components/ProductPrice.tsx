@@ -2,80 +2,36 @@ import { cn } from "@/lib/utils";
 
 type PriceSize = "sm" | "md" | "lg" | "xl";
 
-const sizeStyles: Record<PriceSize, { price: string; unit: string }> = {
-  sm: { price: "text-xs font-semibold", unit: "text-[10px]" },
-  md: { price: "text-sm font-bold", unit: "text-xs" },
-  lg: { price: "font-display text-lg font-bold", unit: "text-xs" },
-  xl: { price: "font-display text-4xl font-bold", unit: "text-sm" },
+const sizeStyles: Record<PriceSize, string> = {
+  sm: "text-xs",
+  md: "text-sm",
+  lg: "text-sm",
+  xl: "text-base",
 };
 
 export function ProductPrice({
-  priceMode,
-  price,
-  unit,
   size = "lg",
   className,
 }: {
   priceMode?: "fixed" | "quote" | null;
-  price: number;
+  price?: number;
   unit?: string;
   size?: PriceSize;
   className?: string;
 }) {
-  const s = sizeStyles[size];
-
-  if (priceMode === "quote") {
-    return (
-      <span className={cn("inline-flex items-center gap-1 rounded bg-brand/10 px-2 py-0.5 text-[11px] font-bold uppercase tracking-wider text-brand", s.price, className)}>
-        Prix à confirmer
-      </span>
-    );
-  }
-
   return (
-    <span className={cn("inline-flex flex-wrap items-baseline gap-x-1", className)}>
-      <span className={cn("whitespace-nowrap text-ink", s.price)}>
-        {price.toFixed(0)} MAD
-      </span>
-      {unit && <span className={cn("whitespace-nowrap text-ink-soft", s.unit)}>/ {unit}</span>}
+    <span className={cn("inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 font-bold uppercase tracking-wider text-brand", sizeStyles[size], className)}>
+      Demander un devis
     </span>
   );
 }
 
-export function ProductPromoPrice({
-  priceMode,
-  price,
-  promoPrice,
-  unit,
-  size = "lg",
-}: {
+export function ProductPromoPrice(props: {
   priceMode?: "fixed" | "quote" | null;
-  price: number;
-  promoPrice: number | null;
+  price?: number;
+  promoPrice?: number | null;
   unit?: string;
   size?: PriceSize;
 }) {
-  const s = sizeStyles[size];
-
-  if (priceMode === "quote") {
-    return <ProductPrice priceMode={priceMode} price={price} unit={unit} size={size} />;
-  }
-
-  if (promoPrice) {
-    // Each amount stays nowrap so "12 MAD" cannot break across lines in a
-    // narrow card; the row wraps between amounts instead.
-    return (
-      <span className="inline-flex flex-wrap items-baseline gap-x-2">
-        <span className={cn("whitespace-nowrap font-display font-bold text-accent-red", s.price)}>
-          {promoPrice.toFixed(0)} MAD
-        </span>
-        <span className={cn("whitespace-nowrap text-ink-soft line-through", s.price === "text-4xl" ? "text-lg" : "text-xs")}>
-          {price.toFixed(0)} MAD
-        </span>
-        {unit && <span className={cn("whitespace-nowrap text-ink-soft", s.unit)}>/ {unit}</span>}
-      </span>
-    );
-  }
-
-  return <ProductPrice priceMode={priceMode} price={price} unit={unit} size={size} />;
+  return <ProductPrice {...props} />;
 }

@@ -190,10 +190,8 @@ function MyOrders({ email }: { email: string }) {
                 >
                   <status.icon className="h-3.5 w-3.5" /> {status.label}
                 </span>
-                <span className="font-display text-lg font-bold text-brand">
-                  {o.items.every((i: any) => i.price === 0)
-                    ? "Prix à confirmer"
-                    : o.items.reduce((s: number, i: any) => s + i.price * i.qty, 0).toFixed(0) + " MAD"}
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-brand">
+                  Demander un devis
                 </span>
               </div>
             </div>
@@ -209,11 +207,8 @@ function MyOrders({ email }: { email: string }) {
                   )}
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-1 text-sm font-semibold">{i.product_name}</p>
-                    <p className="text-xs text-ink-soft">
-                      {i.qty} × {i.price === 0 ? "Prix à confirmer" : Number(i.price).toFixed(0) + " MAD"}
-                    </p>
+                    <p className="text-xs text-ink-soft">Qté: {i.qty}</p>
                   </div>
-                  <p className="text-sm font-bold">{i.price === 0 ? "Prix à confirmer" : (i.price * i.qty).toFixed(0) + " MAD"}</p>
                 </li>
               ))}
             </ul>
@@ -276,8 +271,10 @@ function MyFavorites() {
             >
               {p.name}
             </Link>
-            <p className="mt-0.5 text-xs text-ink-soft">
-              {p.price} MAD / {p.unit}
+            <p className="mt-0.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-brand/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-brand">
+                Demander un devis
+              </span>
             </p>
             <div className="mt-auto flex items-center gap-2 pt-2">
               <button

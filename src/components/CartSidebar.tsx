@@ -1,12 +1,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
-import { useApp, cartTotal } from "@/lib/store";
+import { useApp } from "@/lib/store";
 import { ProductPrice } from "@/components/ProductPrice";
 
 export function CartSidebar() {
   const { cart, cartOpen, setCartOpen, removeFromCart, updateQty } = useApp();
-  const total = cartTotal(cart);
 
   return (
     <AnimatePresence>
@@ -125,26 +124,11 @@ export function CartSidebar() {
 
             {cart.length > 0 && (
               <footer className="border-t bg-cream px-5 py-4">
-                <div className="mb-3 flex items-baseline justify-between">
-                  <span className="text-sm text-ink-soft">Total estimé</span>
-                  <span className="font-display text-2xl font-bold text-brand">
-                    {(() => {
-                      const quoteItems = cart.filter(i => i.product.price_mode === "quote");
-                      if (quoteItems.length === cart.length) return "Prix à confirmer";
-                      const pricedTotal = cart
-                        .filter(i => i.product.price_mode !== "quote")
-                        .reduce((s, i) => {
-                          const pct = i.product.promo ?? 0;
-                          const price = pct > 0 ? i.product.price * (1 - pct / 100) : i.product.price;
-                          return s + price * i.qty;
-                        }, 0);
-                      return pricedTotal.toFixed(2) + " MAD";
-                    })()}
+                <div className="mb-4 flex items-center justify-center">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-brand/10 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-brand">
+                    Demander un devis
                   </span>
                 </div>
-                <p className="mb-3 text-[11px] text-ink-soft">
-                  Prix indicatifs. Le devis final vous sera confirmé par notre équipe.
-                </p>
                 <Link
                   to="/checkout"
                   onClick={() => setCartOpen(false)}
