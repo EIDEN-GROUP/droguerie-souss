@@ -19,7 +19,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay: (index % 4) * 0.06 }}
       onClick={() => navigate({ to: "/product/$id", params: { id: product.id } })}
-      className="group relative flex cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-paper transition hover:shadow-[var(--shadow-elevated)]"
+      className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border bg-paper transition hover:shadow-[var(--shadow-elevated)]"
     >
       <div className="relative aspect-square overflow-hidden bg-cream">
         <img
@@ -65,13 +65,18 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         </button>
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <span className="text-[10px] uppercase tracking-[0.2em] text-ink-soft">
+        {/* Kept to one line: long labels like "Ciment & Granulats" otherwise
+            wrap in narrow cards and make that card taller than its neighbours. */}
+        <span className="truncate text-[10px] uppercase tracking-[0.2em] text-ink-soft">
           {product.category}
         </span>
+        {/* min-h reserves both lines so a one-line name does not shorten the card. */}
         <span className="mt-1 line-clamp-2 text-sm font-semibold text-ink">
           {product.name}
         </span>
-        <div className="mt-2">
+        {/* Reserves the two-line promo price ("12 MAD 12 MAD / piece" wraps in
+            narrow cards) so every card ends up the same height. */}
+        <div className="mt-auto pt-2">
           <ProductPromoPrice
             priceMode={product.price_mode}
             price={product.price}

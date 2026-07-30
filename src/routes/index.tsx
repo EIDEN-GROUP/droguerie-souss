@@ -36,16 +36,21 @@ function Home() {
             <Loader2 className="h-8 w-8 animate-spin text-brand" />
           </div>
         ) : (
-          <Carousel opts={{ align: "start", loop: true }} className="mt-12">
+          <Carousel
+            opts={{ align: "start", loop: true }}
+            className="mt-12 mx-10 md:mx-14"
+          >
             <CarouselContent>
               {bestSellers.map((p: any, i: number) => (
-                <CarouselItem key={p.id} className="basis-1/2 sm:basis-1/3 lg:basis-1/4">
-                  <ProductCard product={p} index={i} />
+                <CarouselItem key={p.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                  <div className="mx-auto h-full max-w-xs md:max-w-none">
+                    <ProductCard product={p} index={i} />
+                  </div>
                 </CarouselItem>
               ))}
             </CarouselContent>
-            <CarouselPrevious className="left-2" />
-            <CarouselNext className="right-2" />
+            <CarouselPrevious className="-left-10 md:-left-14 h-10 w-10" />
+            <CarouselNext className="-right-10 md:-right-14 h-10 w-10" />
           </Carousel>
         )}
       </section>

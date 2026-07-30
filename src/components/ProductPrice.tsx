@@ -33,11 +33,11 @@ export function ProductPrice({
   }
 
   return (
-    <span className={cn("inline-flex items-baseline gap-1", className)}>
-      <span className={cn("text-ink", s.price)}>
+    <span className={cn("inline-flex flex-wrap items-baseline gap-x-1", className)}>
+      <span className={cn("whitespace-nowrap text-ink", s.price)}>
         {price.toFixed(0)} MAD
       </span>
-      {unit && <span className={cn("text-ink-soft", s.unit)}>/ {unit}</span>}
+      {unit && <span className={cn("whitespace-nowrap text-ink-soft", s.unit)}>/ {unit}</span>}
     </span>
   );
 }
@@ -62,15 +62,17 @@ export function ProductPromoPrice({
   }
 
   if (promoPrice) {
+    // Each amount stays nowrap so "12 MAD" cannot break across lines in a
+    // narrow card; the row wraps between amounts instead.
     return (
-      <span className="inline-flex items-baseline gap-2">
-        <span className={cn("font-display font-bold text-accent-red", s.price)}>
+      <span className="inline-flex flex-wrap items-baseline gap-x-2">
+        <span className={cn("whitespace-nowrap font-display font-bold text-accent-red", s.price)}>
           {promoPrice.toFixed(0)} MAD
         </span>
-        <span className={cn("text-ink-soft line-through", s.price === "text-4xl" ? "text-lg" : "text-xs")}>
+        <span className={cn("whitespace-nowrap text-ink-soft line-through", s.price === "text-4xl" ? "text-lg" : "text-xs")}>
           {price.toFixed(0)} MAD
         </span>
-        {unit && <span className={cn("text-ink-soft", s.unit)}>/ {unit}</span>}
+        {unit && <span className={cn("whitespace-nowrap text-ink-soft", s.unit)}>/ {unit}</span>}
       </span>
     );
   }
