@@ -40,10 +40,14 @@ export function SuppliersCarousel() {
       </div>
 
       <div className="relative mt-10">
-        <div className="flex gap-4 animate-[marquee_4s_linear_infinite] lg:animate-[marquee_10s_linear_infinite]">
+        <div className="flex gap-4 animate-[marquee_4s_linear_infinite] hover:[animation-play-state:paused] lg:animate-[marquee_10s_linear_infinite]">
           {doubled.map((supplier, i) => (
-            <div key={i} className="grid h-16 min-w-[140px] shrink-0 place-items-center rounded-xl border bg-paper px-4 shadow-sm md:h-24 md:min-w-[200px] md:px-8">
-              <img src={supplier.logo} alt={supplier.name} className="max-h-8 w-auto object-contain md:max-h-12" />
+            <div key={i} className="group grid h-16 min-w-[140px] shrink-0 place-items-center rounded-xl border bg-paper px-4 shadow-sm transition-shadow duration-300 hover:shadow-md md:h-24 md:min-w-[200px] md:px-8">
+              <img
+                src={supplier.logo}
+                alt={supplier.name}
+                className="max-h-8 w-auto object-contain opacity-60 grayscale transition duration-300 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 md:max-h-12"
+              />
             </div>
           ))}
         </div>

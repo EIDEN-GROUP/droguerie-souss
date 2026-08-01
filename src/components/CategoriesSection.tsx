@@ -5,6 +5,51 @@ import { categories } from "@/lib/products";
 import { SectionHeader } from "./SectionHeader";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
+function CategoryCardBody({
+  name,
+  image,
+  compact = false,
+  active = false,
+}: {
+  name: string;
+  image: string;
+  compact?: boolean;
+  active?: boolean;
+}) {
+  return (
+    <>
+      <img
+        src={image}
+        alt={name}
+        loading="lazy"
+        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${
+          active ? "scale-100" : "group-hover:scale-110"
+        }`}
+      />
+      {/* Dark by default so the label reads; lifts on hover and while active to reveal the photo. */}
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40 transition-opacity duration-300 ${
+          active ? "opacity-0" : "opacity-100 group-hover:opacity-0"
+        }`}
+      />
+      <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-5"}`}>
+        <div
+          className={`font-display uppercase tracking-wide [text-shadow:0_2px_8px_rgba(0,0,0,0.85)] ${
+            compact ? "text-xs leading-tight sm:text-sm" : "text-xl"
+          }`}
+        >
+          {name}
+        </div>
+        {!compact && (
+          <div className="text-xs text-white/90 mt-1 flex items-center gap-1 opacity-0 transition group-hover:opacity-100 [text-shadow:0_2px_8px_rgba(0,0,0,0.85)]">
+            Voir les produits <ArrowRight className="h-3 w-3" />
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 export function CategoriesSection({
   variant = "home",
   onCategorySelect,
@@ -14,39 +59,48 @@ export function CategoriesSection({
   onCategorySelect?: (category: string) => void;
   selectedCategory?: string;
 }) {
+  const isShop = variant === "shop";
+
   return (
-    <section className={variant === "home" ? "container-x py-20" : ""}>
-      {variant === "home" && (
+    <section className={isShop ? "border-b bg-cream py-8" : "container-x py-20"}>
+      {!isShop && (
         <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />
       )}
       <Carousel
         opts={{ align: "start", loop: true }}
-        className={variant === "home" ? "mt-10 mx-10 md:mx-14" : "mx-10 md:mx-14"}
+        className={isShop ? "mx-12 md:mx-16" : "mt-10 mx-10 md:mx-14"}
       >
-        <CarouselContent>
+        <CarouselContent className={isShop ? "-ml-3" : undefined}>
           {categories.map((c, i) => (
-            <CarouselItem key={c.slug} className="basis-full md:basis-1/3 lg:basis-1/4">
-              <div className="mx-auto max-w-sm md:max-w-none">
+            <CarouselItem
+              key={c.slug}
+              className={
+                isShop
+                  ? "basis-1/2 pl-3 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+                  : "basis-full md:basis-1/3 lg:basis-1/4"
+              }
+            >
+              <div className={isShop ? "" : "mx-auto max-w-sm md:max-w-none"}>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
                   transition={{ delay: i * 0.04 }}
                 >
-                  {variant === "shop" && onCategorySelect ? (
+                  {isShop && onCategorySelect ? (
                     <button
                       type="button"
                       onClick={() => onCategorySelect(c.category)}
-                      className={`group block relative w-full aspect-[4/3] overflow-hidden rounded-2xl text-left transition ${
-                        selectedCategory === c.category ? "ring-2 ring-brand ring-offset-2" : ""
+                      className={`group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left transition duration-300 ${
+                        selectedCategory === c.category
+                          ? "scale-95 ring-2 ring-brand ring-offset-2"
+                          : ""
                       }`}
                     >
-                      <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                        <div className="font-display uppercase text-xl tracking-wide">{c.name}</div>
-                        <div className="text-xs text-white/80 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                          Voir les produits <ArrowRight className="h-3 w-3" />
-                        </div>
-                      </div>
+                      <CategoryCardBody
+                        name={c.name}
+                        image={c.image}
+                        compact
+                        active={selectedCategory === c.category}
+                      />
                     </button>
                   ) : (
                     <Link
@@ -54,14 +108,7 @@ export function CategoriesSection({
                       search={{ cat: c.category }}
                       className="group block relative aspect-[4/3] overflow-hidden rounded-2xl"
                     >
-                      <img src={c.image} alt={c.name} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-                        <div className="font-display uppercase text-xl tracking-wide">{c.name}</div>
-                        <div className="text-xs text-white/80 mt-1 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
-                          Voir les produits <ArrowRight className="h-3 w-3" />
-                        </div>
-                      </div>
+                      <CategoryCardBody name={c.name} image={c.image} />
                     </Link>
                   )}
                 </motion.div>
@@ -69,8 +116,8 @@ export function CategoriesSection({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="-left-10 md:-left-14 h-10 w-10" />
-        <CarouselNext className="-right-10 md:-right-14 h-10 w-10" />
+        <CarouselPrevious className={isShop ? "-left-12 h-9 w-9 md:-left-14" : "-left-10 md:-left-14 h-10 w-10"} />
+        <CarouselNext className={isShop ? "-right-12 h-9 w-9 md:-right-14" : "-right-10 md:-right-14 h-10 w-10"} />
       </Carousel>
       {variant === "home" && (
         <div className="mt-10 text-center">

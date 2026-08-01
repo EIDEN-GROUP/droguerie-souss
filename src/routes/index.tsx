@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
-import { HeroCarousel } from "@/components/HeroCarousel";
+import { Hero } from "@/components/Hero";
 import { ServiceBar } from "@/components/ServiceBar";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -26,7 +26,7 @@ function Home() {
 
   return (
     <Layout>
-      <HeroCarousel />
+      <Hero />
       {/* <ServiceBar /> */}
 
       <CategoriesSection />

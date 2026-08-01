@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
@@ -6,7 +6,7 @@ import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts } from "@/lib/adminStore";
-import { categories, type Category } from "@/lib/products";
+import { type Category } from "@/lib/products";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
@@ -53,18 +53,17 @@ function Shop() {
     return Array.from(values).sort();
   }, [activeCat, productList]);
 
+  /** Only shown once a category is picked: its subcategories. Picking the category
+   *  itself happens on the cards above, so the chips never repeat them. */
   const tabs: SubcatTab[] = useMemo(() => {
-    if (!activeCat) {
-      return [{ label: "Toutes", value: undefined } as SubcatTab, ...categories.map((c) => ({ label: c.name, value: c.category }))];
-    }
-    const subs = subcategories.map((s) => ({ label: s, value: s }));
-    return [{ label: "Toutes", value: undefined } as SubcatTab, ...subs];
+    if (!activeCat || subcategories.length === 0) return [];
+    return [
+      { label: "Toutes", value: undefined } as SubcatTab,
+      ...subcategories.map((s) => ({ label: s, value: s })),
+    ];
   }, [activeCat, subcategories]);
 
-  const activeTab = useMemo(() => {
-    if (!activeCat) return activeCat ?? undefined;
-    return activeSubcat ?? undefined;
-  }, [activeCat, activeSubcat]);
+  const activeTab = activeSubcat;
 
   const filtered = useMemo(() => {
     let list = productList;
@@ -92,36 +91,41 @@ function Shop() {
 
   const handleTabClick = useCallback(
     (value: string | undefined) => {
-      const fromCat = value && categories.some((c) => c.category === value);
-      if (fromCat) {
-        navigate({ search: (prev: Search) => ({ ...prev, cat: value, subcat: undefined }) });
-      } else {
-        navigate({ search: (prev: Search) => ({ ...prev, subcat: value }) });
-      }
+      navigate({ search: (prev: Search) => ({ ...prev, subcat: value }) });
     },
     [navigate],
   );
 
   return (
     <Layout>
-      <div className="bg-gradient-to-br from-brand to-brand-dark py-16 text-paper">
-        <div className="container-x">
+      <section className="relative overflow-hidden bg-brand-secondary text-paper">
+        <div className="container-x relative py-10 md:py-14">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-sky">
-              Notre catalogue
-            </span>
-            <h1 className="mt-3 font-display text-4xl font-bold uppercase sm:text-5xl md:text-6xl">
-              Boutique
-            </h1>
-            <p className="mt-3 max-w-xl text-paper/80">
-              {products?.length ?? 0} produits sélectionnés pour tous vos projets de construction.
-            </p>
+            <div>
+              <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
+                <Link to="/" className="transition hover:text-paper">
+                  Accueil
+                </Link>
+                <span>/</span>
+                <span className="text-sky">Boutique</span>
+              </nav>
+
+              <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
+                Boutique
+              </h1>
+              <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
+              <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
+                Matériaux, outillage et finitions sélectionnés pour tous vos projets de
+                construction dans le Souss.
+              </p>
+            </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       <CategoriesSection
         variant="shop"
@@ -167,17 +171,19 @@ function Shop() {
           </select>
         </div>
 
-        <CatTabs open={filtersOpen}>
-          {tabs.map((tab) => (
-            <CatChip
-              key={tab.label}
-              active={tab.value === activeTab}
-              onClick={() => handleTabClick(tab.value)}
-            >
-              {tab.label}{!activeCat && tab.value === undefined ? ` (${products?.length ?? 0})` : ""}
-            </CatChip>
-          ))}
-        </CatTabs>
+        {tabs.length > 0 && (
+          <CatTabs open={filtersOpen}>
+            {tabs.map((tab) => (
+              <CatChip
+                key={tab.label}
+                active={tab.value === activeTab}
+                onClick={() => handleTabClick(tab.value)}
+              >
+                {tab.label}
+              </CatChip>
+            ))}
+          </CatTabs>
+        )}
       </div>
 
       <div className="container-x py-10">
@@ -201,6 +207,7 @@ function Shop() {
     </Layout>
   );
 }
+
 
 /** Two 36px arrow buttons plus the flex gaps around them. */
 const ARROWS_WIDTH = 88;
