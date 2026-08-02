@@ -23,6 +23,7 @@ export interface Order {
   customer: OrderCustomer;
   payment: PaymentMethod;
   type?: "order" | "quote";
+  note?: string | null;
   items: OrderItem[];
   total: number;
   status: OrderStatus;

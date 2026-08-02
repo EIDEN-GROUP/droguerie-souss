@@ -93,6 +93,16 @@ function labelValue(label: string, value: string): string {
   return `<tr><td style="padding:4px 0;font-size:13px;color:${BRAND.inkSoft};width:120px;vertical-align:top;">${label}</td><td style="padding:4px 0;font-size:13px;color:${BRAND.ink};font-weight:600;">${value}</td></tr>`;
 }
 
+/** Free-text written by the customer goes through this before landing in an email body. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/\n/g, "<br />");
+}
+
 export function orderConfirmationEmail(order: {
   id: string;
   customer_name: string;
@@ -103,6 +113,7 @@ export function orderConfirmationEmail(order: {
   payment_method: string;
   total: number;
   type?: "order" | "quote";
+  note?: string | null;
   items: { product_name: string; qty: number; price: number }[];
 }): string {
   const isQuote = order.type === "quote";
@@ -131,6 +142,7 @@ export function orderConfirmationEmail(order: {
       ${labelValue("Ville", order.customer_city)}
       ${labelValue("Adresse", order.customer_address)}
       ${labelValue("Paiement", order.payment_method === "cod" ? "Livraison" : order.payment_method === "bank" ? "Virement" : "Représentant")}
+      ${order.note ? labelValue("Besoin décrit", escapeHtml(order.note)) : ""}
     </table>
 
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />

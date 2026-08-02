@@ -39,6 +39,7 @@ function Shop() {
   const [query, setQuery] = useState(urlQ || "");
   const [sort, setSort] = useState<"default" | "asc" | "desc">("default");
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const resultsRef = useRef<HTMLDivElement>(null);
 
   const productList = useMemo(() => (products || []) as unknown as any[], [products]);
 
@@ -83,7 +84,15 @@ function Shop() {
       if (category === activeCat) {
         navigate({ search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }) });
       } else {
-        navigate({ search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }) });
+        /** resetScroll: false — the router's scroll reset would otherwise cancel the jump below. */
+        navigate({
+          search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
+          resetScroll: false,
+        });
+        /** Next frame, so the filtered grid has laid out before we scroll to it. */
+        requestAnimationFrame(() => {
+          resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
       }
     },
     [activeCat, navigate],
@@ -186,7 +195,8 @@ function Shop() {
         )}
       </div>
 
-      <div className="container-x py-10">
+      {/* scroll-mt clears the sticky header + filter bar when we jump here on category select. */}
+      <div ref={resultsRef} className="container-x scroll-mt-[14rem] py-10">
         {isError && (
           <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
             Erreur de chargement. Veuillez réessayer.

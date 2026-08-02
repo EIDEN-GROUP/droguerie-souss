@@ -11,21 +11,34 @@ export const createOrder = createServerFn({ method: "POST" })
     const total = ctx.data.items.reduce((sum, i) => sum + i.price * i.qty, 0);
 
     const type = ctx.data.type || "order";
-    const { data: order, error: orderError } = await supabase
+    const row = {
+      customer_name: ctx.data.customer_name,
+      customer_phone: ctx.data.customer_phone,
+      customer_email: ctx.data.customer_email || null,
+      customer_city: ctx.data.customer_city,
+      customer_address: ctx.data.customer_address,
+      payment_method: ctx.data.payment_method,
+      total,
+      type,
+      status: "pending",
+    };
+
+    /** `note` needs migration 011. Until it runs, retry without it rather than
+     *  losing the order — the note still reaches us in the email below. */
+    let { data: order, error: orderError } = await supabase
       .from("orders")
-      .insert({
-        customer_name: ctx.data.customer_name,
-        customer_phone: ctx.data.customer_phone,
-        customer_email: ctx.data.customer_email || null,
-        customer_city: ctx.data.customer_city,
-        customer_address: ctx.data.customer_address,
-        payment_method: ctx.data.payment_method,
-        total,
-        type,
-        status: "pending",
-      })
+      .insert({ ...row, note: ctx.data.note || null })
       .select()
       .single();
+
+    if (orderError?.code === "42703") {
+      console.warn("orders.note missing (migration 011 not applied) — saving without it");
+      ({ data: order, error: orderError } = await supabase
+        .from("orders")
+        .insert(row)
+        .select()
+        .single());
+    }
 
     if (orderError) throw orderError;
 
@@ -69,6 +82,7 @@ export const createOrder = createServerFn({ method: "POST" })
         payment_method: ctx.data.payment_method,
         total,
         type,
+        note: ctx.data.note,
         items: ctx.data.items.map((i) => ({
           product_name: i.product_name,
           qty: i.qty,

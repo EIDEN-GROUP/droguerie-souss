@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
@@ -48,21 +48,34 @@ function Contact() {
 
   return (
     <Layout>
-      <div className="bg-gradient-to-br from-brand to-brand-dark py-16 text-paper">
-        <div className="container-x">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-sky">
-              Nous joindre
-            </span>
-            <h1 className="mt-3 font-display text-4xl font-bold uppercase sm:text-5xl md:text-6xl">
-              Contact
-            </h1>
-            <p className="mt-3 max-w-xl text-paper/80">
-              Notre équipe vous répond sous 24h ouvrées pour tous vos projets.
-            </p>
+      <section className="relative overflow-hidden bg-brand-secondary text-paper">
+        <div className="container-x relative py-10 md:py-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+          >
+            <div>
+              <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
+                <Link to="/" className="transition hover:text-paper">
+                  Accueil
+                </Link>
+                <span>/</span>
+                <span className="text-sky">Contact</span>
+              </nav>
+
+              <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
+                Contact
+              </h1>
+              <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
+              <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
+                Notre équipe vous répond sous 24h ouvrées pour tous vos projets de
+                construction dans le Souss.
+              </p>
+            </div>
           </motion.div>
         </div>
-      </div>
+      </section>
 
       <div className="container-x py-16">
         <div className="grid gap-10 lg:grid-cols-3">

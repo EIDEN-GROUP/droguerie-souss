@@ -69,6 +69,17 @@ export function OrderDetailSheet({
                 </p>
               </div>
 
+              {order.note && (
+                <div>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-soft">
+                    Besoin décrit
+                  </p>
+                  <p className="whitespace-pre-line rounded-xl border bg-cream p-4 text-sm leading-relaxed text-ink-soft">
+                    {order.note}
+                  </p>
+                </div>
+              )}
+
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-ink-soft">Articles</p>
                 <ul className="divide-y rounded-xl border">

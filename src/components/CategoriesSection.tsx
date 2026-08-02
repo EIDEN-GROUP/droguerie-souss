@@ -32,6 +32,10 @@ function CategoryCardBody({
           active ? "opacity-0" : "opacity-100 group-hover:opacity-0"
         }`}
       />
+      {/* Active card keeps the photo clear, so the label gets its own footer gradient. */}
+      {active && (
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
+      )}
       <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-5"}`}>
         <div
           className={`font-display uppercase tracking-wide [text-shadow:0_2px_8px_rgba(0,0,0,0.85)] ${
@@ -70,13 +74,17 @@ export function CategoriesSection({
         opts={{ align: "start", loop: true }}
         className={isShop ? "mx-12 md:mx-16" : "mt-10 mx-10 md:mx-14"}
       >
-        <CarouselContent className={isShop ? "-ml-3" : undefined}>
+        <CarouselContent className={isShop ? "-ml-3 items-center" : undefined}>
           {categories.map((c, i) => (
             <CarouselItem
               key={c.slug}
               className={
                 isShop
-                  ? "basis-1/2 pl-3 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+                  ? `pl-3 transition-[flex-basis] duration-300 ${
+                      selectedCategory === c.category
+                        ? "basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-[28%]"
+                        : "basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+                    }`
                   : "basis-full md:basis-1/3 lg:basis-1/4"
               }
             >
@@ -89,16 +97,12 @@ export function CategoriesSection({
                     <button
                       type="button"
                       onClick={() => onCategorySelect(c.category)}
-                      className={`group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left transition duration-300 ${
-                        selectedCategory === c.category
-                          ? "scale-95 ring-2 ring-brand ring-offset-2"
-                          : ""
-                      }`}
+                      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left transition duration-300"
                     >
                       <CategoryCardBody
                         name={c.name}
                         image={c.image}
-                        compact
+                        compact={selectedCategory !== c.category}
                         active={selectedCategory === c.category}
                       />
                     </button>

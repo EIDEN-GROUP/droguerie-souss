@@ -36,6 +36,7 @@ export interface DbOrder {
   total: number;
   status: "pending" | "confirmed" | "cancelled";
   type: "order" | "quote";
+  note: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -74,6 +75,7 @@ export interface OrderInput {
   customer_address: string;
   payment_method: "cod" | "bank" | "rep";
   type?: "order" | "quote";
+  note?: string;
   items: {
     product_id: string;
     product_name: string;
