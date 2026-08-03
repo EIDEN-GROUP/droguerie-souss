@@ -24,7 +24,7 @@ function AdminLayout() {
 
   useEffect(() => {
     if (!loading && isAuthed && role === "sales") {
-      const restricted = ["/admin/products", "/admin/categories"];
+      const restricted = ["/admin/products", "/admin/categories", "/admin/subcategories"];
       const path = window.location.pathname;
       if (restricted.some((p) => path.startsWith(p))) {
         navigate({ to: "/admin" });

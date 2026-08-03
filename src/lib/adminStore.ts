@@ -21,6 +21,12 @@ import {
   deleteCategory as deleteCategoryFn,
 } from "@/lib/api/categories";
 import {
+  getSubcategories as getSubcategoriesFn,
+  createSubcategory as createSubcategoryFn,
+  updateSubcategory as updateSubcategoryFn,
+  deleteSubcategory as deleteSubcategoryFn,
+} from "@/lib/api/subcategories";
+import {
   getContactMessages as getContactMessagesFn,
   deleteContactMessage as deleteContactMessageFn,
 } from "@/lib/api/contact";
@@ -42,6 +48,7 @@ export const queryKeys = {
   orders: ["orders"] as const,
   orderItems: (orderId: string) => ["orders", orderId, "items"] as const,
   categories: ["categories"] as const,
+  subcategories: ["subcategories"] as const,
   contacts: ["contacts"] as const,
 };
 
@@ -106,20 +113,66 @@ export function useCreateCategory() {
   });
 }
 
+/** Renaming a category cascades onto its subcategories, so refresh both lists. */
 export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ name, patch }: { name: string; patch: { name?: string; slug?: string; description?: string } }) =>
       updateCategoryFn({ data: { name, patch } }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.categories }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.categories });
+      qc.invalidateQueries({ queryKey: queryKeys.subcategories });
+    },
   });
 }
 
+/** Deleting a category cascades onto its subcategories, so refresh both lists. */
 export function useDeleteCategory() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (name: string) => deleteCategoryFn({ data: { name } }),
-    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.categories }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.categories });
+      qc.invalidateQueries({ queryKey: queryKeys.subcategories });
+    },
+  });
+}
+
+export function useSubcategories() {
+  return useQuery({
+    queryKey: queryKeys.subcategories,
+    queryFn: () => getSubcategoriesFn(),
+  });
+}
+
+export function useCreateSubcategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { name: string; slug: string; description: string; category: string }) =>
+      createSubcategoryFn({ data }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.subcategories }),
+  });
+}
+
+export function useUpdateSubcategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string;
+      patch: { name?: string; slug?: string; description?: string; category?: string };
+    }) => updateSubcategoryFn({ data: { id, patch } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.subcategories }),
+  });
+}
+
+export function useDeleteSubcategory() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteSubcategoryFn({ data: { id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.subcategories }),
   });
 }
 
