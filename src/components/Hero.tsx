@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import hero1 from "@/assets/hero section.mp4";
 
 export function Hero() {
   return (
@@ -12,7 +11,16 @@ export function Hero() {
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0 aspect-video"
       >
-        <video src={hero1} autoPlay loop muted className="h-full w-full object-cover object-center" />
+        <video
+          src="/hero.mp4"
+          poster="/hero-poster.jpg"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="h-full w-full object-cover object-center"
+        />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
       </motion.div>
 
