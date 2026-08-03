@@ -108,7 +108,8 @@ export function useCategories() {
 export function useCreateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: { name: string; slug: string; description: string }) => createCategoryFn({ data }),
+    mutationFn: (data: { name: string; slug: string; description: string; image_url?: string | null }) =>
+      createCategoryFn({ data }),
     onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.categories }),
   });
 }
@@ -117,8 +118,13 @@ export function useCreateCategory() {
 export function useUpdateCategory() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ name, patch }: { name: string; patch: { name?: string; slug?: string; description?: string } }) =>
-      updateCategoryFn({ data: { name, patch } }),
+    mutationFn: ({
+      name,
+      patch,
+    }: {
+      name: string;
+      patch: { name?: string; slug?: string; description?: string; image_url?: string | null };
+    }) => updateCategoryFn({ data: { name, patch } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: queryKeys.categories });
       qc.invalidateQueries({ queryKey: queryKeys.subcategories });

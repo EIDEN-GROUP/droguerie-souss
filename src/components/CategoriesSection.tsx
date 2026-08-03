@@ -1,7 +1,9 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { categories } from "@/lib/products";
+import { useMemo } from "react";
+import { categories as fallbackCategories, categoryImage, type CategoryInfo } from "@/lib/products";
+import { useCategories } from "@/lib/adminStore";
 import { SectionHeader } from "./SectionHeader";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
 
@@ -64,6 +66,20 @@ export function CategoriesSection({
   selectedCategory?: string;
 }) {
   const isShop = variant === "shop";
+  const { data: dbCategories } = useCategories();
+
+  /** Admin-managed categories drive the carousel; the bundled list only covers the first paint
+   *  and any fetch failure, so the section never renders empty. */
+  const items: CategoryInfo[] = useMemo(() => {
+    if (!dbCategories || dbCategories.length === 0) return fallbackCategories;
+    return dbCategories.map((c) => ({
+      slug: c.slug,
+      category: c.name,
+      name: c.name,
+      image: c.image_url || categoryImage(c.slug),
+      description: c.description,
+    }));
+  }, [dbCategories]);
 
   return (
     <section className={isShop ? "border-b bg-cream py-8" : "container-x py-20"}>
@@ -75,9 +91,9 @@ export function CategoriesSection({
         className={isShop ? "mx-12 md:mx-16" : "mt-10 mx-10 md:mx-14"}
       >
         <CarouselContent className={isShop ? "-ml-3 items-center" : undefined}>
-          {categories.map((c, i) => (
+          {items.map((c, i) => (
             <CarouselItem
-              key={c.slug}
+              key={c.category}
               className={
                 isShop
                   ? `pl-3 transition-[flex-basis] duration-300 ${

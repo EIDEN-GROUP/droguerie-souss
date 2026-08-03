@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FileDown, FileText, Plus, Pencil, Trash2, Upload, Loader2 } from "lucide-react";
+import { FileDown, FileText, ImagePlus, Link as LinkIcon, Plus, Pencil, Trash2, Upload, Loader2, X } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
 import Papa from "papaparse";
 import {
@@ -35,10 +35,20 @@ import {
 import { TablePagination } from "@/components/admin/TablePagination";
 import { usePagination } from "@/hooks/usePagination";
 import { importCategoriesCsv, exportCategoriesCsv } from "@/lib/api/categories";
+import { getUploadUrl } from "@/lib/api/uploads";
 
 export const Route = createFileRoute("/admin/categories")({
   component: AdminCategories,
 });
+
+const MAX_IMAGE_BYTES = 1_500_000;
+
+interface CategoryRow {
+  name: string;
+  slug: string;
+  description: string;
+  image_url: string | null;
+}
 
 function AdminCategories() {
   const { data: categories, isLoading, isError } = useCategories();
@@ -47,13 +57,16 @@ function AdminCategories() {
   const deleteCategory = useDeleteCategory();
 
   const [formOpen, setFormOpen] = useState(false);
-  const [editing, setEditing] = useState<{ name: string; slug: string; description: string } | undefined>(undefined);
+  const [editing, setEditing] = useState<CategoryRow | undefined>(undefined);
   const [toDelete, setToDelete] = useState<string | null>(null);
 
   const [formName, setFormName] = useState("");
   const [formSlug, setFormSlug] = useState("");
   const [formDesc, setFormDesc] = useState("");
+  const [formImage, setFormImage] = useState("");
   const [formError, setFormError] = useState("");
+  const [imageBusy, setImageBusy] = useState(false);
+  const [imageUrlInput, setImageUrlInput] = useState("");
 
   const [importBusy, setImportBusy] = useState(false);
   const [exportBusy, setExportBusy] = useState(false);
@@ -69,17 +82,60 @@ function AdminCategories() {
     setFormName("");
     setFormSlug("");
     setFormDesc("");
+    setFormImage("");
+    setImageUrlInput("");
     setFormError("");
     setFormOpen(true);
   };
 
-  const openEdit = (c: { name: string; slug: string; description: string }) => {
+  const openEdit = (c: CategoryRow) => {
     setEditing(c);
     setFormName(c.name);
     setFormSlug(c.slug);
     setFormDesc(c.description);
+    setFormImage(c.image_url || "");
+    setImageUrlInput("");
     setFormError("");
     setFormOpen(true);
+  };
+
+  const handleImageSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    setFormError("");
+    if (file.size > MAX_IMAGE_BYTES) {
+      setFormError("L'image dépasse 1.5 Mo.");
+      return;
+    }
+    setImageBusy(true);
+    try {
+      const { signedUrl, publicUrl } = await getUploadUrl();
+      const res = await fetch(signedUrl, {
+        method: "PUT",
+        body: file.slice(),
+        headers: { "Content-Type": file.type },
+      });
+      if (!res.ok) throw new Error(`Échec de l'upload (${res.status})`);
+      setFormImage(publicUrl);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : "Erreur lors de l'upload de l'image.");
+    } finally {
+      setImageBusy(false);
+    }
+  };
+
+  const addImageUrl = () => {
+    const trimmed = imageUrlInput.trim();
+    if (!trimmed) return;
+    try {
+      new URL(trimmed);
+      setFormImage(trimmed);
+      setImageUrlInput("");
+      setFormError("");
+    } catch {
+      setFormError("URL invalide");
+    }
   };
 
   const handleSave = async () => {
@@ -87,17 +143,17 @@ function AdminCategories() {
     if (!formName.trim()) { setFormError("Le nom est requis."); return; }
     if (!formSlug.trim()) { setFormError("Le slug est requis."); return; }
     try {
+      const payload = {
+        name: formName.trim(),
+        slug: formSlug.trim(),
+        description: formDesc.trim(),
+        /** Empty clears the image, so the storefront falls back to its bundled artwork. */
+        image_url: formImage.trim() || null,
+      };
       if (editing) {
-        await updateCategory.mutateAsync({
-          name: editing.name,
-          patch: { name: formName.trim(), slug: formSlug.trim(), description: formDesc.trim() },
-        });
+        await updateCategory.mutateAsync({ name: editing.name, patch: payload });
       } else {
-        await createCategory.mutateAsync({
-          name: formName.trim(),
-          slug: formSlug.trim(),
-          description: formDesc.trim(),
-        });
+        await createCategory.mutateAsync(payload);
       }
       setFormOpen(false);
     } catch (err) {
@@ -243,6 +299,7 @@ function AdminCategories() {
         <Table>
           <TableHeader>
             <TableRow>
+              <TableHead className="w-16">Image</TableHead>
               <TableHead>Nom</TableHead>
               <TableHead>Slug</TableHead>
               <TableHead>Description</TableHead>
@@ -252,6 +309,19 @@ function AdminCategories() {
           <TableBody>
             {pagination.pageItems.map((c) => (
               <TableRow key={c.name}>
+                <TableCell>
+                  {c.image_url ? (
+                    <img
+                      src={c.image_url}
+                      alt=""
+                      className="h-10 w-10 rounded-lg border object-cover"
+                    />
+                  ) : (
+                    <div className="grid h-10 w-10 place-items-center rounded-lg border border-dashed text-ink-soft">
+                      <ImagePlus className="h-4 w-4" />
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="text-sm font-semibold text-ink">{c.name}</TableCell>
                 <TableCell className="text-sm text-ink-soft">{c.slug}</TableCell>
                 <TableCell className="max-w-xs truncate text-sm text-ink-soft">{c.description}</TableCell>
@@ -301,6 +371,63 @@ function AdminCategories() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
+            <div>
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+                Image de la catégorie
+              </span>
+              <div className="flex items-start gap-3">
+                {formImage ? (
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border">
+                    <img src={formImage} alt="" className="h-full w-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setFormImage("")}
+                      aria-label="Retirer l'image"
+                      className="absolute right-1 top-1 grid h-5 w-5 place-items-center rounded-full bg-ink/70 text-paper"
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </div>
+                ) : (
+                  <label className="grid h-20 w-20 shrink-0 cursor-pointer place-items-center rounded-lg border-2 border-dashed text-ink-soft transition hover:border-brand hover:text-brand">
+                    {imageBusy ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <ImagePlus className="h-5 w-5" />
+                    )}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageSelected}
+                      disabled={imageBusy}
+                    />
+                  </label>
+                )}
+                <div className="flex-1 space-y-2">
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      placeholder="Coller une URL d'image..."
+                      value={imageUrlInput}
+                      onChange={(e) => setImageUrlInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addImageUrl())}
+                      className="flex-1 rounded-xl border border-border bg-paper px-3 py-2.5 text-sm outline-none focus:border-brand"
+                    />
+                    <button
+                      type="button"
+                      onClick={addImageUrl}
+                      className="flex items-center gap-1.5 rounded-xl bg-mint px-3 py-2 text-sm font-semibold text-ink hover:bg-mint/70"
+                    >
+                      <LinkIcon className="h-3.5 w-3.5" /> URL
+                    </button>
+                  </div>
+                  <p className="text-xs text-ink-soft">
+                    Optionnel — 1.5 Mo maximum. Sans image, le site utilise le visuel par défaut.
+                  </p>
+                </div>
+              </div>
+            </div>
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">Nom</span>
               <input value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full rounded-xl border border-border bg-paper px-3 py-2.5 text-sm outline-none focus:border-brand" />

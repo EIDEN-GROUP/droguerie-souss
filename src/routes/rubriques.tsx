@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
-import { useProducts } from "@/lib/adminStore";
+import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { type Category } from "@/lib/products";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
@@ -28,12 +28,13 @@ export const Route = createFileRoute("/rubriques")({
   }),
 });
 
-type SubcatTab = { label: string; value: string | undefined };
+type SubcatTab = { label: string; value: string | undefined; count: number };
 
 function Shop() {
   const { cat: urlCat, subcat: urlSubcat, q: urlQ } = Route.useSearch();
   const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
+  const { data: dbSubcategories } = useSubcategories();
   const activeCat = (urlCat as Category) || undefined;
   const activeSubcat = urlSubcat || undefined;
   const [query, setQuery] = useState(urlQ || "");
@@ -43,41 +44,59 @@ function Shop() {
 
   const productList = useMemo(() => (products || []) as unknown as any[], [products]);
 
+  /** The pool the chips count from: everything the category and the search leave standing,
+   *  before the subcategory filter. Each chip's number is therefore what clicking it yields. */
+  const catFiltered = useMemo(() => {
+    let list = productList;
+    if (activeCat) list = list.filter((p: any) => p.category === activeCat);
+    if (query.trim())
+      list = list.filter((p: any) =>
+        p.name.toLowerCase().includes(query.toLowerCase()),
+      );
+    return list;
+  }, [productList, activeCat, query]);
+
+  /** Admin-managed subcategories come first, in the order the admin sees them, and only when
+   *  they actually hold products. Anything a product carries outside that list still gets a chip
+   *  so no product becomes unreachable. */
   const subcategories = useMemo(() => {
     if (!activeCat) return [];
-    const values = new Set<string>();
-    productList.forEach((p: any) => {
-      if (p.category === activeCat && p.subcategory) {
-        values.add(p.subcategory);
-      }
+    const counts = new Map<string, number>();
+    catFiltered.forEach((p: any) => {
+      if (p.subcategory) counts.set(p.subcategory, (counts.get(p.subcategory) ?? 0) + 1);
     });
-    return Array.from(values).sort();
-  }, [activeCat, productList]);
+    const managed = (dbSubcategories || [])
+      .filter((s) => s.category === activeCat)
+      .map((s) => s.name);
+    const unmanaged = Array.from(counts.keys())
+      .filter((name) => !managed.includes(name))
+      .sort();
+    const names = [...managed.filter((name) => counts.has(name)), ...unmanaged];
+    /** A search can empty the selected subcategory — keep its chip so the active filter
+     *  never disappears out from under the user. */
+    if (activeSubcat && !names.includes(activeSubcat)) names.push(activeSubcat);
+    return names.map((name) => ({ name, count: counts.get(name) ?? 0 }));
+  }, [activeCat, activeSubcat, catFiltered, dbSubcategories]);
 
   /** Only shown once a category is picked: its subcategories. Picking the category
    *  itself happens on the cards above, so the chips never repeat them. */
   const tabs: SubcatTab[] = useMemo(() => {
     if (!activeCat || subcategories.length === 0) return [];
     return [
-      { label: "Toutes", value: undefined } as SubcatTab,
-      ...subcategories.map((s) => ({ label: s, value: s })),
+      { label: "Toutes", value: undefined, count: catFiltered.length } as SubcatTab,
+      ...subcategories.map((s) => ({ label: s.name, value: s.name, count: s.count })),
     ];
-  }, [activeCat, subcategories]);
+  }, [activeCat, subcategories, catFiltered]);
 
   const activeTab = activeSubcat;
 
   const filtered = useMemo(() => {
-    let list = productList;
-    if (activeCat) list = list.filter((p: any) => p.category === activeCat);
+    let list = catFiltered;
     if (activeSubcat) list = list.filter((p: any) => p.subcategory === activeSubcat);
-    if (query.trim())
-      list = list.filter((p: any) =>
-        p.name.toLowerCase().includes(query.toLowerCase()),
-      );
     if (sort === "asc") list = [...list].sort((a: any, b: any) => a.price - b.price);
     if (sort === "desc") list = [...list].sort((a: any, b: any) => b.price - a.price);
     return list;
-  }, [productList, activeCat, activeSubcat, query, sort]);
+  }, [catFiltered, activeSubcat, sort]);
 
   const handleCategorySelect = useCallback(
     (category: string) => {
@@ -186,6 +205,7 @@ function Shop() {
               <CatChip
                 key={tab.label}
                 active={tab.value === activeTab}
+                count={tab.count}
                 onClick={() => handleTabClick(tab.value)}
               >
                 {tab.label}
@@ -219,8 +239,8 @@ function Shop() {
 }
 
 
-/** Two 36px arrow buttons plus the flex gaps around them. */
-const ARROWS_WIDTH = 88;
+/** Two 40px arrow buttons plus the flex gaps around them. */
+const ARROWS_WIDTH = 96;
 
 function CatTabs({ open, children }: { open: boolean; children: React.ReactNode }) {
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -266,10 +286,10 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
       {scrollable && (
         <button
           type="button"
-          aria-label="Catégories précédentes"
+          aria-label="Sous-catégories précédentes"
           onClick={() => scrollBy(-1)}
           disabled={!canLeft}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -286,10 +306,10 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
       {scrollable && (
         <button
           type="button"
-          aria-label="Catégories suivantes"
+          aria-label="Sous-catégories suivantes"
           onClick={() => scrollBy(1)}
           disabled={!canRight}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-border bg-paper text-ink transition hover:border-brand hover:text-brand disabled:pointer-events-none disabled:opacity-30"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
@@ -300,23 +320,27 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
 
 function CatChip({
   active,
+  count,
   onClick,
   children,
 }: {
   active: boolean;
+  count: number;
   onClick: () => void;
   children: React.ReactNode;
 }) {
   return (
     <button
       onClick={onClick}
-      className={`shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold uppercase tracking-wider transition ${
+      className={`shrink-0 whitespace-nowrap rounded-full px-5 py-3 text-xs font-bold uppercase tracking-wider transition ${
         active
           ? "bg-ink text-paper"
           : "border border-border bg-paper text-ink hover:border-brand hover:text-brand"
       }`}
     >
       {children}
+      {/* The count rides the active chip only, so the bar stays quiet until you pick something. */}
+      {active && <span className="ml-1.5 font-bold">({count})</span>}
     </button>
   );
 }

@@ -7,6 +7,7 @@ import pipes from "@/assets/cat-pipes.jpg";
 import hardware from "@/assets/cat-hardware.jpg";
 import plaster from "@/assets/cat-plaster.jpg";
 import zellige from "@/assets/cat-zellige.jpg";
+import generic from "@/assets/banner-cta.jpg";
 
 export type Category = string;
 
@@ -57,3 +58,29 @@ export const categories: CategoryInfo[] = [
 ];
 
 export const featuredCategories = categories.slice(0, 6);
+
+/** Bundled artwork per category slug, used when a category has no image_url set in the admin. */
+const categoryImages: Record<string, string> = {
+  carrelage: tiles,
+  ceramique: tiles,
+  marbre: marble,
+  zellige: zellige,
+  peinture: paint,
+  "peinture-decoration": paint,
+  ciment: cement,
+  "ciment-colle-mortiers": cement,
+  "beton-arme-ciments-agregats": cement,
+  "produits-prefabriques": cement,
+  platre: plaster,
+  "platres-mono-bicouche": plaster,
+  electrique: cables,
+  "energie-solaire-electricite": cables,
+  plomberie: pipes,
+  "sanitaire-robinetterie-plomberie": pipes,
+  quincaillerie: hardware,
+  metallurgie: hardware,
+  "fer-a-beton-treillis-soude": hardware,
+};
+
+/** Falls back to a neutral banner so a brand-new category never renders an empty card. */
+export const categoryImage = (slug: string) => categoryImages[slug] ?? generic;

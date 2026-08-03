@@ -19,12 +19,17 @@ export const getCategories = createServerFn({ method: "GET" }).handler(async () 
 });
 
 export const createCategory = createServerFn({ method: "POST" })
-  .validator((data: { name: string; slug: string; description: string }) => data)
+  .validator((data: { name: string; slug: string; description: string; image_url?: string | null }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     const { data, error } = await supabase
       .from("categories")
-      .insert({ name: ctx.data.name, slug: ctx.data.slug, description: ctx.data.description })
+      .insert({
+        name: ctx.data.name,
+        slug: ctx.data.slug,
+        description: ctx.data.description,
+        image_url: ctx.data.image_url || null,
+      })
       .select()
       .single();
     if (error) throw new Error("Cette catégorie existe déjà.");
@@ -32,7 +37,7 @@ export const createCategory = createServerFn({ method: "POST" })
   });
 
 export const updateCategory = createServerFn({ method: "POST" })
-  .validator((data: { name: string; patch: { name?: string; slug?: string; description?: string } }) => data)
+  .validator((data: { name: string; patch: { name?: string; slug?: string; description?: string; image_url?: string | null } }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     const { data, error } = await supabase
