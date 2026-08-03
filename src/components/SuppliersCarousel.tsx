@@ -1,16 +1,16 @@
 import { SectionHeader } from "./SectionHeader";
-import LAFARGE from "@/assets/lafarge.webp";
-import HOLCIM from "@/assets/holcim.png";
+import LAFARGE from "@/assets/Lafarge.webp";
+import HOLCIM from "@/assets/Holcim.png";
 import SANIMAR from "@/assets/sanimar.jpg";
 import COLORADO from "@/assets/colorado.jpg";
 import ASTRAL from "@/assets/astral.jpeg"
-import SCHNEIDER from "@/assets/schneider.png";
-import LEGRAND from "@/assets/legrand.png";
+import SCHNEIDER from "@/assets/Schneider.png";
+import LEGRAND from "@/assets/Legrand.png";
 import GEBERIT from "@/assets/geberit.png";
-import GROHE from "@/assets/grohe.webp";
+import GROHE from "@/assets/Grohe.webp";
 import SIKA from "@/assets/sika.png";
-import WEBER from "@/assets/weber.png";
-import KNAUF from "@/assets/knauf.png";
+import WEBER from "@/assets/Weber.png";
+import KNAUF from "@/assets/KNAUF.png";
 
 const suppliers = [
   { name: "LAFARGE", logo: LAFARGE },
