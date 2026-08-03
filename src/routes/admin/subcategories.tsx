@@ -34,6 +34,7 @@ import {
   useDeleteSubcategory,
 } from "@/lib/adminStore";
 import { TablePagination } from "@/components/admin/TablePagination";
+import { CategoryCombobox } from "@/components/admin/CategoryCombobox";
 import { usePagination } from "@/hooks/usePagination";
 import {
   importSubcategoriesCsv,
@@ -73,6 +74,14 @@ function AdminSubcategories() {
   const fileRef = useRef<HTMLInputElement>(null);
 
   const categoryList = useMemo(() => categories || [], [categories]);
+  const categoryOptions = useMemo(
+    () => categoryList.map((c) => ({ value: c.name, label: c.name })),
+    [categoryList],
+  );
+  const filterOptions = useMemo(
+    () => [{ value: ALL_CATEGORIES, label: "Toutes les catégories" }, ...categoryOptions],
+    [categoryOptions],
+  );
   const subcategoryList = useMemo(() => {
     const list = subcategories || [];
     if (categoryFilter === ALL_CATEGORIES) return list;
@@ -208,9 +217,13 @@ function AdminSubcategories() {
           Erreur de chargement. Veuillez réessayer.
         </div>
       )}
+      {/* Le titre ne doit jamais se couper en deux : c'est la rangée d'actions qui cède
+          et passe à la ligne, alignée à droite. */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h2 className="font-display text-lg font-bold uppercase text-ink">Sous-catégories</h2>
-        <div className="flex flex-wrap gap-2">
+        <h2 className="shrink-0 whitespace-nowrap font-display text-lg font-bold uppercase text-ink">
+          Sous-catégories
+        </h2>
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           <input
             ref={fileRef}
             type="file"
@@ -218,21 +231,16 @@ function AdminSubcategories() {
             className="hidden"
             onChange={handleImport}
           />
-          <select
+          <CategoryCombobox
             value={categoryFilter}
-            onChange={(e) => {
-              setCategoryFilter(e.target.value);
+            onChange={(v) => {
+              setCategoryFilter(v);
               pagination.setPage(1);
             }}
-            className="cursor-pointer rounded-full border border-border bg-paper px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink outline-none transition hover:border-brand focus:border-brand"
-          >
-            <option value={ALL_CATEGORIES}>Toutes les catégories</option>
-            {categoryList.map((c) => (
-              <option key={c.name} value={c.name}>
-                {c.name}
-              </option>
-            ))}
-          </select>
+            options={filterOptions}
+            variant="pill"
+            className="min-w-52"
+          />
           <button
             onClick={handleExample}
             className="flex cursor-pointer items-center justify-center gap-2 rounded-full border border-border px-4 py-2.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:bg-cream hover:text-brand"
@@ -354,23 +362,16 @@ function AdminSubcategories() {
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
-            <label className="block">
-              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">Catégorie parente</span>
-              <select
+            <div>
+              <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+                Catégorie parente
+              </span>
+              <CategoryCombobox
                 value={formCategory}
-                onChange={(e) => setFormCategory(e.target.value)}
-                className="w-full cursor-pointer rounded-xl border border-border bg-paper px-3 py-2.5 text-sm outline-none focus:border-brand"
-              >
-                <option value="" disabled>
-                  Choisir une catégorie
-                </option>
-                {categoryList.map((c) => (
-                  <option key={c.name} value={c.name}>
-                    {c.name}
-                  </option>
-                ))}
-              </select>
-            </label>
+                onChange={setFormCategory}
+                options={categoryOptions}
+              />
+            </div>
             <label className="block">
               <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">Nom</span>
               <input value={formName} onChange={(e) => setFormName(e.target.value)} className="w-full rounded-xl border border-border bg-paper px-3 py-2.5 text-sm outline-none focus:border-brand" />

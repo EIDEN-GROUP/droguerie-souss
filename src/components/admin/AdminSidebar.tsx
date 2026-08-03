@@ -93,7 +93,13 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </motion.div>
 
-      <nav className="styled-scrollbar flex-1 space-y-1.5 overflow-y-auto rounded-r-lg pl-4">
+      {/*
+        La pastille active doit se fondre dans le panneau crème : sa barre de défilement
+        est donc masquée (une barre visible rognerait 8px et détacherait la pastille du
+        panneau), le coin arrondi à droite est proscrit, et le padding vertical laisse la
+        place aux encoches du premier et du dernier élément — que `overflow` rognerait.
+      */}
+      <nav className="no-scrollbar flex-1 space-y-1.5 overflow-y-auto py-4 pl-4">
         {links.map((l, i) => {
           const childActive = l.children?.some((c) => isLinkActive(pathname, c.to)) ?? false;
           const active = l.to ? isLinkActive(pathname, l.to) : false;
@@ -144,7 +150,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
                                 key={c.to}
                                 to={c.to}
                                 onClick={onNavigate}
-                                className={`relative flex items-center gap-3 rounded-l-3xl py-2.5 pl-11 pr-4 text-sm font-semibold transition-colors duration-300 ${
+                                className={`relative flex items-center mt-2 gap-3 rounded-l-3xl py-2.5 pl-11 pr-4 text-sm font-semibold transition-colors duration-300 ${
                                   cActive
                                     ? "text-brand-secondary"
                                     : "text-paper/70 hover:bg-paper/10 hover:text-paper"

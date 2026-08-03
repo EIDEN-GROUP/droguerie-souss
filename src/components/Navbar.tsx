@@ -11,6 +11,7 @@ const links = [
   { to: "/", label: "Accueil" },
   { to: "/rubriques", label: "Rubriques" },
   { to: "/commande-rapide", label: "Commande rapide" },
+  { to: "/catalogue", label: "Catalogue" },
   { to: "/contact", label: "Contactez-nous" },
 ];
 
@@ -68,7 +69,7 @@ export function Navbar() {
                 <Link
                   key={l.to}
                   to={l.to}
-                  className="relative px-4 py-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+                  className="relative px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
                 >
                   {l.label}
                   {active && (

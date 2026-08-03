@@ -5,7 +5,13 @@ import { useMemo } from "react";
 import { categories as fallbackCategories, categoryImage, type CategoryInfo } from "@/lib/products";
 import { useCategories } from "@/lib/adminStore";
 import { SectionHeader } from "./SectionHeader";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 
 function CategoryCardBody({
   name,
@@ -40,14 +46,26 @@ function CategoryCardBody({
       )}
       <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-5"}`}>
         <div
-          className={`font-display uppercase tracking-wide [text-shadow:0_2px_8px_rgba(0,0,0,0.85)] ${
-            compact ? "text-xs leading-tight sm:text-sm" : "text-xl"
+          className={`font-display font-bold uppercase tracking-wide ${
+            active
+              ? /* Le bloc est ancré en bas : un nom long grandirait vers le haut et se
+                   ferait rogner par la carte. D'où la taille progressive et le garde-fou. */
+                "text-shadow-overlay-lg line-clamp-3 text-lg leading-tight sm:text-xl"
+              : compact
+                ? "text-shadow-overlay text-xs leading-tight sm:text-sm"
+                : "text-shadow-overlay text-xl"
           }`}
         >
           {name}
         </div>
+        {/* Le filet rouge de la marque marque la carte sélectionnée. */}
+        {active && <span className="mt-2 block h-1 w-10 rounded-full bg-accent-red" />}
         {!compact && (
-          <div className="text-xs text-white/90 mt-1 flex items-center gap-1 opacity-0 transition group-hover:opacity-100 [text-shadow:0_2px_8px_rgba(0,0,0,0.85)]">
+          <div
+            className={`text-shadow-overlay mt-1 flex items-center gap-1 text-xs text-white/90 transition ${
+              active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+            }`}
+          >
             Voir les produits <ArrowRight className="h-3 w-3" />
           </div>
         )}
@@ -83,9 +101,7 @@ export function CategoriesSection({
 
   return (
     <section className={isShop ? "border-b bg-cream py-8" : "container-x py-20"}>
-      {!isShop && (
-        <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />
-      )}
+      {!isShop && <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />}
       <Carousel
         opts={{ align: "start", loop: true }}
         className={isShop ? "mx-12 md:mx-16" : "mt-10 mx-10 md:mx-14"}
@@ -106,7 +122,9 @@ export function CategoriesSection({
             >
               <div className={isShop ? "" : "mx-auto max-w-sm md:max-w-none"}>
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
                   transition={{ delay: i * 0.04 }}
                 >
                   {isShop && onCategorySelect ? (
@@ -136,14 +154,18 @@ export function CategoriesSection({
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className={isShop ? "-left-12 h-9 w-9 md:-left-14" : "-left-10 md:-left-14 h-10 w-10"} />
-        <CarouselNext className={isShop ? "-right-12 h-9 w-9 md:-right-14" : "-right-10 md:-right-14 h-10 w-10"} />
+        <CarouselPrevious
+          className={isShop ? "-left-12 h-9 w-9 md:-left-14" : "-left-10 md:-left-14 h-10 w-10"}
+        />
+        <CarouselNext
+          className={isShop ? "-right-12 h-9 w-9 md:-right-14" : "-right-10 md:-right-14 h-10 w-10"}
+        />
       </Carousel>
       {variant === "home" && (
         <div className="mt-10 text-center">
           <Link
             to="/rubriques"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
           >
             Découvrir tous les produits <ArrowRight className="h-4 w-4" />
           </Link>

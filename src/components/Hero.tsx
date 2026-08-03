@@ -1,19 +1,19 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import hero1 from "@/assets/hero-1.jpg";
+import hero1 from "@/assets/hero section.mp4";
 
 export function Hero() {
   return (
-    <section className="relative h-[85vh] min-h-[560px] w-full overflow-hidden bg-ink">
+    <section className="relative h-[85vh] min-h-[600px] w-full overflow-hidden bg-ink">
       <motion.div
         initial={{ opacity: 0, scale: 1.08 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        className="absolute inset-0"
+        className="absolute inset-0 aspect-video"
       >
-        <img src={hero1} alt="" className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-r from-ink/85 via-ink/60 to-transparent" />
+        <video src={hero1} autoPlay loop muted className="h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
       </motion.div>
 
       <div className="container-x relative z-10 flex h-full items-center">

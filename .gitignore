@@ -37,3 +37,6 @@ dist-ssr
 
 # Supabase local
 supabase/.temp/
+
+# Large media files
+src/assets/*.mp4
