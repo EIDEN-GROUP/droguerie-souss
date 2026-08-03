@@ -5,7 +5,7 @@ import { CartSidebar } from "./CartSidebar";
 import { FavoritesSidebar } from "./FavoritesSidebar";
 import { AuthDialog } from "./AuthDialog";
 import { PageLoader } from "./Loader";
-import { WhatsAppButton } from "./WhatsAppButton";
+import { FloatingActions } from "./FloatingActions";
 import { useCustomerAuth } from "@/lib/customerAuth";
 
 const AUTH_PROMPT_KEY = "ds-auth-prompted";
@@ -36,7 +36,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <CartSidebar />
       <FavoritesSidebar />
       <AuthDialog />
-      <WhatsAppButton />
+      <FloatingActions />
     </>
   );
 }

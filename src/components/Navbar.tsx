@@ -9,8 +9,8 @@ import logoMobile from "@/assets/icon-blue.png";
 
 const links = [
   { to: "/", label: "Accueil" },
+  { to: "/a-propos", label: "À propos" },
   { to: "/rubriques", label: "Rubriques" },
-  { to: "/commande-rapide", label: "Commande rapide" },
   { to: "/catalogue", label: "Catalogue" },
   { to: "/contact", label: "Contactez-nous" },
 ];
