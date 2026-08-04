@@ -6,8 +6,9 @@ import { CatalogueViewer } from "@/components/catalogue/CatalogueViewer";
 import { findEdition } from "@/lib/catalogue";
 
 export const Route = createFileRoute("/catalogue/$slug")({
-  /** Une édition PDF n'a pas de visionneuse : on renvoie directement sur le fichier.
-   *  Les types du routeur ne se propagent pas jusqu'ici, d'où l'annotation explicite. */
+  /** Une édition PDF n'a pas de visionneuse maison : on renvoie sur le fichier, que le
+   *  navigateur ouvre dans sa propre visionneuse. Les types du routeur ne se propagent
+   *  pas jusqu'ici, d'où l'annotation explicite. */
   beforeLoad: ({ params }: { params: { slug: string } }) => {
     const edition = findEdition(params.slug);
     if (!edition) throw notFound();

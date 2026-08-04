@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "framer-motion";
-import { X, Zap } from "lucide-react";
+import { ShoppingBag, X, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const WHATSAPP_NUMBER = "212528000000";
@@ -87,7 +87,7 @@ function Teaser({ leaving, onClose }: { leaving: boolean; onClose: () => void })
 
       <div className="flex items-start gap-3">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-brand text-brand-foreground">
-          <Zap className="h-4 w-4" />
+          <ShoppingBag className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
           <p className="font-display text-xs font-bold uppercase tracking-wider text-ink">
@@ -170,7 +170,7 @@ export function FloatingActions() {
         >
           <span className="pointer-events-none absolute inset-0 animate-ping rounded-full bg-brand opacity-20 [animation-duration:2.5s] motion-reduce:hidden" />
           <span className="pointer-events-none absolute -right-0.5 -top-0.5 h-3 w-3 rounded-full bg-accent-red ring-2 ring-paper" />
-          <Zap className="relative h-6 w-6 shrink-0" />
+          <ShoppingBag className="relative h-6 w-6 shrink-0" />
           <span className="relative hidden max-w-0 overflow-hidden whitespace-nowrap text-sm font-bold uppercase tracking-wider opacity-0 transition-all duration-300 group-hover:ml-3 group-hover:max-w-[12rem] group-hover:opacity-100 md:inline">
             Commande rapide
           </span>

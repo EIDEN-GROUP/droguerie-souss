@@ -2,11 +2,12 @@
  * Les éditions du catalogue présentées sur /catalogue.
  *
  * Deux formats coexistent :
- *  - `flipbook` : les pages sont des images déposées dans `src/assets/catalogue/<année>/`
+ *  - `pdf` : un fichier déposé dans `public/catalogue/`, ouvert tel quel dans un nouvel
+ *    onglet — c'est la visionneuse du navigateur qui l'affiche.
+ *  - `flipbook` : les pages sont des images déposées dans `src/assets/catalogue/<slug>/`
  *    (nomenclature `page-01.jpg`, voir le README du dossier). Elles sont découvertes
  *    automatiquement ; tant qu'un dossier est vide, la visionneuse affiche des pages
  *    provisoires aux couleurs de la marque.
- *  - `pdf` : un fichier déposé dans `public/catalogue/`, ouvert dans un nouvel onglet.
  */
 
 const pageModules = import.meta.glob("../assets/catalogue/*/page-*.{jpg,jpeg,png,webp}", {
@@ -28,7 +29,8 @@ function pagesOf(slug: string): string[] {
     .map((path) => pageModules[path]);
 }
 
-/** Une couverture maison (`covers/2026.jpg`) remplace la couverture dessinée par défaut. */
+/** Couverture générée depuis la première page du PDF par `scripts/catalogue-covers.mjs`.
+ *  Sans image, la carte retombe sur la couverture dessinée aux couleurs de la marque. */
 function coverOf(slug: string): string | undefined {
   const key = Object.keys(coverModules).find((path) => path.includes(`/covers/${slug}.`));
   return key ? coverModules[key] : undefined;
@@ -59,27 +61,24 @@ export const catalogueEditions: CatalogueEdition[] = [
     pdf: {
       /** Fichier servi tel quel depuis `public/catalogue/`. */
       url: "/catalogue/catalogue-ssd-2026.pdf",
-      size: "88,7 Mo",
-      pageCount: 908,
+      size: "93 Mo",
+      pageCount: 65,
     },
   },
   {
-    slug: "2025",
-    year: 2025,
-    title: "Catalogue 2025",
-    description: "L'édition précédente, à feuilleter en ligne.",
-    cover: coverOf("2025"),
-    format: "flipbook",
-    pages: pagesOf("2025"),
-  },
-  {
-    slug: "2024",
-    year: 2024,
-    title: "Catalogue 2024",
-    description: "Nos collections 2024, archivées et consultables.",
-    cover: coverOf("2024"),
-    format: "flipbook",
-    pages: pagesOf("2024"),
+    slug: "souss-droguerie-2026",
+    year: 2026,
+    title: "Souss Droguerie Catalogue 2026",
+    description:
+      "Matériaux de construction et solutions techniques : gros œuvre, étanchéité, isolation et finitions.",
+    cover: coverOf("souss-droguerie-2026"),
+    isNew: true,
+    format: "pdf",
+    pdf: {
+      url: "/catalogue/catalogue-souss-droguerie-2026.pdf",
+      size: "32,7 Mo",
+      pageCount: 29,
+    },
   },
 ];
 

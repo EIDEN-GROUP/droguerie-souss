@@ -13,7 +13,7 @@ export const Route = createFileRoute("/catalogue/")({
       {
         name: "description",
         content:
-          "Consultez les catalogues Souss Droguerie 2024, 2025 et 2026 : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité.",
+          "Consultez les catalogues Souss Droguerie 2026 : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité.",
       },
     ],
   }),

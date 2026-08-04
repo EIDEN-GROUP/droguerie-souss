@@ -15,6 +15,27 @@ export const Route = createFileRoute("/product/$id")({
   component: ProductDetail,
 });
 
+/**
+ * Découpe la description en points de liste. Le champ est du texte libre côté admin :
+ * une ligne par point si elle en contient plusieurs (les puces déjà tapées sont
+ * retirées), sinon un point par phrase. Le point final est enlevé, une liste à puces
+ * n'en met pas.
+ */
+function descriptionPoints(description: string): string[] {
+  const lines = description
+    /* Une partie du catalogue importe des "\n" litteraux (deux caracteres) au lieu de
+       vrais retours a la ligne : les deux comptent comme une coupure. */
+    .split(/(?:\r?\n|\\n)+/)
+    /* Puces courantes : tiret, asterisque, demi-cadratin (2013), cadratin (2014),
+       puce ronde (2022). Echappees pour ne pas dependre de l'encodage du fichier. */
+    .map((line) => line.replace(/^\s*[-*\u2013\u2014\u2022]\s*/, "").trim())
+    .filter(Boolean);
+
+  const points = lines.length > 1 ? lines : (lines[0] ?? "").split(/(?<=\.)\s+/);
+
+  return points.map((point) => point.trim().replace(/\.$/, "")).filter(Boolean);
+}
+
 function ProductDetail() {
   const { id } = Route.useParams();
   const { data: product, isLoading, isError } = useProduct(id);
@@ -80,6 +101,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const related = [...sameCategory, ...otherProducts].slice(0, 4);
   const pct = product.promo ?? 0;
   const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
+  const points = descriptionPoints(product.description);
 
   useEffect(() => {
     setActiveImage(0);
@@ -158,7 +180,19 @@ function ProductDetailContent({ product, products }: { product: Product; product
               )}
             </div>
 
-            <p className="mt-6 leading-relaxed text-ink-soft">{product.description}</p>
+            {points.length > 0 && (
+              <ul className="mt-6 space-y-2">
+                {points.map((point, i) => (
+                  <li key={i} className="flex gap-2.5 leading-relaxed text-ink-soft">
+                    <span
+                      aria-hidden
+                      className="mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full bg-brand"
+                    />
+                    {point}
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div className="flex items-center rounded-full border">

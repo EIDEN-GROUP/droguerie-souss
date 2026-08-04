@@ -167,6 +167,10 @@
   }
 }
 
+/* Defilement continu. Le -50 % suppose une piste faite de deux copies identiques dont
+ * l'espacement est porte par les elements eux-memes (marge), pas par un `gap` sur la
+ * piste : un `gap` en poserait un de moins que d'elements et la boucle repartirait
+ * decalee d'un demi-espace. Voir `SuppliersCarousel`. */
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }

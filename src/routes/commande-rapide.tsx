@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { ProductPrice } from "@/components/ProductPrice";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
   Accordion,
@@ -576,9 +577,7 @@ function CommandeRapide() {
                                 )}
                                 <div className="flex min-w-0 flex-1 flex-col">
                                   <p className="line-clamp-2 text-sm font-semibold">{p.name}</p>
-                                  <p className="mt-0.5 text-xs text-ink-soft">
-                                    {p.price} MAD / {p.unit}
-                                  </p>
+                                  <ProductPrice size="sm" className="mt-1 self-start" />
                                   <div className="mt-auto flex items-center gap-2 pt-2">
                                     {inCart ? (
                                       <div className="flex items-center gap-1">
