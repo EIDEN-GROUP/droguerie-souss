@@ -103,9 +103,15 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
   const points = descriptionPoints(product.description);
 
+  const variants = product.variants || [];
+  const [selectedDimension, setSelectedDimension] = useState<string | undefined>(undefined);
+
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
+    const firstAvailable = variants.find((v) => v.stock > 0) ?? variants[0];
+    setSelectedDimension(firstAvailable?.dimension ?? undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
 
   return (
@@ -194,6 +200,40 @@ function ProductDetailContent({ product, products }: { product: Product; product
               </ul>
             )}
 
+            {variants.length > 0 && (
+              <div className="mt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+                  Dimensions disponibles
+                </p>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {variants.map((v) => (
+                    <button
+                      key={v.dimension}
+                      onClick={() => setSelectedDimension(v.dimension)}
+                      disabled={v.stock === 0}
+                      className={`flex items-center gap-2 rounded-full border py-1.5 pl-4 pr-1.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                        selectedDimension === v.dimension
+                          ? "border-brand bg-mint text-brand"
+                          : "border-border bg-paper hover:border-brand"
+                      }`}
+                    >
+                      {v.dimension === selectedDimension && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                      )}
+                      <span>{v.dimension}</span>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                          v.stock > 0 ? "bg-ink/5 text-ink-soft" : "bg-accent-red/10 text-accent-red"
+                        }`}
+                      >
+                        {v.stock > 0 ? `${v.stock} en stock` : "Épuisé"}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div className="flex items-center rounded-full border">
                 <button onClick={() => setQty(Math.max(1, qty - 1))} className="grid h-11 w-11 place-items-center hover:bg-mint rounded-l-full">
@@ -213,7 +253,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                 <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
               </button>
               <button
-                onClick={() => addToCart(product, qty)}
+                onClick={() => addToCart(product, qty, selectedDimension)}
                 className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
               >
                 <ShoppingBag className="h-4 w-4" /> Ajouter au panier

@@ -2,6 +2,25 @@ import { createServerFn } from "@tanstack/react-start";
 import type { DbProductGift, ProductInput } from "@/lib/database.types";
 import { createAdminClient } from "./db";
 
+/** Rattache les variantes (dimension + stock) à chaque produit en une seule requête. */
+async function withVariants<T extends { id: string }>(rows: T[]) {
+  if (rows.length === 0) return rows;
+  const supabase = createAdminClient();
+  const ids = rows.map((r) => r.id);
+  const { data: v, error } = await supabase
+    .from("product_dimensions")
+    .select("product_id, dimension, stock")
+    .in("product_id", ids);
+  if (error) throw error;
+  const byProduct = new Map<string, { dimension: string; stock: number }[]>();
+  for (const row of v || []) {
+    const list = byProduct.get(row.product_id) || [];
+    list.push({ dimension: row.dimension, stock: row.stock });
+    byProduct.set(row.product_id, list);
+  }
+  return rows.map((r) => ({ ...r, variants: byProduct.get(r.id) || [] }));
+}
+
 export const getProducts = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = createAdminClient();
   const { data, error } = await supabase
@@ -9,7 +28,7 @@ export const getProducts = createServerFn({ method: "GET" }).handler(async () =>
     .select("*")
     .order("name");
   if (error) throw error;
-  return data;
+  return withVariants(data || []);
 });
 
 export const getProduct = createServerFn({ method: "GET" })
@@ -22,7 +41,8 @@ export const getProduct = createServerFn({ method: "GET" })
       .eq("id", ctx.data.id)
       .single();
     if (error) throw error;
-    return data;
+    const [withV] = await withVariants([data]);
+    return withV;
   });
 
 export const createProduct = createServerFn({ method: "POST" })
@@ -110,6 +130,25 @@ export const setProductGifts = createServerFn({ method: "POST" })
     const { data, error } = await supabase.from("product_gifts").insert(rows).select();
     if (error) throw error;
     return data as DbProductGift[];
+  });
+
+/* ── Dimension variants ── */
+
+/** Remplace l'ensemble des variantes (dimension + stock) d'un produit. */
+export const setProductVariants = createServerFn({ method: "POST" })
+  .validator((data: { product_id: string; variants: { dimension: string; stock: number }[] }) => data)
+  .handler(async (ctx) => {
+    const supabase = createAdminClient();
+    await supabase.from("product_dimensions").delete().eq("product_id", ctx.data.product_id);
+    if (ctx.data.variants.length === 0) return [];
+    const rows = ctx.data.variants.map((v) => ({
+      product_id: ctx.data.product_id,
+      dimension: v.dimension.trim(),
+      stock: Math.max(0, Math.floor(v.stock || 0)),
+    }));
+    const { data, error } = await supabase.from("product_dimensions").insert(rows).select();
+    if (error) throw error;
+    return data;
   });
 
 

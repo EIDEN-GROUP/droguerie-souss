@@ -13,8 +13,26 @@ export interface DbProduct {
   seasonal: boolean;
   promo: number | null;
   stock: number;
+  dimension: string | null;
+  variants: { dimension: string; stock: number }[];
   created_at: string;
   updated_at: string;
+}
+
+/** Preset global de dimension (liste gérée dans les formulaires produit). */
+export interface DbDimension {
+  id: string;
+  value: string;
+  created_at: string;
+}
+
+/** Variante (dimension + stock) rattachée à un produit. */
+export interface DbProductVariant {
+  id: string;
+  product_id: string;
+  dimension: string;
+  stock: number;
+  created_at: string;
 }
 
 export interface DbProductGift {
@@ -49,6 +67,7 @@ export interface DbOrderItem {
   product_image: string | null;
   price: number;
   qty: number;
+  product_dimension: string | null;
 }
 
 export interface ProductInput {
@@ -65,6 +84,7 @@ export interface ProductInput {
   seasonal?: boolean;
   promo?: number | null;
   stock?: number;
+  dimension?: string;
 }
 
 export interface OrderInput {
@@ -80,6 +100,7 @@ export interface OrderInput {
     product_id: string;
     product_name: string;
     product_image?: string;
+    product_dimension?: string;
     price: number;
     qty: number;
   }[];

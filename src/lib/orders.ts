@@ -7,6 +7,7 @@ export interface OrderItem {
   image: string;
   price: number;
   qty: number;
+  dimension?: string;
 }
 
 export interface OrderCustomer {

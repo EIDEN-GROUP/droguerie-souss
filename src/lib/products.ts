@@ -11,6 +11,12 @@ import generic from "@/assets/banner-cta.jpg";
 
 export type Category = string;
 
+/** Une variante de dimension vendue pour un produit, avec son propre stock. */
+export interface ProductVariant {
+  dimension: string;
+  stock: number;
+}
+
 export interface ProductGift {
   id: string;
   product_id: string;
@@ -34,6 +40,8 @@ export interface Product {
   seasonal?: boolean;
   promo?: number;
   stock: number;
+  dimension?: string;
+  variants?: ProductVariant[];
   gifts?: ProductGift[];
 }
 

@@ -19,6 +19,7 @@ import { useProducts, useCategories } from "@/lib/adminStore";
 import { createOrder } from "@/lib/api/orders";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { searchProducts } from "@/lib/search";
+import { cartLineKey } from "@/lib/store";
 
 export const Route = createFileRoute("/commande-rapide")({
   component: CommandeRapide,
@@ -125,6 +126,7 @@ interface CartItem {
   name: string;
   image: string;
   qty: number;
+  dimension?: string;
 }
 
 function CommandeRapide() {
@@ -138,6 +140,7 @@ function CommandeRapide() {
   const [selectedCat, setSelectedCat] = useState("");
   const [search, setSearch] = useState("");
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [dimensions, setDimensions] = useState<Record<string, string>>({});
   const [form, setForm] = useState({ name: "", phone: "", email: "", city: "", address: "" });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -174,21 +177,30 @@ function CommandeRapide() {
 
   const totalQty = cart.reduce((s, c) => s + c.qty, 0);
 
+  const defaultVariant = (p: any) => {
+    const variants = p.variants || [];
+    return variants.find((v: any) => v.stock > 0) ?? variants[0];
+  };
+
+  const pendingDimension = (p: any) => dimensions[p.id] ?? defaultVariant(p)?.dimension ?? undefined;
+
   const addProduct = (p: any) => {
+    const dimension = pendingDimension(p);
     setCart((prev) => {
-      const existing = prev.find((c) => c.productId === p.id);
+      const key = cartLineKey(p.id, dimension);
+      const existing = prev.find((c) => cartLineKey(c.productId, c.dimension) === key);
       if (existing) {
-        return prev.map((c) => (c.productId === p.id ? { ...c, qty: c.qty + 1 } : c));
+        return prev.map((c) => (cartLineKey(c.productId, c.dimension) === key ? { ...c, qty: c.qty + 1 } : c));
       }
-      return [...prev, { productId: p.id, name: p.name, image: p.image || "", qty: 1 }];
+      return [...prev, { productId: p.id, name: p.name, image: p.image || "", qty: 1, dimension }];
     });
   };
 
-  const updateQty = (productId: string, qty: number) => {
+  const updateQty = (key: string, qty: number) => {
     if (qty <= 0) {
-      setCart((prev) => prev.filter((c) => c.productId !== productId));
+      setCart((prev) => prev.filter((c) => cartLineKey(c.productId, c.dimension) !== key));
     } else {
-      setCart((prev) => prev.map((c) => (c.productId === productId ? { ...c, qty } : c)));
+      setCart((prev) => prev.map((c) => (cartLineKey(c.productId, c.dimension) === key ? { ...c, qty } : c)));
     }
   };
 
@@ -213,6 +225,7 @@ function CommandeRapide() {
         product_id: c.productId,
         product_name: c.name,
         product_image: c.image || undefined,
+        product_dimension: c.dimension || undefined,
         price: 0,
         qty: c.qty,
       }));
@@ -555,7 +568,9 @@ function CommandeRapide() {
                       <div className="styled-scrollbar max-h-[26rem] overflow-y-auto pr-1">
                         <div className="grid gap-3 sm:grid-cols-2">
                           {visibleProducts.map((p: any) => {
-                            const inCart = cart.find((c) => c.productId === p.id);
+                            const variants = p.variants || [];
+                            const dimension = pendingDimension(p);
+                            const inCart = cart.find((c) => cartLineKey(c.productId, c.dimension) === cartLineKey(p.id, dimension));
                             return (
                               <div
                                 key={p.id}
@@ -579,13 +594,35 @@ function CommandeRapide() {
                                 )}
                                 <div className="flex min-w-0 flex-1 flex-col">
                                   <p className="line-clamp-2 text-sm font-semibold">{p.name}</p>
+                                  {variants.length > 0 && (
+                                    <div className="mt-1.5 flex flex-wrap gap-1">
+                                      {variants.map((v: any) => (
+                                        <button
+                                          key={v.dimension}
+                                          type="button"
+                                          onClick={() => setDimensions((d) => ({ ...d, [p.id]: v.dimension }))}
+                                          disabled={v.stock === 0}
+                                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                                            dimension === v.dimension
+                                              ? "border-brand bg-mint text-brand"
+                                              : "border-border text-ink-soft hover:border-brand"
+                                          }`}
+                                        >
+                                          {v.dimension}
+                                          <span className={v.stock > 0 ? "text-ink-soft" : "text-accent-red"}>
+                                            {v.stock > 0 ? `(${v.stock})` : "Épuisé"}
+                                          </span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                  )}
                                   <ProductPrice size="sm" className="mt-1 self-start" />
                                   <div className="mt-auto flex items-center gap-2 pt-2">
                                     {inCart ? (
                                       <div className="flex items-center gap-1">
                                         <button
                                           type="button"
-                                          onClick={() => updateQty(p.id, inCart.qty - 1)}
+                                          onClick={() => updateQty(cartLineKey(p.id, dimension), inCart.qty - 1)}
                                           className="grid h-7 w-7 place-items-center rounded-full border text-xs font-bold transition hover:bg-mint"
                                           aria-label="Diminuer la quantité"
                                         >
@@ -596,7 +633,7 @@ function CommandeRapide() {
                                         </span>
                                         <button
                                           type="button"
-                                          onClick={() => updateQty(p.id, inCart.qty + 1)}
+                                          onClick={() => updateQty(cartLineKey(p.id, dimension), inCart.qty + 1)}
                                           className="grid h-7 w-7 place-items-center rounded-full border text-xs font-bold transition hover:bg-mint"
                                           aria-label="Augmenter la quantité"
                                         >
@@ -629,15 +666,18 @@ function CommandeRapide() {
                         <ul className="mt-3 divide-y divide-brand/10 text-sm">
                           {cart.map((c) => (
                             <li
-                              key={c.productId}
+                              key={cartLineKey(c.productId, c.dimension)}
                               className="flex items-center justify-between gap-3 py-2 first:pt-0 last:pb-0"
                             >
-                              <span className="line-clamp-1">{c.name}</span>
+                              <span className="line-clamp-1">
+                                {c.name}
+                                {c.dimension && <span className="text-ink-soft"> · {c.dimension}</span>}
+                              </span>
                               <span className="flex shrink-0 items-center gap-3">
                                 <span className="font-semibold">×{c.qty}</span>
                                 <button
                                   type="button"
-                                  onClick={() => updateQty(c.productId, 0)}
+                                  onClick={() => updateQty(cartLineKey(c.productId, c.dimension), 0)}
                                   className="grid h-7 w-7 place-items-center rounded-full text-ink-soft transition hover:bg-accent-red/10 hover:text-accent-red"
                                   aria-label={`Retirer ${c.name}`}
                                 >

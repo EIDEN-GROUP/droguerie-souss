@@ -96,7 +96,7 @@ function AdminProducts() {
     try {
       const data = await exportProductsCsv();
       const csv = Papa.unparse(data, {
-        columns: ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"],
+        columns: ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "dimension", "image_url"],
       });
       const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -147,6 +147,7 @@ function AdminProducts() {
             bestseller: row.bestseller === "true" || row.bestseller === "1" || row.bestseller === "oui",
             seasonal: row.seasonal === "true" || row.seasonal === "1" || row.seasonal === "oui",
             promo: row.promo ? parseInt(row.promo, 10) : null,
+            dimension: row.dimension?.trim() || undefined,
             image_url: row.image_url?.trim() || undefined,
             images_urls: row.image_url ? [row.image_url.trim()] : [],
           });
@@ -162,12 +163,12 @@ function AdminProducts() {
   };
 
   const handleExample = () => {
-    const headers = ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "image_url"];
+    const headers = ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "dimension", "image_url"];
     const rows = [
       headers.join(","),
-      '"Carreau céramique 30x30","Carrelage","fixed","89.00","m²","Carreau de sol beige 30×30 cm","50","true","false","","https://example.com/carrelage.jpg"',
-      '"Peinture mate blanche","Peinture","fixed","145.00","L","Peinture acrylique mate blanc pur","20","false","false","10",""',
-      '"Marbre beige","Marbre","quote","0","m²","Marbre beige importé d Italie","0","true","false","",""',
+      '"Carreau céramique 30x30","Carrelage","fixed","89.00","m²","Carreau de sol beige 30×30 cm","50","true","false","","30x30","https://example.com/carrelage.jpg"',
+      '"Peinture mate blanche","Peinture","fixed","145.00","L","Peinture acrylique mate blanc pur","20","false","false","10","",""',
+      '"Marbre beige","Marbre","quote","0","m²","Marbre beige importé d Italie","0","true","false","","",""',
     ];
     const blob = new Blob(["\ufeff" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -290,6 +291,7 @@ function AdminProducts() {
               <TableHead className="pl-2">Produit</TableHead>
               <TableHead>Catégorie</TableHead>
               <TableHead>Prix</TableHead>
+              <TableHead>Dimensions</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead>Statut</TableHead>
               <TableHead className="text-right pr-4">Actions</TableHead>
@@ -318,6 +320,31 @@ function AdminProducts() {
                 <TableCell className="text-sm text-ink-soft">{p.category}</TableCell>
                 <TableCell className="text-sm font-semibold">
                   <ProductPrice priceMode={p.price_mode} price={p.price} unit={p.unit} size="md" />
+                </TableCell>
+                <TableCell>
+                  {p.variants && p.variants.length > 0 ? (
+                    <div className="flex flex-wrap gap-1">
+                      {p.variants.slice(0, 2).map((v) => (
+                        <span
+                          key={v.dimension}
+                          className="inline-flex items-center gap-1 rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-ink"
+                          title={`${v.dimension} : ${v.stock} en stock`}
+                        >
+                          {v.dimension}
+                          <span className="text-[10px] font-bold text-ink-soft">({v.stock})</span>
+                        </span>
+                      ))}
+                      {p.variants.length > 2 && (
+                        <span className="inline-flex items-center rounded-full bg-mint px-2 py-0.5 text-[11px] font-bold text-ink-soft">
+                          +{p.variants.length - 2}
+                        </span>
+                      )}
+                    </div>
+                  ) : p.dimension ? (
+                    <span className="text-sm text-ink-soft">{p.dimension}</span>
+                  ) : (
+                    <span className="text-sm text-ink-soft/50">—</span>
+                  )}
                 </TableCell>
                 <TableCell className="text-sm font-semibold">{p.stock}</TableCell>
                 <TableCell>

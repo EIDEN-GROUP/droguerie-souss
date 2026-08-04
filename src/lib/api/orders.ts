@@ -49,6 +49,7 @@ export const createOrder = createServerFn({ method: "POST" })
       product_image: i.product_image || null,
       price: i.price,
       qty: i.qty,
+      product_dimension: i.product_dimension || null,
     }));
 
     const { error: itemsError } = await supabase.from("order_items").insert(items);
@@ -69,6 +70,17 @@ export const createOrder = createServerFn({ method: "POST" })
       console.error("stock decrement failed:", stockError);
     }
 
+    /* Décrémente aussi le stock de la variante (dimension) choisie, si indiquée. */
+    for (const i of ctx.data.items) {
+      if (!i.product_dimension) continue;
+      const { error: variantError } = await supabase.rpc("decrement_dimension_stock", {
+        p_product_id: i.product_id,
+        p_dimension: i.product_dimension,
+        p_qty: i.qty,
+      });
+      if (variantError) console.error("variant stock decrement failed:", variantError);
+    }
+
     const isQuote = type === "quote";
     sendEmail({
       adminSubject: isQuote ? "Nouvelle demande de devis   Souss Droguerie" : "Nouvelle commande   Souss Droguerie",
@@ -87,6 +99,7 @@ export const createOrder = createServerFn({ method: "POST" })
           product_name: i.product_name,
           qty: i.qty,
           price: i.price,
+          dimension: i.product_dimension || undefined,
         })),
       }),
       customerTo: ctx.data.customer_email || undefined,

@@ -27,9 +27,16 @@ import {
   deleteSubcategory as deleteSubcategoryFn,
 } from "@/lib/api/subcategories";
 import {
+  getDimensions as getDimensionsFn,
+  createDimension as createDimensionFn,
+  updateDimension as updateDimensionFn,
+  deleteDimension as deleteDimensionFn,
+} from "@/lib/api/dimensions";
+import {
   getContactMessages as getContactMessagesFn,
   deleteContactMessage as deleteContactMessageFn,
 } from "@/lib/api/contact";
+import { setProductVariants as setProductVariantsFn } from "@/lib/api/products";
 import type { DbProductGift, ProductInput } from "./database.types";
 
 function mapDbProduct(p: any) {
@@ -39,16 +46,19 @@ function mapDbProduct(p: any) {
     subcategory: p.subcategory || undefined,
     image: p.image_url || p.image || "",
     images: (p.images_urls || p.images || []).filter(Boolean),
+    variants: p.variants || [],
   };
 }
 
 export const queryKeys = {
   products: ["products"] as const,
   product: (id: string) => ["products", id] as const,
+  productVariants: (id: string) => ["products", id, "dimensions"] as const,
   orders: ["orders"] as const,
   orderItems: (orderId: string) => ["orders", orderId, "items"] as const,
   categories: ["categories"] as const,
   subcategories: ["subcategories"] as const,
+  dimensions: ["dimensions"] as const,
   contacts: ["contacts"] as const,
 };
 
@@ -182,6 +192,58 @@ export function useDeleteSubcategory() {
   });
 }
 
+export function useDimensions() {
+  return useQuery({
+    queryKey: queryKeys.dimensions,
+    queryFn: () => getDimensionsFn(),
+  });
+}
+
+export function useCreateDimension() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: { value: string }) => createDimensionFn({ data }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: queryKeys.dimensions }),
+  });
+}
+
+/** Un renommage change la valeur portée par les produits : on rafraîchit les deux. */
+export function useUpdateDimension() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, value }: { id: string; value: string }) => updateDimensionFn({ data: { id, value } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.dimensions });
+      qc.invalidateQueries({ queryKey: queryKeys.products });
+    },
+  });
+}
+
+/** Une suppression nettoie les variantes et la dimension des produits : on rafraîchit. */
+export function useDeleteDimension() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => deleteDimensionFn({ data: { id } }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.dimensions });
+      qc.invalidateQueries({ queryKey: queryKeys.products });
+    },
+  });
+}
+
+export function useSetProductVariants() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ product_id, variants }: { product_id: string; variants: { dimension: string; stock: number }[] }) =>
+      setProductVariantsFn({ data: { product_id, variants } }),
+    onSuccess: (_, vars) => {
+      qc.invalidateQueries({ queryKey: queryKeys.productVariants(vars.product_id) });
+      qc.invalidateQueries({ queryKey: queryKeys.product(vars.product_id) });
+      qc.invalidateQueries({ queryKey: queryKeys.products });
+    },
+  });
+}
+
 export function useContactMessages() {
   return useQuery({
     queryKey: queryKeys.contacts,
@@ -243,6 +305,7 @@ export function useOrders() {
           image: i.product_image || "",
           price: i.price,
           qty: i.qty,
+          dimension: i.product_dimension || "",
         })),
       }));
     },
