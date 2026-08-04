@@ -5,7 +5,7 @@ import {
   Headphones, Info, Loader2, Package, PackageSearch, Phone, Search, Send,
   ShieldCheck, ShoppingBag, Trash2, Truck, UserRound, Wallet, XCircle,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
@@ -17,6 +17,7 @@ import {
 import { useProducts, useCategories } from "@/lib/adminStore";
 import { createOrder } from "@/lib/api/orders";
 import { useCustomerAuth } from "@/lib/customerAuth";
+import { searchProducts } from "@/lib/search";
 
 export const Route = createFileRoute("/commande-rapide")({
   component: CommandeRapide,
@@ -153,12 +154,12 @@ function CommandeRapide() {
   const updateForm = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((p) => ({ ...p, [f]: e.target.value }));
 
-  const query = search.trim().toLowerCase();
-  const visibleProducts = (products || []).filter((p: any) => {
-    if (selectedCat && p.category !== selectedCat) return false;
-    if (query && !p.name.toLowerCase().includes(query)) return false;
-    return true;
-  });
+  const visibleProducts = useMemo(() => {
+    if (!search.trim()) return [];
+    let list = (products || []) as any[];
+    if (selectedCat) list = list.filter((p: any) => p.category === selectedCat);
+    return searchProducts(list, search).map((r) => r.product);
+  }, [products, selectedCat, search]);
 
   const catCount = selectedCat
     ? (products || []).filter((p: any) => p.category === selectedCat).length
@@ -536,7 +537,9 @@ function CommandeRapide() {
                       </div>
                     ) : visibleProducts.length === 0 ? (
                       <div className="rounded-2xl border-2 border-dashed py-16 text-center text-sm text-ink-soft">
-                        Aucun produit ne correspond à votre recherche.
+                        {search.trim().length >= 2
+                          ? "Aucun produit ne correspond à votre recherche."
+                          : "Tapez au moins 2 caractères pour rechercher un produit."}
                       </div>
                     ) : (
                       <div className="styled-scrollbar max-h-[26rem] overflow-y-auto pr-1">

@@ -7,6 +7,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { type Category } from "@/lib/products";
+import { searchProducts } from "@/lib/search";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
@@ -45,14 +46,13 @@ function Shop() {
   const productList = useMemo(() => (products || []) as unknown as any[], [products]);
 
   /** The pool the chips count from: everything the category and the search leave standing,
-   *  before the subcategory filter. Each chip's number is therefore what clicking it yields. */
+   *  before the subcategory filter. Each chip's number is therefore what clicking it yields.
+   *  The search ranks matches across name, description and subcategory, accent-insensitive. */
   const catFiltered = useMemo(() => {
     let list = productList;
     if (activeCat) list = list.filter((p: any) => p.category === activeCat);
     if (query.trim())
-      list = list.filter((p: any) =>
-        p.name.toLowerCase().includes(query.toLowerCase()),
-      );
+      list = searchProducts(list, query).map((r) => r.product);
     return list;
   }, [productList, activeCat, query]);
 
