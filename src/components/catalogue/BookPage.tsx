@@ -75,7 +75,7 @@ export const CoverPage = forwardRef<HTMLDivElement, { variant: "front" | "back";
               Souss Droguerie S.A.R.L
             </p>
             <p>Zone industrielle, Agadir, Maroc</p>
-            <p>+212 528 000 000</p>
+            <p>+212 528 838 992</p>
             <p>contact@soussdroguerie.com</p>
           </div>
         </div>

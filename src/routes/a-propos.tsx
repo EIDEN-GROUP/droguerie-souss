@@ -396,7 +396,7 @@ function APropos() {
                 href="tel:+212528838992"
                 className="inline-flex items-center gap-2 rounded-full bg-brand px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-brand-foreground transition hover:bg-brand-dark"
               >
-                <Phone className="h-4 w-4" /> +212 528 000 000
+                <Phone className="h-4 w-4" /> +212 528 838 992
               </a>
               <a
                 href="https://maps.app.goo.gl/q54qmxeEv752bJMTA"

@@ -87,7 +87,7 @@ function Contact() {
           >
             {[
               { icon: MapPin, title: "Adresse", text: "Zone Industrielle, Agadir 80000, Maroc", href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7" },
-              { icon: Phone, title: "Téléphone", text: "+212 528 000 000", href: "tel:+212528838992" },
+              { icon: Phone, title: "Téléphone", text: "+212 528 838 992", href: "tel:+212528838992" },
               { icon: Mail, title: "Email", text: "contact@soussdroguerie.com", href: "mailto:contact@soussdroguerie.com" },
             ].map((c) => (
               <a

@@ -71,7 +71,7 @@ function baseHtml(content: string): string {
                 Zone Industrielle, Agadir 80000, Maroc
               </p>
               <p style="margin:8px 0 0;font-size:12px;color:${BRAND.inkSoft};">
-                <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 000 000</a>
+                <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 838 992</a>
                 &nbsp;&middot;&nbsp;
                 <a href="mailto:contact@soussdroguerie.com" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">contact@soussdroguerie.com</a>
               </p>
