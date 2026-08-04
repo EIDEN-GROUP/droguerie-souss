@@ -71,7 +71,7 @@ function baseHtml(content: string): string {
                 Zone Industrielle, Agadir 80000, Maroc
               </p>
               <p style="margin:8px 0 0;font-size:12px;color:${BRAND.inkSoft};">
-                <a href="tel:+212528000000" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 000 000</a>
+                <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 000 000</a>
                 &nbsp;&middot;&nbsp;
                 <a href="mailto:contact@soussdroguerie.com" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">contact@soussdroguerie.com</a>
               </p>
@@ -114,7 +114,7 @@ export function orderConfirmationEmail(order: {
   total: number;
   type?: "order" | "quote";
   note?: string | null;
-  items: { product_name: string; qty: number; price: number }[];
+  items: { product_name: string; qty: number; price: number; dimension?: string }[];
 }): string {
   const isQuote = order.type === "quote";
   const allZero = order.items.every(i => i.price === 0);
@@ -125,7 +125,10 @@ export function orderConfirmationEmail(order: {
     .map(
       (i) => {
         const itemPrice = i.price === 0 ? "Prix à confirmer" : (i.price * i.qty).toFixed(2) + " MAD";
-        return `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${i.product_name}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${itemPrice}</td></tr>`;
+        const dimensionHtml = i.dimension
+          ? `<br /><span style="font-size:11px;color:${BRAND.inkSoft};">Format : ${i.dimension}</span>`
+          : "";
+        return `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${i.product_name}${dimensionHtml}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${itemPrice}</td></tr>`;
       },
     )
     .join("");
@@ -234,7 +237,7 @@ export function orderCustomerConfirmation(order: { customer_name: string; total:
 
     <p style="margin:20px 0 0;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
       Une question ? Répondez simplement à cet email ou appelez-nous au
-      <a href="tel:+212528000000" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212&nbsp;528&nbsp;000&nbsp;000</a>.
+      <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212&nbsp;528&nbsp;000&nbsp;000</a>.
     </p>
   `);
 }

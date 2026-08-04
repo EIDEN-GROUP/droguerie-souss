@@ -7,7 +7,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { SectionHeader } from "@/components/SectionHeader";
 import { useProducts } from "@/lib/adminStore";
 import { useProduct } from "@/lib/adminStore";
-import { productDimensions, type Product } from "@/lib/products";
+import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { ProductPromoPrice } from "@/components/ProductPrice";
 
@@ -102,14 +102,17 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const pct = product.promo ?? 0;
   const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
   const points = descriptionPoints(product.description);
-  const dimensions = productDimensions(product);
-  const [dimension, setDimension] = useState(dimensions[0]);
+
+  const variants = product.variants || [];
+  const [selectedDimension, setSelectedDimension] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
-    setDimension(productDimensions(product)[0]);
-  }, [product]);
+    const firstAvailable = variants.find((v) => v.stock > 0) ?? variants[0];
+    setSelectedDimension(firstAvailable?.dimension ?? undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [product?.id]);
 
   return (
     <Layout>
@@ -197,33 +200,36 @@ function ProductDetailContent({ product, products }: { product: Product; product
               </ul>
             )}
 
-            {dimensions.length > 0 && (
-              <div className="mt-8">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
-                  {dimensions.length > 1 ? "Format" : "Format unique"}
+            {variants.length > 0 && (
+              <div className="mt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-soft">
+                  Dimensions disponibles
                 </p>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {dimensions.map((d) => {
-                    const selected = d === dimension;
-                    /** Une seule taille : l'information reste affichee, mais rien a choisir. */
-                    const single = dimensions.length === 1;
-                    return (
-                      <button
-                        key={d}
-                        type="button"
-                        onClick={() => setDimension(d)}
-                        disabled={single}
-                        aria-pressed={selected}
-                        className={`rounded-full border-2 px-4 py-2 text-sm font-bold transition disabled:cursor-default ${
-                          selected
-                            ? "border-brand bg-brand text-brand-foreground"
-                            : "border-border text-ink hover:border-brand hover:text-brand"
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {variants.map((v) => (
+                    <button
+                      key={v.dimension}
+                      onClick={() => setSelectedDimension(v.dimension)}
+                      disabled={v.stock === 0}
+                      className={`flex items-center gap-2 rounded-full border py-1.5 pl-4 pr-1.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                        selectedDimension === v.dimension
+                          ? "border-brand bg-mint text-brand"
+                          : "border-border bg-paper hover:border-brand"
+                      }`}
+                    >
+                      {v.dimension === selectedDimension && (
+                        <span className="h-1.5 w-1.5 rounded-full bg-brand" />
+                      )}
+                      <span>{v.dimension}</span>
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                          v.stock > 0 ? "bg-ink/5 text-ink-soft" : "bg-accent-red/10 text-accent-red"
                         }`}
                       >
-                        {d}
-                      </button>
-                    );
-                  })}
+                        {v.stock > 0 ? `${v.stock} en stock` : "Épuisé"}
+                      </span>
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -247,7 +253,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                 <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
               </button>
               <button
-                onClick={() => addToCart(product, qty)}
+                onClick={() => addToCart(product, qty, selectedDimension)}
                 className="order-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent-red px-6 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 sm:order-none sm:w-auto sm:flex-1"
               >
                 <ShoppingBag className="h-4 w-4" /> Ajouter au panier

@@ -51,7 +51,7 @@ function Confirmation() {
               <Home className="h-4 w-4" /> Retour à l'accueil
             </Link>
             <a
-              href="tel:+212528000000"
+              href="tel:+212528838992"
               className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-ink px-6 py-3 text-sm font-bold uppercase tracking-wider hover:bg-ink hover:text-paper"
             >
               <Phone className="h-4 w-4" /> Nous appeler

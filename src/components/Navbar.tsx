@@ -66,7 +66,7 @@ export function Navbar() {
         <div className="container-x flex h-9 items-center justify-between text-xs">
           <span>Livraison rapide dans tout le Souss • Devis gratuit sous 24h</span>
           <div className="flex items-center gap-4">
-            <a href="tel:+212528000000" className="flex items-center gap-1.5 hover:text-sky">
+            <a href="tel:+212528838992" className="flex items-center gap-1.5 hover:text-sky">
               <Phone className="h-3 w-3" /> +212 528 000 000
             </a>
             <a href="mailto:contact@soussdroguerie.com" className="hover:text-sky">
@@ -127,7 +127,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-1">
             <a
-              href="tel:+212528000000"
+              href="tel:+212528838992"
               className="hidden md:inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-brand-foreground"
             >
               <Phone className="h-4 w-4" /> +212 528 000 000
@@ -297,7 +297,7 @@ export function Navbar() {
                   </button>
                 )}
                 <a
-                  href="tel:+212528000000"
+                  href="tel:+212528838992"
                   className="flex items-center justify-center gap-2 rounded-full bg-brand px-4 py-3 text-sm font-semibold text-brand-foreground"
                 >
                   <Phone className="h-4 w-4" /> +212 528 000 000

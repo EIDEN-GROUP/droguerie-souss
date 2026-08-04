@@ -49,6 +49,7 @@ function Checkout() {
           product_id: i.product.id,
           product_name: i.product.name,
           product_image: i.product.image,
+          product_dimension: i.dimension,
           price,
           qty: i.qty,
         };
@@ -202,15 +203,22 @@ function Checkout() {
               <Card title="Récapitulatif">
                 <ul className="divide-y">
                   {cart.map((i) => (
-                    <li key={i.product.id} className="flex gap-3 py-3">
+                    <li key={i.product.id + "|" + (i.dimension ?? "")} className="flex gap-3 py-3">
                       <img
                         src={i.product.image}
                         alt=""
                         className="h-14 w-14 rounded object-cover"
                       />
                       <div className="flex min-w-0 flex-1">
-                        <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
-                        <p className="text-[11px] text-ink-soft">Qté: {i.qty}</p>
+                        <div>
+                          <p className="line-clamp-2 text-xs font-semibold">{i.product.name}</p>
+                          {i.dimension && (
+                            <p className="mt-0.5 text-[11px] font-semibold text-brand">
+                              Format : {i.dimension}
+                            </p>
+                          )}
+                          <p className="text-[11px] text-ink-soft">Qté: {i.qty}</p>
+                        </div>
                       </div>
                     </li>
                   ))}

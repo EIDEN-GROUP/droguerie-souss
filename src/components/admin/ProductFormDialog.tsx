@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Gift, ImagePlus, Link, Loader2, X } from "lucide-react";
+import { Check, Gift, ImagePlus, Link, Loader2, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -9,11 +9,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useCreateProduct, useUpdateProduct, useCategories, useProductGifts, useSetProductGifts } from "@/lib/adminStore";
+import { cn } from "@/lib/utils";
+import {
+  useCreateProduct,
+  useUpdateProduct,
+  useCategories,
+  useProductGifts,
+  useSetProductGifts,
+  useSetProductVariants,
+} from "@/lib/adminStore";
 import { getUploadUrl } from "@/lib/api/uploads";
-import { categories as defaultCategories, type Product } from "@/lib/products";
+import { categories as defaultCategories, type Product, type ProductVariant } from "@/lib/products";
 import type { DbProductGift, ProductInput } from "@/lib/database.types";
 import { GiftPicker } from "./GiftPicker";
+import { DimensionsCombobox } from "./DimensionsCombobox";
 
 const MAX_IMAGE_BYTES = 1_500_000;
 
@@ -57,6 +66,13 @@ export function ProductFormDialog({
   const { data: loadedGifts } = useProductGifts(product?.id ?? "");
   const saveGifts = useSetProductGifts();
   const [gifts, setGifts] = useState<Omit<DbProductGift, "id" | "product_id">[]>([]);
+
+  const saveVariants = useSetProductVariants();
+  const [variants, setVariants] = useState<ProductVariant[]>([]);
+  const [editor, setEditor] = useState<{ dimension: string; stock: string }>({ dimension: "", stock: "0" });
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [variantsDirty, setVariantsDirty] = useState(false);
+  const [variantsError, setVariantsError] = useState("");
 
   useEffect(() => {
     if (loadedGifts) {
@@ -112,8 +128,64 @@ export function ProductFormDialog({
       );
       setImageUrls(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
       setImageError("");
+      setVariants((product?.variants || []).map((v) => ({ dimension: v.dimension, stock: v.stock })));
+      setEditor({ dimension: "", stock: "0" });
+      setEditingIndex(null);
+      setVariantsDirty(false);
+      setVariantsError("");
     }
   }, [open, product, reset]);
+
+  const loadVariantInEditor = (i: number) => {
+    const v = variants[i];
+    if (!v) return;
+    setEditor({ dimension: v.dimension, stock: String(v.stock) });
+    setEditingIndex(i);
+    setVariantsError("");
+  };
+
+  const resetEditor = () => {
+    setEditor({ dimension: "", stock: "0" });
+    setEditingIndex(null);
+    setVariantsError("");
+  };
+
+  const saveVariantInEditor = () => {
+    const dimension = editor.dimension.trim();
+    if (!dimension) {
+      setVariantsError("Choisissez ou créez une dimension.");
+      return;
+    }
+    const stock = Math.max(0, Math.floor(parseInt(editor.stock, 10) || 0));
+    if (
+      editingIndex !== null &&
+      variants[editingIndex] &&
+      variants[editingIndex].dimension === dimension &&
+      variants[editingIndex].stock === stock
+    ) {
+      resetEditor();
+      return;
+    }
+    if (editingIndex !== null && variants[editingIndex]) {
+      setVariants((prev) =>
+        prev.map((v, i) => (i === editingIndex ? { dimension, stock } : v)),
+      );
+    } else {
+      if (variants.some((v) => v.dimension.toLowerCase() === dimension.toLowerCase())) {
+        setVariantsError(`La dimension « ${dimension} » est déjà présente sur ce produit.`);
+        return;
+      }
+      setVariants((prev) => [...prev, { dimension, stock }]);
+    }
+    setVariantsDirty(true);
+    resetEditor();
+  };
+
+  const removeVariant = (i: number) => {
+    setVariants((prev) => prev.filter((_, idx) => idx !== i));
+    if (editingIndex === i) resetEditor();
+    setVariantsDirty(true);
+  };
 
   const onFilesSelected = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -157,9 +229,11 @@ export function ProductFormDialog({
       subcategory: values.subcategory || undefined,
       image_url: imageUrls[0],
       images_urls: imageUrls,
+      dimension: variants[0]?.dimension || undefined,
     };
     if (!payload.promo || (payload.promo as number) <= 0) delete payload.promo;
     if (!payload.subcategory) delete payload.subcategory;
+    if (!payload.dimension) delete payload.dimension;
     try {
       let savedId = product?.id ?? "";
       if (product) {
@@ -170,6 +244,9 @@ export function ProductFormDialog({
       }
       if (gifts.length > 0 && savedId) {
         await saveGifts.mutateAsync({ product_id: savedId, gifts });
+      }
+      if (variantsDirty && savedId) {
+        await saveVariants.mutateAsync({ product_id: savedId, variants });
       }
       onOpenChange(false);
     } catch (err) {
@@ -266,13 +343,103 @@ export function ProductFormDialog({
             <Field label="Prix (MAD)" error={errors.price?.message}>
               <input type="number" step="0.01" {...register("price")} disabled={isQuote} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand disabled:cursor-not-allowed disabled:opacity-50" />
             </Field>
-            <Field label="Stock" error={errors.stock?.message}>
-              <input type="number" {...register("stock")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
-            </Field>
             <Field label="Promo % (optionnel)" error={errors.promo?.message}>
               <input type="number" {...register("promo")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
             </Field>
           </div>
+
+          <div className="space-y-3">
+            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+              Dimensions
+            </label>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <DimensionsCombobox
+                value={editor.dimension}
+                onChange={(dimension) => setEditor((e) => ({ ...e, dimension }))}
+                placeholder="Choisir / créer une dimension"
+                className="sm:max-w-xs"
+              />
+              <div className="flex items-center gap-2">
+                <div className="flex items-center rounded-lg border border-border bg-white px-3">
+                  <input
+                    type="number"
+                    min={0}
+                    value={editor.stock}
+                    onChange={(e) => setEditor((s) => ({ ...s, stock: e.target.value }))}
+                    className="w-20 bg-transparent py-2.5 text-sm outline-none"
+                    placeholder="Stock"
+                    aria-label="Stock de cette dimension"
+                  />
+                  <span className="text-xs text-ink-soft">en stock</span>
+                </div>
+                {editingIndex !== null && (
+                  <button
+                    type="button"
+                    onClick={resetEditor}
+                    className="shrink-0 rounded-full px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-ink-soft hover:bg-cream"
+                  >
+                    Annuler
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={saveVariantInEditor}
+                  className={cn(
+                    "flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold",
+                    editingIndex !== null ? "bg-mint text-ink hover:bg-mint/70" : "bg-brand text-brand-foreground hover:bg-brand-dark",
+                  )}
+                >
+                  {editingIndex !== null && <Check className="h-3.5 w-3.5" />}
+                  {editingIndex !== null ? "Enregistrer" : "Ajouter"}
+                </button>
+              </div>
+            </div>
+            {variantsError && (
+              <p className="text-xs font-semibold text-accent-red">{variantsError}</p>
+            )}
+            {variants.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {variants.map((v, i) => (
+                  <button
+                    type="button"
+                    key={v.dimension}
+                    onClick={() => loadVariantInEditor(i)}
+                    title={`Modifier le stock de ${v.dimension}`}
+                    className={cn(
+                      "group flex items-center gap-2 rounded-full border py-1 pl-4 pr-1.5 text-sm font-semibold text-ink transition",
+                      editingIndex === i
+                        ? "border-brand bg-mint text-brand"
+                        : "border-border bg-paper hover:border-brand",
+                    )}
+                  >
+                    <span>{v.dimension}</span>
+                    <span className="rounded-full bg-ink/5 px-2 py-0.5 text-[11px] font-bold text-ink-soft">
+                      Stock : {v.stock}
+                    </span>
+                    <span
+                      role="button"
+                      aria-label={`Retirer ${v.dimension}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        removeVariant(i);
+                      }}
+                      className="grid h-6 w-6 place-items-center rounded-full text-ink-soft transition group-hover:text-accent-red hover:bg-accent-red/10 hover:!text-accent-red"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-xs text-ink-soft">Aucune dimension pour l'instant.</p>
+            )}
+          </div>
+
+          <Field label="Stock (global)" error={errors.stock?.message}>
+            <div className="sm:max-w-xs">
+              <input type="number" {...register("stock")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+            </div>
+          </Field>
 
           <GiftPicker gifts={gifts} onChange={setGifts} />
 

@@ -45,7 +45,7 @@ export function CtaBanner() {
               Demander un devis
             </Link>
             <a
-              href="tel:+212528000000"
+              href="tel:+212528838992"
               className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full border-2 border-paper px-7 py-4 text-sm font-bold uppercase tracking-wider text-paper hover:bg-paper hover:text-ink"
             >
               <Phone className="h-4 w-4" /> Nous appeler

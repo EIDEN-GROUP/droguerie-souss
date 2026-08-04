@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
-import { useApp } from "@/lib/store";
+import { cartLineKey, useApp } from "@/lib/store";
 import { ProductPrice } from "@/components/ProductPrice";
 
 export function CartSidebar() {
@@ -72,7 +72,7 @@ export function CartSidebar() {
                       : item.product.price;
                     return (
                       <motion.li
-                        key={item.product.id}
+                        key={cartLineKey(item.product.id, item.dimension)}
                         layout
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -88,11 +88,16 @@ export function CartSidebar() {
                           <p className="line-clamp-2 text-sm font-semibold">
                             {item.product.name}
                           </p>
+                          {item.dimension && (
+                            <p className="mt-0.5 text-[11px] font-semibold text-brand">
+                              Format : {item.dimension}
+                            </p>
+                          )}
                           <ProductPrice priceMode={item.product.price_mode} price={price} unit={item.product.unit} size="sm" />
                           <div className="mt-auto flex items-center justify-between pt-2">
                             <div className="flex items-center gap-1 rounded-full border">
                               <button
-                                onClick={() => updateQty(item.product.id, item.qty - 1)}
+                                onClick={() => updateQty(cartLineKey(item.product.id, item.dimension), item.qty - 1)}
                                 className="grid h-7 w-7 place-items-center hover:bg-mint rounded-l-full"
                               >
                                 <Minus className="h-3 w-3" />
@@ -101,14 +106,14 @@ export function CartSidebar() {
                                 {item.qty}
                               </span>
                               <button
-                                onClick={() => updateQty(item.product.id, item.qty + 1)}
+                                onClick={() => updateQty(cartLineKey(item.product.id, item.dimension), item.qty + 1)}
                                 className="grid h-7 w-7 place-items-center hover:bg-mint rounded-r-full"
                               >
                                 <Plus className="h-3 w-3" />
                               </button>
                             </div>
                             <button
-                              onClick={() => removeFromCart(item.product.id)}
+                              onClick={() => removeFromCart(cartLineKey(item.product.id, item.dimension))}
                               className="text-ink-soft hover:text-accent-red"
                             >
                               <Trash2 className="h-4 w-4" />

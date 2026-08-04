@@ -5,16 +5,20 @@ import type { Product } from "./products";
 interface CartItem {
   product: Product;
   qty: number;
+  dimension?: string;
 }
+
+/** Clé stable d'une ligne : un même produit peut apparaître avec des dimensions différentes. */
+export const cartLineKey = (productId: string, dimension?: string) => `${productId}|${dimension ?? ""}`;
 
 interface AppState {
   cart: CartItem[];
   favorites: string[];
   cartOpen: boolean;
   favOpen: boolean;
-  addToCart: (p: Product, qty?: number) => void;
-  removeFromCart: (id: string) => void;
-  updateQty: (id: string, qty: number) => void;
+  addToCart: (p: Product, qty?: number, dimension?: string) => void;
+  removeFromCart: (key: string) => void;
+  updateQty: (key: string, qty: number) => void;
   clearCart: () => void;
   toggleFavorite: (id: string) => void;
   setCartOpen: (v: boolean) => void;
@@ -28,21 +32,27 @@ export const useApp = create<AppState>()(
       favorites: [],
       cartOpen: false,
       favOpen: false,
-      addToCart: (p, qty = 1) =>
+      addToCart: (p, qty = 1, dimension) =>
         set((s) => {
-          const existing = s.cart.find((i) => i.product.id === p.id);
+          const existing = s.cart.find((i) => cartLineKey(i.product.id, i.dimension) === cartLineKey(p.id, dimension));
           if (existing) {
             return {
-              cart: s.cart.map((i) => (i.product.id === p.id ? { ...i, qty: i.qty + qty } : i)),
+              cart: s.cart.map((i) =>
+                cartLineKey(i.product.id, i.dimension) === cartLineKey(p.id, dimension)
+                  ? { ...i, qty: i.qty + qty }
+                  : i,
+              ),
               cartOpen: true,
             };
           }
-          return { cart: [...s.cart, { product: p, qty }], cartOpen: true };
+          return { cart: [...s.cart, { product: p, qty, dimension }], cartOpen: true };
         }),
-      removeFromCart: (id) => set((s) => ({ cart: s.cart.filter((i) => i.product.id !== id) })),
-      updateQty: (id, qty) =>
+      removeFromCart: (key) => set((s) => ({ cart: s.cart.filter((i) => cartLineKey(i.product.id, i.dimension) !== key) })),
+      updateQty: (key, qty) =>
         set((s) => ({
-          cart: s.cart.map((i) => (i.product.id === id ? { ...i, qty: Math.max(1, qty) } : i)),
+          cart: s.cart.map((i) =>
+            cartLineKey(i.product.id, i.dimension) === key ? { ...i, qty: Math.max(1, qty) } : i,
+          ),
         })),
       clearCart: () => set({ cart: [] }),
       toggleFavorite: (id) =>

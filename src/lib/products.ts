@@ -11,6 +11,12 @@ import generic from "@/assets/banner-cta.jpg";
 
 export type Category = string;
 
+/** Une variante de dimension vendue pour un produit, avec son propre stock. */
+export interface ProductVariant {
+  dimension: string;
+  stock: number;
+}
+
 export interface ProductGift {
   id: string;
   product_id: string;
@@ -24,10 +30,8 @@ export interface Product {
   name: string;
   category: Category;
   subcategory?: string;
-  /** Format unique, colonne historique. Remplace par `dimensions` (migration 017). */
+  /** Format unique, colonne historique. Remplace par les variantes (migration 017). */
   dimension?: string;
-  /** Formats proposes pour une meme reference : le client choisit le sien. */
-  dimensions?: string[];
   price_mode?: "fixed" | "quote";
   price: number;
   unit: string;
@@ -38,6 +42,7 @@ export interface Product {
   seasonal?: boolean;
   promo?: number;
   stock: number;
+  variants?: ProductVariant[];
   gifts?: ProductGift[];
 }
 
@@ -73,20 +78,6 @@ export const categories: CategoryInfo[] = [
  */
 export function categoryGroup(cat: Category): Category[] {
   return categories.find((c) => c.category === cat)?.covers ?? [cat];
-}
-
-/**
- * Formats proposes par une reference. Tant que la migration 017 n'est pas passee, seule
- * la colonne `dimension` existe : elle est traitee comme une liste d'un element, ce qui
- * fait fonctionner le selecteur avant comme apres.
- */
-export function productDimensions(product: {
-  dimension?: string | null;
-  dimensions?: string[] | null;
-}): string[] {
-  const list = (product.dimensions ?? []).filter(Boolean);
-  if (list.length > 0) return list;
-  return product.dimension ? [product.dimension] : [];
 }
 
 export const featuredCategories = categories.slice(0, 6);
