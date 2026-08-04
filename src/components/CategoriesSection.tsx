@@ -30,45 +30,48 @@ function CategoryCardBody({
         src={image}
         alt={name}
         loading="lazy"
-        className={`absolute inset-0 h-full w-full object-cover transition-transform duration-500 ${
-          active ? "scale-100" : "group-hover:scale-110"
-        }`}
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
       />
-      {/* Dark by default so the label reads; lifts on hover and while active to reveal the photo. */}
+      {/* Voile cantonné au bas : la photo reste lisible au repos et couvre un peu
+          plus l'image au survol, le temps de dégager le libellé. */}
       <div
-        className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/40 transition-opacity duration-300 ${
-          active ? "opacity-0" : "opacity-100 group-hover:opacity-0"
+        className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent transition-all duration-300 group-hover:h-full group-hover:via-black/60 ${
+          compact ? "h-1/2" : "h-2/3"
         }`}
       />
-      {/* Active card keeps the photo clear, so the label gets its own footer gradient. */}
-      {active && (
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/85 via-black/45 to-transparent" />
-      )}
-      <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-5"}`}>
+      <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-4"}`}>
         <div
-          className={`font-display font-bold uppercase tracking-wide ${
+          className={`text-shadow-overlay font-display font-bold uppercase leading-tight tracking-wide ${
             active
               ? /* Le bloc est ancré en bas : un nom long grandirait vers le haut et se
                    ferait rogner par la carte. D'où la taille progressive et le garde-fou. */
-                "text-shadow-overlay-lg line-clamp-3 text-lg leading-tight sm:text-xl"
+                "line-clamp-3 text-lg leading-tight sm:text-xl"
               : compact
-                ? "text-shadow-overlay text-xs leading-tight sm:text-sm"
-                : "text-shadow-overlay text-xl"
+                ? "text-xs leading-tight sm:text-sm"
+                : "text-sm"
           }`}
         >
           {name}
         </div>
-        {/* Le filet rouge de la marque marque la carte sélectionnée. */}
-        {active && <span className="mt-2 block h-1 w-10 rounded-full bg-accent-red" />}
-        {!compact && (
-          <div
-            className={`text-shadow-overlay mt-1 flex items-center gap-1 text-xs text-white/90 transition ${
-              active ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-            }`}
-          >
-            Voir les produits <ArrowRight className="h-3 w-3" />
-          </div>
-        )}
+        {/* Le filet rouge de la marque : court au repos, il s'étire au survol. */}
+        <span
+          className={`mt-2 block h-1 rounded-full bg-accent-red transition-all duration-300 group-hover:w-16 ${
+            active ? "w-16" : "w-8"
+          }`}
+        />
+        {/* max-h plutôt qu'un simple opacity : le libellé pousse le titre vers le haut
+            en s'ouvrant, glissement identique aux fiches À propos. */}
+        <span
+          className={`text-shadow-overlay flex items-center gap-1 overflow-hidden text-[11px] font-semibold uppercase tracking-wider text-white/90 transition-all duration-300 ${
+            active
+              ? "mt-2 max-h-6 opacity-100"
+              : compact
+                ? "mt-0 max-h-0 opacity-0"
+                : "mt-0 max-h-0 opacity-0 group-hover:mt-2 group-hover:max-h-6 group-hover:opacity-100"
+          }`}
+        >
+          Voir les produits <ArrowRight className="h-3 w-3" />
+        </span>
       </div>
     </>
   );
@@ -131,7 +134,7 @@ export function CategoriesSection({
                     <button
                       type="button"
                       onClick={() => onCategorySelect(c.category)}
-                      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left transition duration-300"
+                      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
                     >
                       <CategoryCardBody
                         name={c.name}
@@ -144,7 +147,7 @@ export function CategoriesSection({
                     <Link
                       to="/rubriques"
                       search={{ cat: c.category }}
-                      className="group block relative aspect-[4/3] overflow-hidden rounded-2xl"
+                      className="group block relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
                     >
                       <CategoryCardBody name={c.name} image={c.image} />
                     </Link>

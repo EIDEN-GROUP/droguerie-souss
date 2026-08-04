@@ -20,8 +20,8 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
-import storyImg from "@/assets/collection-bath.jpg";
-import zoneImg from "@/assets/hero-3.jpg";
+import storyImg from "@/assets/1.png";
+import zoneImg from "@/assets/22.png";
 
 const TITLE = "À propos   Souss Droguerie S.A.R.L, matériaux de construction à Agadir";
 const DESCRIPTION =
@@ -89,7 +89,7 @@ export const Route = createFileRoute("/a-propos")({
 
 const stats = [
   { value: 20, suffix: "+", label: "Années d'expérience", icon: Building2 },
-  { value: 24, suffix: "h", label: "Pour recevoir votre devis", icon: Clock },
+  { value: 48, suffix: "h", label: "Pour recevoir votre devis", icon: Clock },
   { value: 9, suffix: "", label: "Familles de matériaux", icon: Package },
   { value: 12, suffix: "", label: "Marques partenaires", icon: Handshake },
 ];
@@ -122,7 +122,7 @@ const engagements = [
   },
   {
     icon: Clock,
-    title: "Une réponse sous 24h",
+    title: "Une réponse sous 48h",
     text: "Toute demande de devis reçoit une réponse chiffrée sous 24 heures ouvrées, quelle que soit la taille du lot.",
   },
 ];
