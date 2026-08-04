@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { animate, motion, useInView, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
+  BadgeCheck,
   Building2,
   Clock,
   HandCoins,
@@ -10,7 +11,6 @@ import {
   Package,
   Phone,
   ShieldCheck,
-  Truck,
   Users,
   Warehouse,
 } from "lucide-react";
@@ -111,9 +111,9 @@ const engagements = [
     text: "Chaque devis détaille les quantités et les alternatives possibles. Vous savez ce que vous payez et pourquoi, avant de commander.",
   },
   {
-    icon: Truck,
-    title: "Livraison dans tout le Souss",
-    text: "D'Agadir à Taroudant en passant par Inezgane, Aït Melloul et Tiznit, nous livrons directement sur le chantier.",
+    icon: BadgeCheck,
+    title: "Une qualité contrôlée",
+    text: "Chaque lot est vérifié à la réception : conformité des références, calibre et nuance des carrelages, état des sacs et des palettes. Ce qui quitte le dépôt est conforme à ce que vous avez commandé.",
   },
   {
     icon: Users,
