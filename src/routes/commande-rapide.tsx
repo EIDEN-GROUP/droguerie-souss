@@ -154,7 +154,8 @@ function CommandeRapide() {
   const updateForm = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((p) => ({ ...p, [f]: e.target.value }));
 
-  /** Typed search matches the whole catalogue, ranked by relevance — the category is
+  /** Step 2 filters the catalogue with what was typed in step 1 (via the prefill in
+   *  goToStep) plus anything extra typed in the step-2 search box. The category is
    *  optional and only narrows the list when no search is active. */
   const visibleProducts = useMemo(() => {
     const list = (products || []) as any[];
@@ -198,6 +199,7 @@ function CommandeRapide() {
   };
 
   const goToStep = (next: number) => {
+    if (next === 2 && step === 1) setSearch(description.trim());
     setStep(next);
     formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -430,7 +432,7 @@ function CommandeRapide() {
                   >
                     <div>
                       <h3 className="font-display text-lg font-bold uppercase tracking-wide">
-                        Que cherchez-vous ?
+                        Que cherchez-vous ? <span className="text-ink-soft">(optionnelle)</span>
                       </h3>
                       <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
                         Décrivez brièvement votre besoin en matériaux : surface, quantités, délais.
@@ -446,10 +448,10 @@ function CommandeRapide() {
 
                     <div className="border-t pt-8">
                       <h3 className="font-display text-lg font-bold uppercase tracking-wide">
-                        Catégorie <span className="text-ink-soft">(optionnelle)</span>
+                        Catégorie
                       </h3>
                       <p className="mt-1.5 text-sm leading-relaxed text-ink-soft">
-                        Choisissez une catégorie pour nous aider à préciser votre demande.
+                        Sélectionnez la catégorie correspondant à votre recherche.
                       </p>
                       <div className="mt-4 flex flex-wrap gap-2">
                         {(categories || []).map((c: any) => (
