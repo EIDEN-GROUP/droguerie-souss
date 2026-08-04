@@ -24,6 +24,10 @@ export interface Product {
   name: string;
   category: Category;
   subcategory?: string;
+  /** Format unique, colonne historique. Remplace par `dimensions` (migration 017). */
+  dimension?: string;
+  /** Formats proposes pour une meme reference : le client choisit le sien. */
+  dimensions?: string[];
   price_mode?: "fixed" | "quote";
   price: number;
   unit: string;
@@ -39,23 +43,51 @@ export interface Product {
 
 export interface CategoryInfo {
   slug: string;
+  /** Valeur portee par `/categories?cat=` quand on clique la carte. */
   category: Category;
   name: string;
   image: string;
   description: string;
+  /**
+   * Categories de l'admin regroupees derriere cette carte, quand la vitrine est plus
+   * large que le decoupage du catalogue. Par defaut la carte ne couvre que `category`.
+   */
+  covers?: Category[];
 }
 
 export const categories: CategoryInfo[] = [
-  { slug: "carrelage", category: "Carrelage", name: "Carrelage", image: tiles, description: "Carreaux céramiques et grès cérame" },
+  { slug: "carrelage", category: "Carrelage", name: "Carrelage & Zellige", image: tiles, description: "Carreaux céramiques, grès cérame et zellige", covers: ["Carrelage", "Céramique", "Zellige"] },
   { slug: "marbre", category: "Marbre", name: "Marbre", image: marble, description: "Marbre et pierres naturelles" },
   { slug: "peinture", category: "Peinture", name: "Peinture", image: paint, description: "Peintures intérieures et extérieures" },
   { slug: "ciment", category: "Ciment & Granulats", name: "Ciment, Sable & Gravier", image: cement, description: "Matériaux de gros œuvre" },
-  { slug: "zellige", category: "Zellige", name: "Zellige", image: zellige, description: "Zellige marocain traditionnel" },
   { slug: "platre", category: "Plâtre", name: "Plâtre", image: plaster, description: "Plâtre et enduits" },
   { slug: "electrique", category: "Électricité", name: "Câbles & Électricité", image: cables, description: "Câbles, fils et accessoires" },
   { slug: "plomberie", category: "Plomberie", name: "Tuyaux & Gouttières", image: pipes, description: "Plomberie et évacuation" },
   { slug: "quincaillerie", category: "Quincaillerie", name: "Quincaillerie", image: hardware, description: "Outils et fournitures" },
 ];
+
+/**
+ * Les categories de l'admin qu'un `?cat=` recouvre. Une carte de vitrine peut en
+ * regrouper plusieurs ; toute autre valeur (une categorie de l'admin choisie ailleurs)
+ * ne se represente qu'elle-meme, pour que rien ne devienne injoignable.
+ */
+export function categoryGroup(cat: Category): Category[] {
+  return categories.find((c) => c.category === cat)?.covers ?? [cat];
+}
+
+/**
+ * Formats proposes par une reference. Tant que la migration 017 n'est pas passee, seule
+ * la colonne `dimension` existe : elle est traitee comme une liste d'un element, ce qui
+ * fait fonctionner le selecteur avant comme apres.
+ */
+export function productDimensions(product: {
+  dimension?: string | null;
+  dimensions?: string[] | null;
+}): string[] {
+  const list = (product.dimensions ?? []).filter(Boolean);
+  if (list.length > 0) return list;
+  return product.dimension ? [product.dimension] : [];
+}
 
 export const featuredCategories = categories.slice(0, 6);
 

@@ -1,30 +1,63 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { ChevronRight, Heart, Menu, Phone, ShoppingBag, UserRound, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
+import { CategoryCardBody } from "@/components/CategoriesSection";
+import { categories } from "@/lib/products";
 import logo from "@/assets/logo.png";
 import logoMobile from "@/assets/icon-blue.png";
 
 const links = [
   { to: "/", label: "Accueil" },
   { to: "/a-propos", label: "À propos" },
-  { to: "/rubriques", label: "Catégories" },
+  { to: "/categories", label: "Catégories" },
   { to: "/catalogue", label: "Catalogue" },
   { to: "/contact", label: "Contactez-nous" },
 ];
+
+/** Delai avant fermeture : le curseur passe par un interstice entre le lien et le panneau,
+ *  fermer sur-le-champ rendrait le menu impossible a atteindre. */
+const MEGA_CLOSE_DELAY = 120;
 
 export function Navbar() {
   const { cart, favorites, setCartOpen, setFavOpen } = useApp();
   const { user, setAuthOpen } = useCustomerAuth();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mega, setMega] = useState(false);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 20));
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+
+  const openMega = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    setMega(true);
+  };
+  const closeMega = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    closeTimer.current = setTimeout(() => setMega(false), MEGA_CLOSE_DELAY);
+  };
+
+  /** Le panneau se referme au changement de page et sur Echap. */
+  useEffect(() => setMega(false), [pathname]);
+  useEffect(() => {
+    if (!mega) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMega(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mega]);
+
+  useEffect(
+    () => () => {
+      if (closeTimer.current) clearTimeout(closeTimer.current);
+    },
+    [],
+  );
 
   return (
     <>
@@ -65,20 +98,29 @@ export function Navbar() {
           <nav className="hidden lg:flex items-center gap-1">
             {links.map((l) => {
               const active = pathname === l.to;
+              const hasMega = l.to === "/categories";
               return (
-                <Link
+                <div
                   key={l.to}
-                  to={l.to}
-                  className="relative px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+                  className="relative"
+                  onMouseEnter={hasMega ? openMega : undefined}
+                  onMouseLeave={hasMega ? closeMega : undefined}
                 >
-                  {l.label}
-                  {active && (
-                    <motion.span
-                      layoutId="nav-underline"
-                      className="absolute inset-x-3 -bottom-0.5 h-0.5 bg-accent-red"
-                    />
-                  )}
-                </Link>
+                  <Link
+                    to={l.to}
+                    onFocus={hasMega ? openMega : undefined}
+                    aria-expanded={hasMega ? mega : undefined}
+                    className="relative block px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+                  >
+                    {l.label}
+                    {active && (
+                      <motion.span
+                        layoutId="nav-underline"
+                        className="absolute inset-x-3 -bottom-0.5 h-0.5 bg-accent-red"
+                      />
+                    )}
+                  </Link>
+                </div>
               );
             })}
           </nav>
@@ -145,6 +187,37 @@ export function Navbar() {
             </button>
           </div>
         </div>
+
+        {/* Panneau des categories, deroule sous la barre au survol du lien. Il est rendu
+            dans l'en-tete pour rester colle a son bord bas quel que soit le defilement,
+            et reste ouvert tant que le curseur est dessus. */}
+        {mega && (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.18, ease: "easeOut" }}
+            onMouseEnter={openMega}
+            onMouseLeave={closeMega}
+            className="absolute inset-x-0 top-full hidden border-b bg-paper shadow-[var(--shadow-elevated)] lg:block"
+          >
+            <div className="container-x py-6">
+              {/* 4 colonnes pour 8 categories : deux rangees pleines. */}
+              <div className="grid grid-cols-4 gap-3">
+                {categories.map((c) => (
+                  <Link
+                    key={c.slug}
+                    to="/categories"
+                    search={{ cat: c.category }}
+                    onClick={() => setMega(false)}
+                    className="group relative block aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
+                  >
+                    <CategoryCardBody name={c.name} image={c.image} compact />
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        )}
       </motion.header>
 
       {/* mobile drawer */}

@@ -90,7 +90,7 @@ export const Route = createFileRoute("/a-propos")({
 const stats = [
   { value: 20, suffix: "+", label: "Années d'expérience", icon: Building2 },
   { value: 48, suffix: "h", label: "Pour recevoir votre devis", icon: Clock },
-  { value: 9, suffix: "", label: "Familles de matériaux", icon: Package },
+  { value: 8, suffix: "", label: "Familles de matériaux", icon: Package },
   { value: 12, suffix: "", label: "Marques partenaires", icon: Handshake },
 ];
 
@@ -251,7 +251,7 @@ function APropos() {
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
-                to="/rubriques"
+                to="/categories"
                 className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
               >
                 Voir nos produits
@@ -322,8 +322,8 @@ function APropos() {
       {/* Expertise : les familles de produits */}
       <section className="bg-cream py-16 md:py-24">
         <div className="container-x">
-          <SectionHeader kicker="Notre expertise" title="Neuf métiers, un seul dépôt" />
-          <div className="mx-auto mt-12 grid max-w-4xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SectionHeader kicker="Notre expertise" title="Huit métiers, un seul dépôt" />
+          <div className="mx-auto mt-12 grid max-w-full gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {categories.map((c, i) => (
               <motion.div
                 key={c.slug}
@@ -333,7 +333,7 @@ function APropos() {
                 transition={{ duration: 0.45, delay: (i % 3) * 0.08 }}
               >
                 <Link
-                  to="/rubriques"
+                  to="/categories"
                   search={{ cat: c.category }}
                   className="group relative block aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
                 >

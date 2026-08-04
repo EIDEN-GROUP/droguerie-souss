@@ -7,7 +7,7 @@ import { ProductGrid } from "@/components/ProductGrid";
 import { SectionHeader } from "@/components/SectionHeader";
 import { useProducts } from "@/lib/adminStore";
 import { useProduct } from "@/lib/adminStore";
-import type { Product } from "@/lib/products";
+import { productDimensions, type Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { ProductPromoPrice } from "@/components/ProductPrice";
 
@@ -59,7 +59,7 @@ function ProductDetail() {
           <p className="mt-4 font-display text-xl font-bold uppercase">Erreur de chargement</p>
           <p className="mt-1 text-sm text-ink-soft">Impossible de charger le produit. Veuillez réessayer.</p>
           <Link
-            to="/rubriques"
+            to="/categories"
             className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
           >
             Retour à la boutique
@@ -77,7 +77,7 @@ function ProductDetail() {
           <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
           <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
           <Link
-            to="/rubriques"
+            to="/categories"
             className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
           >
             Voir la boutique
@@ -102,11 +102,14 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const pct = product.promo ?? 0;
   const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
   const points = descriptionPoints(product.description);
+  const dimensions = productDimensions(product);
+  const [dimension, setDimension] = useState(dimensions[0]);
 
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
-  }, [product?.id]);
+    setDimension(productDimensions(product)[0]);
+  }, [product]);
 
   return (
     <Layout>
@@ -114,7 +117,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
         <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
           <Link to="/" className="hover:text-brand">Accueil</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/rubriques" className="hover:text-brand">Shop</Link>
+          <Link to="/categories" className="hover:text-brand">Shop</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">{product.name}</span>
         </div>
@@ -192,6 +195,37 @@ function ProductDetailContent({ product, products }: { product: Product; product
                   </li>
                 ))}
               </ul>
+            )}
+
+            {dimensions.length > 0 && (
+              <div className="mt-8">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
+                  {dimensions.length > 1 ? "Format" : "Format unique"}
+                </p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {dimensions.map((d) => {
+                    const selected = d === dimension;
+                    /** Une seule taille : l'information reste affichee, mais rien a choisir. */
+                    const single = dimensions.length === 1;
+                    return (
+                      <button
+                        key={d}
+                        type="button"
+                        onClick={() => setDimension(d)}
+                        disabled={single}
+                        aria-pressed={selected}
+                        className={`rounded-full border-2 px-4 py-2 text-sm font-bold transition disabled:cursor-default ${
+                          selected
+                            ? "border-brand bg-brand text-brand-foreground"
+                            : "border-border text-ink hover:border-brand hover:text-brand"
+                        }`}
+                      >
+                        {d}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             )}
 
             <div className="mt-8 flex flex-wrap items-center gap-4">

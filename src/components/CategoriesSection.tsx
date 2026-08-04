@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { useMemo } from "react";
-import { categories as fallbackCategories, categoryImage, type CategoryInfo } from "@/lib/products";
+import { categories as bundledCategories, categoryImage, type CategoryInfo } from "@/lib/products";
 import { useCategories } from "@/lib/adminStore";
 import { SectionHeader } from "./SectionHeader";
 import {
@@ -13,7 +13,9 @@ import {
   CarouselNext,
 } from "@/components/ui/carousel";
 
-function CategoryCardBody({
+/** Le visuel d'une carte categorie, partage par la page A propos, la boutique et le menu
+ *  deroulant de la barre de navigation. */
+export function CategoryCardBody({
   name,
   image,
   compact = false,
@@ -89,10 +91,18 @@ export function CategoriesSection({
   const isShop = variant === "shop";
   const { data: dbCategories } = useCategories();
 
-  /** Admin-managed categories drive the carousel; the bundled list only covers the first paint
-   *  and any fetch failure, so the section never renders empty. */
+  /**
+   * La boutique presente les grandes familles de produits : la liste groupee de
+   * `lib/products`, la meme que la page A propos. Les categories de l'admin sont bien
+   * plus fines (une vingtaine) et feraient un carrousel illisible en tete de page.
+   *
+   * Ailleurs, ce sont les categories de l'admin qui pilotent le carrousel ; la liste
+   * groupee ne couvre que le premier rendu et les erreurs de chargement, pour que la
+   * section ne soit jamais vide.
+   */
   const items: CategoryInfo[] = useMemo(() => {
-    if (!dbCategories || dbCategories.length === 0) return fallbackCategories;
+    if (isShop) return bundledCategories;
+    if (!dbCategories || dbCategories.length === 0) return bundledCategories;
     return dbCategories.map((c) => ({
       slug: c.slug,
       category: c.name,
@@ -100,7 +110,7 @@ export function CategoriesSection({
       image: c.image_url || categoryImage(c.slug),
       description: c.description,
     }));
-  }, [dbCategories]);
+  }, [dbCategories, isShop]);
 
   return (
     <section className={isShop ? "border-b bg-cream py-8" : "container-x py-20"}>
@@ -145,7 +155,7 @@ export function CategoriesSection({
                     </button>
                   ) : (
                     <Link
-                      to="/rubriques"
+                      to="/categories"
                       search={{ cat: c.category }}
                       className="group block relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
                     >
@@ -167,7 +177,7 @@ export function CategoriesSection({
       {variant === "home" && (
         <div className="mt-10 text-center">
           <Link
-            to="/rubriques"
+            to="/categories"
             className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
           >
             Découvrir tous les produits <ArrowRight className="h-4 w-4" />

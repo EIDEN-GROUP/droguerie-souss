@@ -760,7 +760,7 @@ function CommandeRapide() {
                     </p>
                     <div className="mt-8 flex flex-wrap justify-center gap-3">
                       <Link
-                        to="/rubriques"
+                        to="/categories"
                         className="rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-brand-dark"
                       >
                         Continuer vos achats

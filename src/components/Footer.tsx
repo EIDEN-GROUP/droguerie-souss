@@ -25,11 +25,11 @@ export function Footer() {
         <div className="min-w-0">
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Boutique</h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
-            <li><Link to="/rubriques" className="hover:text-sky">Tous les produits</Link></li>
+            <li><Link to="/categories" className="hover:text-sky">Tous les produits</Link></li>
             <li><Link to="/catalogue" className="hover:text-sky">Catalogue</Link></li>
-            <li><Link to="/rubriques" className="hover:text-sky">Carrelage & Marbre</Link></li>
-            <li><Link to="/rubriques" className="hover:text-sky">Peinture</Link></li>
-            <li><Link to="/rubriques" className="hover:text-sky">Électricité & Plomberie</Link></li>
+            <li><Link to="/categories" className="hover:text-sky">Carrelage & Marbre</Link></li>
+            <li><Link to="/categories" className="hover:text-sky">Peinture</Link></li>
+            <li><Link to="/categories" className="hover:text-sky">Électricité & Plomberie</Link></li>
           </ul>
         </div>
 

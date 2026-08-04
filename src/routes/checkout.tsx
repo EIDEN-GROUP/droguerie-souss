@@ -83,7 +83,7 @@ function Checkout() {
             Accueil
           </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/rubriques" className="hover:text-brand">
+          <Link to="/categories" className="hover:text-brand">
             Shop
           </Link>
           <ChevronRight className="h-3 w-3" />
@@ -128,7 +128,7 @@ function Checkout() {
               Ajoutez des produits avant de demander un devis.
             </p>
             <Link
-              to="/rubriques"
+              to="/categories"
               className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper hover:bg-brand-dark"
             >
               Voir la boutique

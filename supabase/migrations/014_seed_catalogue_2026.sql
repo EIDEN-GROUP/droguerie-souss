@@ -16,7 +16,7 @@ ALTER TABLE products ADD COLUMN IF NOT EXISTS dimension text;
 CREATE INDEX IF NOT EXISTS idx_products_dimension ON products(dimension);
 
 -- ─────────────────────────────────────────────────────────────
--- 2. Catégories (11) — les 11 rubriques du catalogue
+-- 2. Catégories (11) — les 11 catégories du catalogue
 -- ─────────────────────────────────────────────────────────────
 INSERT INTO categories (name, slug, description) VALUES
   ('Céramique', 'ceramique', 'Carrelages muraux, de sols et de piscines'),

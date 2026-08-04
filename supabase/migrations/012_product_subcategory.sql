@@ -1,5 +1,5 @@
 -- Optional free-text subcategory, set per product in the admin form.
--- Drives the subcategory chips on /rubriques once a category is selected.
+-- Drives the subcategory chips on /categories once a category is selected.
 ALTER TABLE products
   ADD COLUMN subcategory text;
 

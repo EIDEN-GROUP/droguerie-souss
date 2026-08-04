@@ -90,7 +90,7 @@ function Home() {
             <p className="mt-4 text-brand-ink/80">
               Zellige émaillé, marbre poli et carrelage grand format   sélectionnés pour vos projets résidentiels et hôteliers.
             </p>
-            <Link to="/rubriques" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
+            <Link to="/categories" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
               Explorer la collection <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
             </Link>
           </div>

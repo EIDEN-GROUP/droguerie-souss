@@ -6,7 +6,7 @@ import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
-import { type Category } from "@/lib/products";
+import { categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
@@ -18,7 +18,7 @@ const searchSchema = z.object({
 
 type Search = z.infer<typeof searchSchema>;
 
-export const Route = createFileRoute("/rubriques")({
+export const Route = createFileRoute("/categories")({
   validateSearch: searchSchema,
   component: Shop,
   head: () => ({
@@ -48,13 +48,17 @@ function Shop() {
   /** The pool the chips count from: everything the category and the search leave standing,
    *  before the subcategory filter. Each chip's number is therefore what clicking it yields.
    *  The search ranks matches across name, description and subcategory, accent-insensitive. */
+  /** Une carte de vitrine peut recouvrir plusieurs categories de l'admin (Carrelage &
+   *  Zellige regroupe Carrelage, Ceramique et Zellige) : on filtre sur le groupe entier. */
+  const activeGroup = useMemo(() => (activeCat ? categoryGroup(activeCat) : []), [activeCat]);
+
   const catFiltered = useMemo(() => {
     let list = productList;
-    if (activeCat) list = list.filter((p: any) => p.category === activeCat);
+    if (activeCat) list = list.filter((p: any) => activeGroup.includes(p.category));
     if (query.trim())
       list = searchProducts(list, query).map((r) => r.product);
     return list;
-  }, [productList, activeCat, query]);
+  }, [productList, activeCat, activeGroup, query]);
 
   /** Admin-managed subcategories come first, in the order the admin sees them, and only when
    *  they actually hold products. Anything a product carries outside that list still gets a chip
@@ -66,7 +70,7 @@ function Shop() {
       if (p.subcategory) counts.set(p.subcategory, (counts.get(p.subcategory) ?? 0) + 1);
     });
     const managed = (dbSubcategories || [])
-      .filter((s) => s.category === activeCat)
+      .filter((s) => activeGroup.includes(s.category))
       .map((s) => s.name);
     const unmanaged = Array.from(counts.keys())
       .filter((name) => !managed.includes(name))
@@ -76,7 +80,7 @@ function Shop() {
      *  never disappears out from under the user. */
     if (activeSubcat && !names.includes(activeSubcat)) names.push(activeSubcat);
     return names.map((name) => ({ name, count: counts.get(name) ?? 0 }));
-  }, [activeCat, activeSubcat, catFiltered, dbSubcategories]);
+  }, [activeCat, activeGroup, activeSubcat, catFiltered, dbSubcategories]);
 
   /** Only shown once a category is picked: its subcategories. Picking the category
    *  itself happens on the cards above, so the chips never repeat them. */
@@ -101,10 +105,14 @@ function Shop() {
   const handleCategorySelect = useCallback(
     (category: string) => {
       if (category === activeCat) {
-        navigate({ search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }) });
+        navigate({
+          to: "/categories",
+          search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }),
+        });
       } else {
         /** resetScroll: false — the router's scroll reset would otherwise cancel the jump below. */
         navigate({
+          to: "/categories",
           search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
           resetScroll: false,
         });
@@ -119,7 +127,7 @@ function Shop() {
 
   const handleTabClick = useCallback(
     (value: string | undefined) => {
-      navigate({ search: (prev: Search) => ({ ...prev, subcat: value }) });
+      navigate({ to: "/categories", search: (prev: Search) => ({ ...prev, subcat: value }) });
     },
     [navigate],
   );

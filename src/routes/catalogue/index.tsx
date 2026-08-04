@@ -77,7 +77,7 @@ function Catalogue() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
-              to="/rubriques"
+              to="/categories"
               className="inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
             >
               Voir tous les produits <ArrowRight className="h-4 w-4" />
