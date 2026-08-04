@@ -5,8 +5,8 @@ export interface SearchableProduct {
 }
 
 /** Lowercase and strip accents so "electricite" matches "électricité". */
-export function normalizeSearch(s: string): string {
-  return s
+export function normalizeSearch(s: string | null | undefined): string {
+  return (s || "")
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
@@ -41,14 +41,14 @@ export function scoreProduct<T extends SearchableProduct>(p: T, query: string): 
   return score;
 }
 
-/** Search and rank. Returns [] until the query has at least 2 characters, so nothing
- *  is ever shown just by default. */
+/** Search and rank. Returns [] only while the query is empty, so every keystroke
+ *  yields the closest matches immediately. */
 export function searchProducts<T extends SearchableProduct>(
   products: T[],
   query: string,
 ): { product: T; score: number }[] {
   const q = normalizeSearch(query.trim());
-  if (q.length < 2) return [];
+  if (!q) return [];
   return products
     .map((product) => ({ product, score: scoreProduct(product, q) }))
     .filter((r) => r.score > 0)

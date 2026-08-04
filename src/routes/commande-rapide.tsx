@@ -154,11 +154,16 @@ function CommandeRapide() {
   const updateForm = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((p) => ({ ...p, [f]: e.target.value }));
 
+  /** Typed search matches the whole catalogue, ranked by relevance — the category is
+   *  optional and only narrows the list when no search is active. */
   const visibleProducts = useMemo(() => {
-    if (!search.trim()) return [];
-    let list = (products || []) as any[];
-    if (selectedCat) list = list.filter((p: any) => p.category === selectedCat);
-    return searchProducts(list, search).map((r) => r.product);
+    const list = (products || []) as any[];
+    const q = search.trim();
+    if (!q) {
+      if (!selectedCat) return [];
+      return list.filter((p: any) => p.category === selectedCat);
+    }
+    return searchProducts(list, q).map((r) => r.product);
   }, [products, selectedCat, search]);
 
   const catCount = selectedCat
@@ -537,9 +542,11 @@ function CommandeRapide() {
                       </div>
                     ) : visibleProducts.length === 0 ? (
                       <div className="rounded-2xl border-2 border-dashed py-16 text-center text-sm text-ink-soft">
-                        {search.trim().length >= 2
+                        {search.trim()
                           ? "Aucun produit ne correspond à votre recherche."
-                          : "Tapez au moins 2 caractères pour rechercher un produit."}
+                          : selectedCat
+                            ? "Aucun produit dans cette catégorie."
+                            : "Tapez le nom d'un produit pour le retrouver."}
                       </div>
                     ) : (
                       <div className="styled-scrollbar max-h-[26rem] overflow-y-auto pr-1">
