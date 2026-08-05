@@ -43,8 +43,8 @@ function Catalogue() {
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Toutes nos éditions, à feuilleter en ligne ou à télécharger en PDF. Chaque catalogue
-                s'ouvre dans un nouvel onglet.
+                Toutes nos éditions, à feuilleter en ligne ou à télécharger en PDF. Les éditions PDF
+                s'ouvrent dans un nouvel onglet.
               </p>
             </div>
           </motion.div>

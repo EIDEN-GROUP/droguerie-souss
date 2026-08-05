@@ -1,13 +1,16 @@
 /**
  * Les éditions du catalogue présentées sur /catalogue.
  *
- * Deux formats coexistent :
+ * Trois formats coexistent :
  *  - `pdf` : un fichier déposé dans `public/catalogue/`, ouvert tel quel dans un nouvel
  *    onglet — c'est la visionneuse du navigateur qui l'affiche.
  *  - `flipbook` : les pages sont des images déposées dans `src/assets/catalogue/<slug>/`
  *    (nomenclature `page-01.jpg`, voir le README du dossier). Elles sont découvertes
  *    automatiquement ; tant qu'un dossier est vide, la visionneuse affiche des pages
  *    provisoires aux couleurs de la marque.
+ *  - `interactive` : les pages sont composées en React depuis le catalogue produits
+ *    (`src/components/preview-catalogue/`). L'édition n'a pas de route générique : son
+ *    `slug` doit correspondre à une route existante sous `/catalogue/`.
  */
 
 const pageModules = import.meta.glob("../assets/catalogue/*/page-*.{jpg,jpeg,png,webp}", {
@@ -46,9 +49,22 @@ export type CatalogueEdition = {
 } & (
   | { format: "flipbook"; pages: string[]; pdf?: never }
   | { format: "pdf"; pages?: never; pdf: { url: string; size: string; pageCount: number } }
+  | { format: "interactive"; pages?: never; pdf?: never }
 );
 
 export const catalogueEditions: CatalogueEdition[] = [
+  {
+    /** Doit rester aligné sur la route `src/routes/catalogue/interactif.tsx`. */
+    slug: "interactif",
+    year: 2026,
+    title: "Catalogue Général 2026 en ligne",
+    description:
+      "La version feuilletable, construite depuis le catalogue produits : sommaire, recherche par référence et export PDF.",
+    /** La photo de couverture de la liseuse elle-même, servie depuis `public/`. */
+    cover: "/catalogue-photos/facade-nuit.jpg",
+    isNew: true,
+    format: "interactive",
+  },
   {
     slug: "2026",
     year: 2026,

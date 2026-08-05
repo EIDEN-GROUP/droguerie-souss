@@ -1,7 +1,11 @@
+import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ArrowUpRight, BookOpen, FileText, HardDrive, Star } from "lucide-react";
+import { ArrowRight, ArrowUpRight, BookOpen, FileText, HardDrive, Star } from "lucide-react";
 import logoWhite from "@/assets/icon-white.png";
 import type { CatalogueEdition } from "@/lib/catalogue";
+
+/** La carte est une carte : elle anime son entrée, qu'elle soit lien externe ou interne. */
+const MotionLink = motion.create(Link);
 
 /** Couverture dessinée, utilisée tant qu'aucune image `covers/<slug>.webp` n'est fournie. */
 function DrawnCover({ edition }: { edition: CatalogueEdition }) {
@@ -29,29 +33,44 @@ function metricsOf(edition: CatalogueEdition) {
       { icon: HardDrive, value: edition.pdf.size, label: "Fichier" },
     ];
   }
+  // Le nombre de pages de la liseuse interactive se calcule au montage : rien à annoncer ici.
+  if (edition.format === "interactive") return [];
   return edition.pages.length > 0
     ? [{ icon: BookOpen, value: String(edition.pages.length), label: "Pages" }]
     : [];
 }
 
+/** Ce que la carte promet, selon le format de l'édition. */
+function actionOf(edition: CatalogueEdition) {
+  if (edition.format === "pdf") return { kind: "PDF", action: "Ouvrir le PDF" };
+  if (edition.format === "interactive")
+    return { kind: "Interactif", action: "Feuilleter en ligne" };
+  return { kind: "Feuilletable", action: "Feuilleter en ligne" };
+}
+
 export function CatalogueCard({ edition, index }: { edition: CatalogueEdition; index: number }) {
   const isPdf = edition.format === "pdf";
-  /** Les deux formats s'ouvrent dans un nouvel onglet : le PDF directement dans la
-   *  visionneuse du navigateur, le flipbook via sa page dédiée. */
+  /** La liseuse interactive est une page du site : on y navigue normalement. Les autres
+   *  éditions partent dans un nouvel onglet — le PDF dans la visionneuse du navigateur,
+   *  le flipbook images sur sa page dédiée. */
+  const inSite = edition.format === "interactive";
   const href = isPdf ? edition.pdf.url : `/catalogue/${edition.slug}`;
   const metrics = metricsOf(edition);
+  const { kind, action } = actionOf(edition);
+  /** La flèche oblique annonce une sortie du site ; la flèche droite, une simple page. */
+  const Arrow = inSite ? ArrowRight : ArrowUpRight;
 
-  return (
-    <motion.a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.4, delay: index * 0.08 }}
-      className="group flex flex-col overflow-hidden rounded-2xl border bg-paper transition hover:border-brand hover:shadow-[var(--shadow-elevated)]"
-    >
+  const animation = {
+    initial: { opacity: 0, y: 24 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true },
+    transition: { duration: 0.4, delay: index * 0.08 },
+    className:
+      "group flex flex-col overflow-hidden rounded-2xl border bg-paper transition hover:border-brand hover:shadow-[var(--shadow-elevated)]",
+  };
+
+  const content = (
+    <>
       {/* Cadre 3/4 : le format des affiches de couverture, donc aucun rognage. */}
       <div className="relative aspect-[3/4] overflow-hidden bg-brand-secondary">
         {edition.cover ? (
@@ -73,7 +92,7 @@ export function CatalogueCard({ edition, index }: { edition: CatalogueEdition; i
         )}
 
         <span className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-paper/90 text-brand opacity-0 transition group-hover:opacity-100">
-          <ArrowUpRight className="h-4 w-4" />
+          <Arrow className="h-4 w-4" />
         </span>
 
         {/* Voile dégradé : le titre reste lisible quelle que soit la couverture. */}
@@ -108,13 +127,26 @@ export function CatalogueCard({ edition, index }: { edition: CatalogueEdition; i
       </div>
 
       <div className="flex items-center gap-2 px-5 py-3.5 text-xs text-ink-soft">
-        <span>{isPdf ? "PDF" : "Feuilletable"}</span>
+        <span>{kind}</span>
         <span aria-hidden>•</span>
         <span className="font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition group-hover:decoration-brand">
-          {isPdf ? "Ouvrir le PDF" : "Feuilleter en ligne"}
+          {action}
         </span>
-        <ArrowUpRight className="ml-auto h-4 w-4 transition group-hover:text-brand" />
+        <Arrow className="ml-auto h-4 w-4 transition group-hover:text-brand" />
       </div>
+    </>
+  );
+
+  if (inSite)
+    return (
+      <MotionLink to={href} {...animation}>
+        {content}
+      </MotionLink>
+    );
+
+  return (
+    <motion.a href={href} target="_blank" rel="noopener noreferrer" {...animation}>
+      {content}
     </motion.a>
   );
 }

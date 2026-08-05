@@ -194,7 +194,12 @@ interface BookHandle {
   pageFlip: () => PageFlipApi | undefined;
 }
 
-export default function Flipbook() {
+/**
+ * `embedded` : la liseuse est posée dans une page classique (en-tête et pied de
+ * page visibles) plutôt qu'en plein écran. Seule la hauteur de la coque change —
+ * la scène est mesurée au ResizeObserver, le livre se recale donc tout seul.
+ */
+export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
   const bookRef = useRef<BookHandle | null>(null);
   const shellRef = useRef<HTMLDivElement>(null);
   const [page, setPage] = useState(0);
@@ -519,7 +524,11 @@ export default function Flipbook() {
   return (
     <div
       ref={shellRef}
-      className="relative flex h-[100dvh] w-full flex-col overflow-hidden bg-[#f2f2f0]"
+      className={`relative flex w-full flex-col overflow-hidden bg-[#f2f2f0] ${
+        embedded
+          ? "h-[min(86vh,900px)] min-h-[520px] rounded-2xl border [&:fullscreen]:h-screen [&:fullscreen]:max-h-none [&:fullscreen]:rounded-none"
+          : "h-[100dvh]"
+      }`}
     >
       <div className="flex items-center justify-between px-5 pb-2 pt-3">
         <div className="flex items-center gap-3">

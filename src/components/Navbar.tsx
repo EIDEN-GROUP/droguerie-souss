@@ -119,8 +119,9 @@ export function Navbar() {
 
   return (
     <>
-      {/* Top strip */}
-      <div className="hidden bg-ink text-paper md:block">
+      {/* Top strip. `z-40`, comme l'en-tete : le voile des categories passe dessous, sinon
+          la barre se retrouverait assombrie au-dessus d'un en-tete reste clair. */}
+      <div className="relative z-40 hidden bg-ink text-paper md:block">
         <div className="container-x flex h-9 items-center justify-between text-xs">
           <span>Livraison rapide dans tout le Souss • Devis gratuit sous 48h</span>
           <div className="flex items-center gap-4">
@@ -249,21 +250,41 @@ export function Navbar() {
         {/* Panneau des categories, deroule sous la barre au survol du lien. Il est rendu
             dans l'en-tete pour rester colle a son bord bas quel que soit le defilement,
             et reste ouvert tant que le curseur est dessus. */}
+        <AnimatePresence>
+          {mega && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              onMouseEnter={openMega}
+              onMouseLeave={closeMega}
+              className="absolute inset-x-0 top-full hidden border-b bg-paper shadow-[var(--shadow-elevated)] lg:block"
+            >
+              <div className="container-x py-6">
+                <CategoryCarousel variant="mega" onSelect={() => setMega(false)} />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.header>
+
+      {/* Voile sombre : la page passe au second plan derriere le panneau des categories.
+          `z-30` le place sous l'en-tete (z-40), donc sous le panneau lui-meme, et
+          `pointer-events-none` lui interdit d'intercepter le curseur — c'est le survol du
+          lien qui commande l'ouverture, le voile n'est que decor. */}
+      <AnimatePresence>
         {mega && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            onMouseEnter={openMega}
-            onMouseLeave={closeMega}
-            className="absolute inset-x-0 top-full hidden border-b bg-paper shadow-[var(--shadow-elevated)] lg:block"
-          >
-            <div className="container-x py-6">
-              <CategoryCarousel variant="mega" onSelect={() => setMega(false)} />
-            </div>
-          </motion.div>
+            aria-hidden="true"
+            className="pointer-events-none fixed inset-0 z-30 hidden bg-ink/50 lg:block"
+          />
         )}
-      </motion.header>
+      </AnimatePresence>
 
       {/* mobile drawer */}
       <AnimatePresence>
