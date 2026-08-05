@@ -14,4 +14,12 @@ export default defineConfig({
   nitro: {
     preset: "vercel",
   },
+  vite: {
+    optimizeDeps: {
+      // Ces deux paquets ne sont appelés qu'en import dynamique, au clic sur
+      // « Télécharger le PDF ». Vite ne les découvre donc pas au démarrage et
+      // sert des modules vides. On les pré-bundle explicitement.
+      include: ["html-to-image", "jspdf"],
+    },
+  },
 });

@@ -135,7 +135,7 @@ export function orderConfirmationEmail(order: {
     <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">${isQuote ? "Une nouvelle demande de devis a été soumise sur Souss Droguerie." : "Une nouvelle commande a été passée sur Souss Droguerie."}</p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      ${labelValue(isQuote ? "Devis" : "Commande", `#${order.id.slice(0, 8)}`)}
+      ${labelValue(isQuote ? "Devis" : "Commande", order.id.slice(0, 8))}
       ${labelValue("Client", order.customer_name)}
       ${labelValue("Téléphone", order.customer_phone)}
       ${order.customer_email ? labelValue("Email", order.customer_email) : ""}

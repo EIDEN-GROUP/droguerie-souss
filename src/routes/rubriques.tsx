@@ -101,10 +101,14 @@ function Shop() {
   const handleCategorySelect = useCallback(
     (category: string) => {
       if (category === activeCat) {
-        navigate({ search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }) });
+        navigate({
+          to: "/rubriques",
+          search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }),
+        });
       } else {
         /** resetScroll: false — the router's scroll reset would otherwise cancel the jump below. */
         navigate({
+          to: "/rubriques",
           search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
           resetScroll: false,
         });
@@ -119,7 +123,7 @@ function Shop() {
 
   const handleTabClick = useCallback(
     (value: string | undefined) => {
-      navigate({ search: (prev: Search) => ({ ...prev, subcat: value }) });
+      navigate({ to: "/rubriques", search: (prev: Search) => ({ ...prev, subcat: value }) });
     },
     [navigate],
   );

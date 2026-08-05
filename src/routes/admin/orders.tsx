@@ -175,7 +175,7 @@ function AdminOrders() {
                 transition={{ duration: 0.35, delay: Math.min(i, 10) * 0.04 }}
               >
                 <TableCell className="text-sm font-semibold text-ink">
-                  #{o.id.slice(0, 8)}
+                  {o.id.slice(0, 8)}
                   <div className="text-xs font-normal text-ink-soft">
                     {new Date(o.createdAt).toLocaleDateString("fr-FR")}
                   </div>

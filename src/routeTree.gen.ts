@@ -15,6 +15,7 @@ import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CompteRouteImport } from './routes/compte'
 import { Route as CommandeRapideRouteImport } from './routes/commande-rapide'
 import { Route as CheckoutRouteImport } from './routes/checkout'
+import { Route as CatalogueRouteImport } from './routes/catalogue'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
@@ -53,6 +54,11 @@ const CommandeRapideRoute = CommandeRapideRouteImport.update({
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CatalogueRoute = CatalogueRouteImport.update({
+  id: '/catalogue',
+  path: '/catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -104,6 +110,7 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
   '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
   '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
+  '/catalogue': typeof CatalogueRoute
   '/checkout': typeof CheckoutRoute
   '/commande-rapide': typeof CommandeRapideRoute
   '/compte': typeof CompteRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/admin'
+    | '/catalogue'
     | '/checkout'
     | '/commande-rapide'
     | '/compte'
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/catalogue'
     | '/checkout'
     | '/commande-rapide'
     | '/compte'
@@ -190,6 +201,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/admin'
+    | '/catalogue'
     | '/checkout'
     | '/commande-rapide'
     | '/compte'
@@ -208,6 +220,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
+  CatalogueRoute: typeof CatalogueRoute
   CheckoutRoute: typeof CheckoutRoute
   CommandeRapideRoute: typeof CommandeRapideRoute
   CompteRoute: typeof CompteRoute
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/checkout'
       fullPath: '/checkout'
       preLoaderRoute: typeof CheckoutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/catalogue': {
+      id: '/catalogue'
+      path: '/catalogue'
+      fullPath: '/catalogue'
+      preLoaderRoute: typeof CatalogueRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -350,6 +370,7 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
+  CatalogueRoute: CatalogueRoute,
   CheckoutRoute: CheckoutRoute,
   CommandeRapideRoute: CommandeRapideRoute,
   CompteRoute: CompteRoute,

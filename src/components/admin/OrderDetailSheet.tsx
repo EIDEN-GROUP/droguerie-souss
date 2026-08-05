@@ -30,7 +30,7 @@ export function OrderDetailSheet({
         {order && (
           <>
             <SheetHeader>
-              <SheetTitle className="font-display uppercase tracking-wide">Commande #{order.id.slice(0, 8)}</SheetTitle>
+              <SheetTitle className="font-display uppercase tracking-wide">Commande {order.id.slice(0, 8)}</SheetTitle>
               <SheetDescription>
                 {new Date(order.createdAt).toLocaleString("fr-FR", { dateStyle: "long", timeStyle: "short" })}
               </SheetDescription>
