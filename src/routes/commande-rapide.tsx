@@ -29,7 +29,7 @@ export const Route = createFileRoute("/commande-rapide")({
       {
         name: "description",
         content:
-          "Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré sous 24h. Gratuit et sans engagement.",
+          "Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré sous 48h. Gratuit et sans engagement.",
       },
     ],
   }),
@@ -43,7 +43,7 @@ const steps = [
 ];
 
 const heroPoints = [
-  { icon: Clock, label: "Réponse sous 24h" },
+  { icon: Clock, label: "Réponse sous 48h" },
   { icon: Truck, label: "Livraison dans tout le Souss" },
   { icon: ShieldCheck, label: "Gratuit et sans engagement" },
 ];
@@ -51,7 +51,7 @@ const heroPoints = [
 const benefits = [
   {
     icon: Clock,
-    title: "Devis sous 24h",
+    title: "Devis sous 48h",
     text: "Notre équipe chiffre votre demande sous 24 heures ouvrées, chantier par chantier.",
   },
   {
@@ -90,7 +90,7 @@ const howItWorks = [
   {
     icon: Send,
     title: "Recevez votre devis",
-    text: "Un conseiller vous rappelle sous 24h avec les prix et les disponibilités.",
+    text: "Un conseiller vous rappelle sous 48h avec les prix et les disponibilités.",
   },
 ];
 
@@ -277,7 +277,7 @@ function CommandeRapide() {
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
                 Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis
-                chiffré par notre équipe sous 24h ouvrées. Gratuit et sans engagement.
+                chiffré par notre équipe sous 48h ouvrées. Gratuit et sans engagement.
               </p>
 
               <ul className="mt-6 flex flex-wrap gap-x-7 gap-y-3">
@@ -309,7 +309,7 @@ function CommandeRapide() {
             <div className="inline-flex items-center gap-2 md:pb-2">
               <span className="h-px w-8 bg-accent-red" />
               <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-sky">
-                Devis en 24h
+                Devis en 48h
               </span>
             </div>
           </motion.div>
@@ -757,7 +757,7 @@ function CommandeRapide() {
                       </p>
                       <p className="mt-2 text-sm text-ink-soft">
                         {cart.length} référence{cart.length > 1 ? "s" : ""} · {totalQty} article
-                        {totalQty > 1 ? "s" : ""}   devis chiffré sous 24h ouvrées.
+                        {totalQty > 1 ? "s" : ""}   devis chiffré sous 48h ouvrées.
                       </p>
                     </div>
 
@@ -795,7 +795,7 @@ function CommandeRapide() {
                       Demande envoyée !
                     </h3>
                     <p className="mt-3 leading-relaxed text-ink-soft">
-                      Notre équipe étudie votre demande et vous contactera sous 24h pour
+                      Notre équipe étudie votre demande et vous contactera sous 48h pour
                       confirmer les disponibilités et le prix final.
                     </p>
                     <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -866,7 +866,7 @@ function CommandeRapide() {
                 </div>
 
                 <p className="mt-4 text-center text-xs text-ink-soft">
-                  Devis gratuit et sans engagement · Réponse sous 24h ouvrées
+                  Devis gratuit et sans engagement · Réponse sous 48h ouvrées
                 </p>
               </div>
             )}

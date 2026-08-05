@@ -73,7 +73,7 @@ function Catalogue() {
           </h2>
           <p className="max-w-xl text-sm text-ink-soft">
             Retrouvez l'ensemble de nos références en ligne ou demandez un devis gratuit : notre
-            équipe vous répond sous 24h ouvrées.
+            équipe vous répond sous 48h ouvrées.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link

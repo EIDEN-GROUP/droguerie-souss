@@ -25,7 +25,7 @@ export function CtaBanner() {
               Vous avez un projet ?
             </span>
             <h3 className="mt-3 font-display text-3xl font-bold uppercase leading-tight sm:text-4xl md:text-5xl">
-              Recevez votre devis gratuit en 24h
+              Recevez votre devis gratuit en 48h
             </h3>
             <p className="mt-4 max-w-md text-paper/80">
               Notre équipe technique étudie votre chantier et vous propose la meilleure

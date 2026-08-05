@@ -69,7 +69,7 @@ function Contact() {
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Notre équipe vous répond sous 24h ouvrées pour tous vos projets de
+                Notre équipe vous répond sous 48h ouvrées pour tous vos projets de
                 construction dans le Souss.
               </p>
             </div>
@@ -146,7 +146,7 @@ function Contact() {
             </p>
             {sent && (
               <div className="mt-4 rounded-lg bg-brand/10 p-4 text-sm text-brand">
-                Message envoyé ! Notre équipe vous contactera sous 24h.
+                Message envoyé ! Notre équipe vous contactera sous 48h.
               </div>
             )}
             {error && (

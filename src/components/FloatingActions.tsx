@@ -101,10 +101,7 @@ function Teaser({ leaving, onClose }: { leaving: boolean; onClose: () => void })
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="mt-1 text-sm leading-snug text-ink-soft">
-                Un chantier en vue ? Décrivez-le en 2 minutes, on vous chiffre tout
-                sous 24h.
-              </p>
+              <p className="mt-1 text-sm leading-snug text-ink-soft">Décrivez votre projet en quelques clics et recevez votre devis sous 48h.</p>
               <Link
                 to="/commande-rapide"
                 onClick={onClose}
@@ -164,7 +161,7 @@ export function FloatingActions() {
         <Link
           to="/commande-rapide"
           onClick={closeTeaser}
-          aria-label="Demander un devis   commande rapide"
+          aria-label="Demander un devis commande rapide"
           // Pas de gap ici : il s'appliquerait aussi label replié et décentrerait la pastille.
           className="group pointer-events-auto relative flex items-center rounded-full bg-brand p-4 text-brand-foreground shadow-lg shadow-brand/30 outline-none transition-transform duration-200 hover:scale-105 focus-visible:ring-4 focus-visible:ring-brand/50 active:scale-95"
         >

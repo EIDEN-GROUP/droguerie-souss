@@ -5,6 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { CategoryCardBody } from "@/components/CategoriesSection";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 import { categories } from "@/lib/products";
 import logo from "@/assets/logo.png";
 import logoMobile from "@/assets/icon-blue.png";
@@ -20,6 +27,57 @@ const links = [
 /** Delai avant fermeture : le curseur passe par un interstice entre le lien et le panneau,
  *  fermer sur-le-champ rendrait le menu impossible a atteindre. */
 const MEGA_CLOSE_DELAY = 120;
+
+/** Le carrousel des categories, partage par le panneau de survol (bureau) et le tiroir
+ *  (tablette et mobile) : memes cartes, seules la largeur des vignettes et la place des
+ *  fleches changent. Dans le tiroir elles passent en en-tete, faute de marge laterale. */
+function CategoryCarousel({
+  variant,
+  onSelect,
+}: {
+  variant: "mega" | "drawer";
+  onSelect: () => void;
+}) {
+  const isDrawer = variant === "drawer";
+  return (
+    <Carousel opts={{ align: "start", loop: true }} className={isDrawer ? undefined : "mx-12"}>
+      {isDrawer && (
+        <div className="mb-2.5 flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-ink-soft">
+            Nos rayons
+          </span>
+          <div className="flex items-center gap-1.5">
+            <CarouselPrevious className="static h-7 w-7 translate-y-0" />
+            <CarouselNext className="static h-7 w-7 translate-y-0" />
+          </div>
+        </div>
+      )}
+      <CarouselContent className="-ml-3">
+        {categories.map((c) => (
+          <CarouselItem
+            key={c.slug}
+            className={isDrawer ? "basis-1/2 pl-3" : "basis-1/4 pl-3 xl:basis-1/5"}
+          >
+            <Link
+              to="/categories"
+              search={{ cat: c.category }}
+              onClick={onSelect}
+              className="group relative block aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
+            >
+              <CategoryCardBody name={c.name} image={c.image} compact />
+            </Link>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      {!isDrawer && (
+        <>
+          <CarouselPrevious className="-left-12 h-9 w-9" />
+          <CarouselNext className="-right-12 h-9 w-9" />
+        </>
+      )}
+    </Carousel>
+  );
+}
 
 export function Navbar() {
   const { cart, favorites, setCartOpen, setFavOpen } = useApp();
@@ -64,7 +122,7 @@ export function Navbar() {
       {/* Top strip */}
       <div className="hidden bg-ink text-paper md:block">
         <div className="container-x flex h-9 items-center justify-between text-xs">
-          <span>Livraison rapide dans tout le Souss • Devis gratuit sous 24h</span>
+          <span>Livraison rapide dans tout le Souss • Devis gratuit sous 48h</span>
           <div className="flex items-center gap-4">
             <a href="tel:+212528838992" className="flex items-center gap-1.5 hover:text-sky">
               <Phone className="h-3 w-3" /> +212 528 838 992
@@ -201,20 +259,7 @@ export function Navbar() {
             className="absolute inset-x-0 top-full hidden border-b bg-paper shadow-[var(--shadow-elevated)] lg:block"
           >
             <div className="container-x py-6">
-              {/* 4 colonnes pour 8 categories : deux rangees pleines. */}
-              <div className="grid grid-cols-4 gap-3">
-                {categories.map((c) => (
-                  <Link
-                    key={c.slug}
-                    to="/categories"
-                    search={{ cat: c.category }}
-                    onClick={() => setMega(false)}
-                    className="group relative block aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
-                  >
-                    <CategoryCardBody name={c.name} image={c.image} compact />
-                  </Link>
-                ))}
-              </div>
+              <CategoryCarousel variant="mega" onSelect={() => setMega(false)} />
             </div>
           </motion.div>
         )}
@@ -236,7 +281,7 @@ export function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{ type: "spring", damping: 28, stiffness: 260 }}
-              className="fixed right-0 top-0 z-50 flex h-full w-full max-w-xs flex-col bg-paper shadow-2xl lg:hidden"
+              className="fixed right-0 top-0 z-50 flex h-full w-full max-w-xs flex-col bg-paper shadow-2xl sm:max-w-sm lg:hidden"
             >
               <div className="flex items-center justify-between border-b px-5 py-4">
                 <div className="flex items-center gap-3">
@@ -274,6 +319,12 @@ export function Navbar() {
                     </Link>
                   );
                 })}
+
+                {/* Les memes cartes que le panneau de survol : sans survol, le carrousel
+                    est le seul moyen de parcourir les rayons depuis le tiroir. */}
+                <div className="mt-4 border-t pt-4">
+                  <CategoryCarousel variant="drawer" onSelect={() => setOpen(false)} />
+                </div>
               </div>
 
               <div className="space-y-3 border-t p-4">
@@ -303,7 +354,7 @@ export function Navbar() {
                   <Phone className="h-4 w-4" /> +212 528 838 992
                 </a>
                 <p className="text-center text-[11px] text-ink-soft">
-                  Livraison rapide dans tout le Souss • Devis gratuit sous 24h
+                  Livraison rapide dans tout le Souss • Devis gratuit sous 48h
                 </p>
               </div>
             </motion.nav>

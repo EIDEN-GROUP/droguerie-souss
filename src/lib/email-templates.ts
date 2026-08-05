@@ -41,7 +41,7 @@ function baseHtml(content: string): string {
           <tr>
             <td style="background:${BRAND.secondary};padding:10px 32px;border-radius:16px 16px 0 0;text-align:center;">
               <span style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:#c9cce6;">
-                Livraison rapide dans tout le Souss &nbsp;&middot;&nbsp; Devis gratuit sous 24h
+                Livraison rapide dans tout le Souss &nbsp;&middot;&nbsp; Devis gratuit sous 48h
               </span>
             </td>
           </tr>
@@ -175,7 +175,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
     </p>
     <p style="margin:0 0 16px;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
       Nous avons bien reçu votre message. Notre équipe vous recontactera
-      dans les plus brefs délais (sous 24h ouvrées).
+      dans les plus brefs délais (sous 48h ouvrées).
     </p>
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
     <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">

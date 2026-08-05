@@ -5,7 +5,7 @@ const services = [
   { icon: Truck, title: "Livraison rapide", text: "Dans tout le Souss sous 48h" },
   { icon: ShieldCheck, title: "Qualité garantie", text: "Matériaux certifiés norme NM" },
   { icon: Headphones, title: "Support 7j/7", text: "Nos experts vous conseillent" },
-  { icon: Wallet, title: "Devis gratuit", text: "Sans engagement en 24h" },
+  { icon: Wallet, title: "Devis gratuit", text: "Sans engagement en 48h" },
 ];
 
 export function ServiceBar() {

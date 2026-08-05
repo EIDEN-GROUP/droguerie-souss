@@ -25,7 +25,7 @@ import zoneImg from "@/assets/22.png";
 
 const TITLE = "À propos   Souss Droguerie S.A.R.L, matériaux de construction à Agadir";
 const DESCRIPTION =
-  "Depuis plus de 20 ans, Souss Droguerie S.A.R.L fournit les chantiers de la région d'Agadir en carrelage, marbre, ciment, plâtre, peinture, électricité et plomberie. Devis sous 24h, livraison dans tout le Souss.";
+  "Depuis 1992, Souss Droguerie accompagne les professionnels du BTP et les particuliers avec une gamme complète de matériaux de construction, des marques partenaires reconnues et un accompagnement technique dans toute la région Souss-Massa.";
 
 /** Fiche établissement pour les moteurs de recherche : c'est elle qui alimente le panneau
  *  local de Google (adresse, horaires, zone desservie). */
@@ -88,7 +88,7 @@ export const Route = createFileRoute("/a-propos")({
 });
 
 const stats = [
-  { value: 20, suffix: "+", label: "Années d'expérience", icon: Building2 },
+  { value: 30, suffix: "+", label: "Années d'expérience", icon: Building2 },
   { value: 48, suffix: "h", label: "Pour recevoir votre devis", icon: Clock },
   { value: 8, suffix: "", label: "Familles de matériaux", icon: Package },
   { value: 12, suffix: "", label: "Marques partenaires", icon: Handshake },
@@ -187,9 +187,7 @@ function APropos() {
             </h1>
             <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
             <p className="mt-4 max-w-2xl text-sm text-paper/70 sm:text-base">
-              Souss Droguerie S.A.R.L approvisionne les chantiers de la région d'Agadir
-              en matériaux de construction depuis plus de vingt ans. Du sac de ciment au
-              zellige posé à la main, tout part du même dépôt.
+              Depuis plus de 30 ans, Souss Droguerie accompagne les professionnels du BTP et les particuliers avec une offre complète de matériaux de construction. De la structure aux finitions, nous mettons à votre disposition des produits certifiés, des marques reconnues et un accompagnement technique à chaque étape de votre projet.
             </p>
           </motion.div>
         </div>
@@ -232,21 +230,13 @@ function APropos() {
             </h2>
             <div className="mt-6 space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base">
               <p>
-                Souss Droguerie est née d'un constat simple : dans le Souss, un chantier
-                perd plus de temps à courir après ses matériaux qu'à les poser. Réunir le
-                gros œuvre, le carrelage, la peinture, l'électricité et la plomberie sous
-                un même toit, c'est rendre ce temps aux artisans.
+                Depuis 1992, Souss Droguerie développe son expertise dans la distribution de matériaux de construction destinés aux professionnels et aux particuliers. Notre objectif est resté le même : proposer des produits fiables, disponibles et adaptés aux exigences des chantiers modernes.
               </p>
               <p>
-                Vingt ans plus tard, la maison sert aussi bien le particulier qui rénove
-                une salle de bain que l'entreprise qui livre un programme de logements.
-                Les mêmes conseils, les mêmes marques, la même exigence sur la
-                disponibilité.
+                Au fil des années, notre catalogue s'est enrichi pour couvrir l'ensemble des besoins du gros œuvre, du second œuvre et de la finition. Carrelage, sanitaire, métallurgie, isolation, peinture, électricité ou énergie solaire : une seule adresse pour l'ensemble de vos projets.
               </p>
               <p>
-                Notre dépôt de la Zone Industrielle d'Agadir reste le cœur de
-                l'activité : c'est de là que partent les livraisons vers l'ensemble de la
-                région Souss-Massa.
+                Aujourd'hui, nous poursuivons cette évolution en intégrant progressivement des solutions innovantes afin d'améliorer notre accompagnement, optimiser le choix des matériaux et proposer un service toujours plus performant.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -383,12 +373,10 @@ function APropos() {
               </span>
             </div>
             <h2 className="mt-4 font-display text-3xl font-bold uppercase leading-tight text-ink sm:text-4xl">
-              Nous livrons tout le Souss
+              Au service des chantiers dans toute la région Souss-Massa
             </h2>
             <p className="mt-5 text-sm leading-relaxed text-ink-soft sm:text-base">
-              Nos camions desservent quotidiennement le Grand Agadir et rayonnent sur
-              l'ensemble de la région Souss-Massa. Indiquez l'adresse du chantier lors de
-              votre demande : le transport est chiffré avec le devis, sans surprise.
+              Implantée à Agadir, Souss Droguerie accompagne quotidiennement les entreprises du bâtiment, les artisans et les particuliers dans toute la région Souss-Massa. Nos équipes assurent un accompagnement commercial et technique afin de répondre rapidement aux besoins de chaque chantier.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
