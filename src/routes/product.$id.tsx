@@ -109,7 +109,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
   useEffect(() => {
     setActiveImage(0);
     setQty(1);
-    const firstAvailable = variants.find((v) => v.stock > 0) ?? variants[0];
+    const firstAvailable = variants[0];
     setSelectedDimension(firstAvailable?.dimension ?? undefined);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product?.id]);
@@ -210,8 +210,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                     <button
                       key={v.dimension}
                       onClick={() => setSelectedDimension(v.dimension)}
-                      disabled={v.stock === 0}
-                      className={`flex items-center gap-2 rounded-full border py-1.5 pl-4 pr-1.5 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                      className={`flex items-center gap-2 rounded-full border py-1.5 pl-4 pr-4 text-sm font-semibold transition ${
                         selectedDimension === v.dimension
                           ? "border-brand bg-mint text-brand"
                           : "border-border bg-paper hover:border-brand"
@@ -221,13 +220,6 @@ function ProductDetailContent({ product, products }: { product: Product; product
                         <span className="h-1.5 w-1.5 rounded-full bg-brand" />
                       )}
                       <span>{v.dimension}</span>
-                      <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                          v.stock > 0 ? "bg-ink/5 text-ink-soft" : "bg-accent-red/10 text-accent-red"
-                        }`}
-                      >
-                        {v.stock > 0 ? `${v.stock} en stock` : "Épuisé"}
-                      </span>
                     </button>
                   ))}
                 </div>

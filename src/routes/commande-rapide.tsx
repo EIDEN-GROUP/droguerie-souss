@@ -179,7 +179,7 @@ function CommandeRapide() {
 
   const defaultVariant = (p: any) => {
     const variants = p.variants || [];
-    return variants.find((v: any) => v.stock > 0) ?? variants[0];
+    return variants[0];
   };
 
   const pendingDimension = (p: any) => dimensions[p.id] ?? defaultVariant(p)?.dimension ?? undefined;
@@ -601,17 +601,13 @@ function CommandeRapide() {
                                           key={v.dimension}
                                           type="button"
                                           onClick={() => setDimensions((d) => ({ ...d, [p.id]: v.dimension }))}
-                                          disabled={v.stock === 0}
-                                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${
+                                          className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition ${
                                             dimension === v.dimension
                                               ? "border-brand bg-mint text-brand"
                                               : "border-border text-ink-soft hover:border-brand"
                                           }`}
                                         >
                                           {v.dimension}
-                                          <span className={v.stock > 0 ? "text-ink-soft" : "text-accent-red"}>
-                                            {v.stock > 0 ? `(${v.stock})` : "Épuisé"}
-                                          </span>
                                         </button>
                                       ))}
                                     </div>

@@ -234,7 +234,7 @@ export function useDeleteDimension() {
 export function useSetProductVariants() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ product_id, variants }: { product_id: string; variants: { dimension: string; stock: number }[] }) =>
+    mutationFn: ({ product_id, variants }: { product_id: string; variants: { dimension: string }[] }) =>
       setProductVariantsFn({ data: { product_id, variants } }),
     onSuccess: (_, vars) => {
       qc.invalidateQueries({ queryKey: queryKeys.productVariants(vars.product_id) });

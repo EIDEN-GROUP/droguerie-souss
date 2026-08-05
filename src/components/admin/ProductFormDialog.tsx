@@ -33,7 +33,6 @@ const schema = z.object({
   price_mode: z.enum(["fixed", "quote"]),
   price: z.coerce.number().min(0, "Le prix ne peut pas être négatif"),
   unit: z.string().min(1, "Unité requise"),
-  stock: z.coerce.number().int().min(0, "Le stock ne peut pas être négatif"),
   description: z.string().min(5, "Description trop courte"),
   bestseller: z.boolean().optional(),
   seasonal: z.boolean().optional(),
@@ -69,7 +68,7 @@ export function ProductFormDialog({
 
   const saveVariants = useSetProductVariants();
   const [variants, setVariants] = useState<ProductVariant[]>([]);
-  const [editor, setEditor] = useState<{ dimension: string; stock: string }>({ dimension: "", stock: "0" });
+  const [editor, setEditor] = useState<{ dimension: string }>({ dimension: "" });
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [variantsDirty, setVariantsDirty] = useState(false);
   const [variantsError, setVariantsError] = useState("");
@@ -101,7 +100,7 @@ export function ProductFormDialog({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", category: catOptions[0]?.value ?? "", subcategory: "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
+    defaultValues: { name: "", category: catOptions[0]?.value ?? "", subcategory: "", price_mode: "fixed", price: 0, unit: "", description: "" },
   });
 
   const currentPriceMode = watch("price_mode");
@@ -118,18 +117,17 @@ export function ProductFormDialog({
               price_mode: (product as any).price_mode || "fixed",
               price: product.price,
               unit: product.unit,
-              stock: product.stock,
               description: product.description,
               bestseller: product.bestseller,
               seasonal: product.seasonal,
               promo: product.promo,
             }
-          : { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", stock: 0, description: "" },
+          : { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", description: "" },
       );
       setImageUrls(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
       setImageError("");
-      setVariants((product?.variants || []).map((v) => ({ dimension: v.dimension, stock: v.stock })));
-      setEditor({ dimension: "", stock: "0" });
+      setVariants((product?.variants || []).map((v) => ({ dimension: v.dimension })));
+      setEditor({ dimension: "" });
       setEditingIndex(null);
       setVariantsDirty(false);
       setVariantsError("");
@@ -139,13 +137,13 @@ export function ProductFormDialog({
   const loadVariantInEditor = (i: number) => {
     const v = variants[i];
     if (!v) return;
-    setEditor({ dimension: v.dimension, stock: String(v.stock) });
+    setEditor({ dimension: v.dimension });
     setEditingIndex(i);
     setVariantsError("");
   };
 
   const resetEditor = () => {
-    setEditor({ dimension: "", stock: "0" });
+    setEditor({ dimension: "" });
     setEditingIndex(null);
     setVariantsError("");
   };
@@ -156,26 +154,24 @@ export function ProductFormDialog({
       setVariantsError("Choisissez ou créez une dimension.");
       return;
     }
-    const stock = Math.max(0, Math.floor(parseInt(editor.stock, 10) || 0));
     if (
       editingIndex !== null &&
       variants[editingIndex] &&
-      variants[editingIndex].dimension === dimension &&
-      variants[editingIndex].stock === stock
+      variants[editingIndex].dimension === dimension
     ) {
       resetEditor();
       return;
     }
     if (editingIndex !== null && variants[editingIndex]) {
       setVariants((prev) =>
-        prev.map((v, i) => (i === editingIndex ? { dimension, stock } : v)),
+        prev.map((v, i) => (i === editingIndex ? { dimension } : v)),
       );
     } else {
       if (variants.some((v) => v.dimension.toLowerCase() === dimension.toLowerCase())) {
         setVariantsError(`La dimension « ${dimension} » est déjà présente sur ce produit.`);
         return;
       }
-      setVariants((prev) => [...prev, { dimension, stock }]);
+      setVariants((prev) => [...prev, { dimension }]);
     }
     setVariantsDirty(true);
     resetEditor();
@@ -360,18 +356,6 @@ export function ProductFormDialog({
                 className="sm:max-w-xs"
               />
               <div className="flex items-center gap-2">
-                <div className="flex items-center rounded-lg border border-border bg-white px-3">
-                  <input
-                    type="number"
-                    min={0}
-                    value={editor.stock}
-                    onChange={(e) => setEditor((s) => ({ ...s, stock: e.target.value }))}
-                    className="w-20 bg-transparent py-2.5 text-sm outline-none"
-                    placeholder="Stock"
-                    aria-label="Stock de cette dimension"
-                  />
-                  <span className="text-xs text-ink-soft">en stock</span>
-                </div>
                 {editingIndex !== null && (
                   <button
                     type="button"
@@ -404,7 +388,6 @@ export function ProductFormDialog({
                     type="button"
                     key={v.dimension}
                     onClick={() => loadVariantInEditor(i)}
-                    title={`Modifier le stock de ${v.dimension}`}
                     className={cn(
                       "group flex items-center gap-2 rounded-full border py-1 pl-4 pr-1.5 text-sm font-semibold text-ink transition",
                       editingIndex === i
@@ -413,9 +396,6 @@ export function ProductFormDialog({
                     )}
                   >
                     <span>{v.dimension}</span>
-                    <span className="rounded-full bg-ink/5 px-2 py-0.5 text-[11px] font-bold text-ink-soft">
-                      Stock : {v.stock}
-                    </span>
                     <span
                       role="button"
                       aria-label={`Retirer ${v.dimension}`}
@@ -434,12 +414,6 @@ export function ProductFormDialog({
               <p className="text-xs text-ink-soft">Aucune dimension pour l'instant.</p>
             )}
           </div>
-
-          <Field label="Stock (global)" error={errors.stock?.message}>
-            <div className="sm:max-w-xs">
-              <input type="number" {...register("stock")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
-            </div>
-          </Field>
 
           <GiftPicker gifts={gifts} onChange={setGifts} />
 

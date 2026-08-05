@@ -96,7 +96,7 @@ function AdminProducts() {
     try {
       const data = await exportProductsCsv();
       const csv = Papa.unparse(data, {
-        columns: ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "dimension", "image_url"],
+        columns: ["name", "category", "price_mode", "price", "unit", "description", "bestseller", "seasonal", "promo", "dimension", "image_url"],
       });
       const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
       const url = URL.createObjectURL(blob);
@@ -143,7 +143,6 @@ function AdminProducts() {
             price: priceMode === "quote" ? 0 : parseFloat(priceRaw!),
             unit: (row.unit || "unité").trim(),
             description: (row.description || "").trim(),
-            stock: parseInt(row.stock || "0", 10) || 0,
             bestseller: row.bestseller === "true" || row.bestseller === "1" || row.bestseller === "oui",
             seasonal: row.seasonal === "true" || row.seasonal === "1" || row.seasonal === "oui",
             promo: row.promo ? parseInt(row.promo, 10) : null,
@@ -163,12 +162,12 @@ function AdminProducts() {
   };
 
   const handleExample = () => {
-    const headers = ["name", "category", "price_mode", "price", "unit", "description", "stock", "bestseller", "seasonal", "promo", "dimension", "image_url"];
+    const headers = ["name", "category", "price_mode", "price", "unit", "description", "bestseller", "seasonal", "promo", "dimension", "image_url"];
     const rows = [
       headers.join(","),
-      '"Carreau céramique 30x30","Carrelage","fixed","89.00","m²","Carreau de sol beige 30×30 cm","50","true","false","","30x30","https://example.com/carrelage.jpg"',
-      '"Peinture mate blanche","Peinture","fixed","145.00","L","Peinture acrylique mate blanc pur","20","false","false","10","",""',
-      '"Marbre beige","Marbre","quote","0","m²","Marbre beige importé d Italie","0","true","false","","",""',
+      '"Carreau céramique 30x30","Carrelage","fixed","89.00","m²","Carreau de sol beige 30×30 cm","true","false","","30x30","https://example.com/carrelage.jpg"',
+      '"Peinture mate blanche","Peinture","fixed","145.00","L","Peinture acrylique mate blanc pur","false","false","10","",""',
+      '"Marbre beige","Marbre","quote","0","m²","Marbre beige importé d Italie","true","false","","",""',
     ];
     const blob = new Blob(["\ufeff" + rows.join("\n")], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
@@ -292,8 +291,6 @@ function AdminProducts() {
               <TableHead>Catégorie</TableHead>
               <TableHead>Prix</TableHead>
               <TableHead>Dimensions</TableHead>
-              <TableHead>Stock</TableHead>
-              <TableHead>Statut</TableHead>
               <TableHead className="text-right pr-4">Actions</TableHead>
             </TableRow>
           </TableHeader>
@@ -327,11 +324,9 @@ function AdminProducts() {
                       {p.variants.slice(0, 2).map((v) => (
                         <span
                           key={v.dimension}
-                          className="inline-flex items-center gap-1 rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-ink"
-                          title={`${v.dimension} : ${v.stock} en stock`}
+                          className="inline-flex items-center rounded-full bg-cream px-2 py-0.5 text-[11px] font-semibold text-ink"
                         >
                           {v.dimension}
-                          <span className="text-[10px] font-bold text-ink-soft">({v.stock})</span>
                         </span>
                       ))}
                       {p.variants.length > 2 && (
@@ -344,16 +339,6 @@ function AdminProducts() {
                     <span className="text-sm text-ink-soft">{p.dimension}</span>
                   ) : (
                     <span className="text-sm text-ink-soft/50">—</span>
-                  )}
-                </TableCell>
-                <TableCell className="text-sm font-semibold">{p.stock}</TableCell>
-                <TableCell>
-                  {p.stock === 0 ? (
-                    <Badge className="bg-accent-red/10 text-accent-red">Épuisé</Badge>
-                  ) : p.stock <= 10 ? (
-                    <Badge className="bg-sky/40 text-brand-secondary">Stock faible</Badge>
-                  ) : (
-                    <Badge className="bg-mint text-brand-secondary">En stock</Badge>
                   )}
                 </TableCell>
                 <TableCell>

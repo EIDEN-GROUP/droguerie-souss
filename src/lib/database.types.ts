@@ -12,9 +12,8 @@ export interface DbProduct {
   bestseller: boolean;
   seasonal: boolean;
   promo: number | null;
-  stock: number;
   dimension: string | null;
-  variants: { dimension: string; stock: number }[];
+  variants: { dimension: string }[];
   created_at: string;
   updated_at: string;
 }
@@ -26,12 +25,11 @@ export interface DbDimension {
   created_at: string;
 }
 
-/** Variante (dimension + stock) rattachée à un produit. */
+/** Variante (dimension) rattachée à un produit. */
 export interface DbProductVariant {
   id: string;
   product_id: string;
   dimension: string;
-  stock: number;
   created_at: string;
 }
 
@@ -83,7 +81,6 @@ export interface ProductInput {
   bestseller?: boolean;
   seasonal?: boolean;
   promo?: number | null;
-  stock?: number;
   dimension?: string;
 }
 

@@ -2,20 +2,20 @@ import { createServerFn } from "@tanstack/react-start";
 import type { DbProductGift, ProductInput } from "@/lib/database.types";
 import { createAdminClient } from "./db";
 
-/** Rattache les variantes (dimension + stock) à chaque produit en une seule requête. */
+/** Rattache les variantes (dimension) à chaque produit en une seule requête. */
 async function withVariants<T extends { id: string }>(rows: T[]) {
   if (rows.length === 0) return rows;
   const supabase = createAdminClient();
   const ids = rows.map((r) => r.id);
   const { data: v, error } = await supabase
     .from("product_dimensions")
-    .select("product_id, dimension, stock")
+    .select("product_id, dimension")
     .in("product_id", ids);
   if (error) throw error;
-  const byProduct = new Map<string, { dimension: string; stock: number }[]>();
+  const byProduct = new Map<string, { dimension: string }[]>();
   for (const row of v || []) {
     const list = byProduct.get(row.product_id) || [];
-    list.push({ dimension: row.dimension, stock: row.stock });
+    list.push({ dimension: row.dimension });
     byProduct.set(row.product_id, list);
   }
   return rows.map((r) => ({ ...r, variants: byProduct.get(r.id) || [] }));
@@ -134,9 +134,9 @@ export const setProductGifts = createServerFn({ method: "POST" })
 
 /* ── Dimension variants ── */
 
-/** Remplace l'ensemble des variantes (dimension + stock) d'un produit. */
+/** Remplace l'ensemble des variantes (dimension) d'un produit. */
 export const setProductVariants = createServerFn({ method: "POST" })
-  .validator((data: { product_id: string; variants: { dimension: string; stock: number }[] }) => data)
+  .validator((data: { product_id: string; variants: { dimension: string }[] }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     await supabase.from("product_dimensions").delete().eq("product_id", ctx.data.product_id);
@@ -144,7 +144,6 @@ export const setProductVariants = createServerFn({ method: "POST" })
     const rows = ctx.data.variants.map((v) => ({
       product_id: ctx.data.product_id,
       dimension: v.dimension.trim(),
-      stock: Math.max(0, Math.floor(v.stock || 0)),
     }));
     const { data, error } = await supabase.from("product_dimensions").insert(rows).select();
     if (error) throw error;
