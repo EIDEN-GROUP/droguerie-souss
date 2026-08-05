@@ -52,7 +52,7 @@ export function SuppliersCarousel() {
             de moins qu'il n'y a de cartes, la moitie de la piste tomberait un demi-espace
             trop tot. Avec la marge, la piste vaut exactement 24 x (carte + espace).
         */}
-        <div className="flex w-max animate-[marquee_4s_linear_infinite] hover:[animation-play-state:paused] lg:animate-[marquee_10s_linear_infinite]">
+        <div className="flex w-max animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused] lg:animate-[marquee_20s_linear_infinite]">
           {doubled.map((supplier, i) => (
             <div key={i} className="group mr-4 grid h-16 min-w-[140px] shrink-0 place-items-center rounded-xl border bg-paper px-4 shadow-sm transition-shadow duration-300 hover:shadow-md md:h-24 md:min-w-[200px] md:px-8">
               <img

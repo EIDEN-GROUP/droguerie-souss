@@ -9,7 +9,7 @@ export function Hero() {
         initial={{ opacity: 0, scale: 1.08 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.2, ease: "easeOut" }}
-        className="absolute inset-0 aspect-video"
+        className="absolute inset-0"
       >
         <video
           src="/hero.mp4"
