@@ -8,23 +8,10 @@ import { PageLoader } from "./Loader";
 import { FloatingActions } from "./FloatingActions";
 import { useCustomerAuth } from "@/lib/customerAuth";
 
-const AUTH_PROMPT_KEY = "ds-auth-prompted";
-
 export function Layout({ children }: { children: ReactNode }) {
+  // Restaure la session éventuelle (aucune fenêtre de connexion automatique).
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    useCustomerAuth
-      .getState()
-      .checkSession()
-      .then(() => {
-        const { user, authOpen } = useCustomerAuth.getState();
-        if (user || authOpen || localStorage.getItem(AUTH_PROMPT_KEY)) return;
-        timer = setTimeout(() => {
-          localStorage.setItem(AUTH_PROMPT_KEY, "1");
-          useCustomerAuth.getState().setAuthOpen(true);
-        }, 2500);
-      });
-    return () => clearTimeout(timer);
+    useCustomerAuth.getState().checkSession();
   }, []);
 
   return (
