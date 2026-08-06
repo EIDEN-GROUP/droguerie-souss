@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
+import { gaHeadScripts, trackPageview } from "../lib/analytics";
 
 function NotFoundComponent() {
   return (
@@ -78,26 +80,31 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Matériaux de construction à Agadir | Souss Droguerie" },
+      { title: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
       {
         name: "description",
         content:
-          "Souss Droguerie S.A.R.L : votre fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plâtre, électricité, plomberie et quincaillerie.",
+          "Souss Droguerie (Droguerie Souss) : votre droguerie et fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plomberie, électricité et quincaillerie.",
       },
-      { name: "author", content: "Souss Droguerie S.A.R.L" },
-      { property: "og:title", content: "Matériaux de construction à Agadir | Souss Droguerie" },
+      { name: "author", content: "Souss Droguerie SARL" },
+      { property: "og:title", content: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
       {
         property: "og:description",
         content:
-          "Votre partenaire de confiance en matériaux de construction dans le Souss : carrelage, marbre, peinture, ciment, plomberie et électricité à Agadir.",
+          "Souss Droguerie : votre droguerie et fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, plomberie, électricité et quincaillerie.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:locale", content: "fr_FR" },
+      { property: "og:site_name", content: "Souss Droguerie" },
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:image", content: `${SITE_URL}${DEFAULT_OG_IMAGE}` },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Matériaux de construction à Agadir | Souss Droguerie" },
-      { name: "twitter:description", content: "Votre fournisseur de matériaux de construction à Agadir : carrelage, marbre, peinture, ciment et plomberie." },
+      { name: "twitter:title", content: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
+      { name: "twitter:description", content: "Souss Droguerie : votre droguerie et fournisseur de matériaux de construction à Agadir." },
     ],
+    // Google Analytics 4 : rien n'est injecté tant que VITE_GA_MEASUREMENT_ID
+    // n'est pas renseigné (voir .env.example).
+    scripts: gaHeadScripts(),
     links: [
       { rel: "stylesheet", href: appCss },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
@@ -133,7 +140,17 @@ function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
+      <PageviewTracker />
       <Outlet />
     </QueryClientProvider>
   );
+}
+
+/** Envoie un pageview GA4 à chaque navigation (SPA). Sans effet sans ID configuré. */
+function PageviewTracker() {
+  const href = useRouterState({ select: (s) => s.location.href });
+  useEffect(() => {
+    trackPageview(href);
+  }, [href]);
+  return null;
 }

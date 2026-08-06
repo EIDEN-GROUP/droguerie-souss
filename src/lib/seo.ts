@@ -14,6 +14,11 @@ export const SITE_URL = (
 
 export const SITE_NAME = "Souss Droguerie";
 
+/** Orthographe alternative du nom (Google associe les deux à la même entreprise
+ *  via `alternateName` dans le schéma, et le titre page par page couvre la
+ *  recherche « droguerie souss » comme « souss droguerie »). */
+export const ALTERNATE_NAME = "Droguerie Souss";
+
 /** Image par défaut des partages sociaux (logo de la marque). */
 export const DEFAULT_OG_IMAGE = "/logo.png";
 
@@ -59,6 +64,8 @@ export type SeoOptions = {
   noindex?: boolean;
   ogType?: string;
   scripts?: ReturnType<typeof jsonLd>[];
+  /** Liens <link> additionnels fusionnés avec le canonical (ex. preload LCP). */
+  links?: Array<{ rel: string; as?: string; href: string }>;
 };
 
 export function seo({
@@ -69,8 +76,11 @@ export function seo({
   noindex = false,
   ogType = "website",
   scripts = [],
+  links = [],
 }: SeoOptions) {
-  const fullTitle = title.endsWith(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  // Si le titre contient déjà la marque (ex. « Souss Droguerie | … »), on ne la
+  // ré-ajoute pas ; sinon on la suffixe. Idempotent pour toutes les pages.
+  const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
   const ogImage = absoluteUrl(image || DEFAULT_OG_IMAGE) as string;
 
   return {
@@ -81,13 +91,16 @@ export function seo({
       { property: "og:title", content: fullTitle },
       { property: "og:description", content: description },
       { property: "og:type", content: ogType },
+      { property: "og:locale", content: "fr_FR" },
+      { property: "og:site_name", content: SITE_NAME },
       { property: "og:url", content: canonical(path) },
       { property: "og:image", content: ogImage },
+      { name: "twitter:url", content: canonical(path) },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: fullTitle },
       { name: "twitter:description", content: description },
     ],
-    links: [{ rel: "canonical", href: canonical(path) }],
+    links: [{ rel: "canonical", href: canonical(path) }, ...links],
     scripts,
   };
 }

@@ -19,7 +19,7 @@ import { useProducts, useCategories } from "@/lib/adminStore";
 import { createOrder } from "@/lib/api/orders";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { searchProducts } from "@/lib/search";
-import { seo, jsonLd } from "@/lib/seo";
+import { seo, jsonLd, canonical } from "@/lib/seo";
 import { cartLineKey } from "@/lib/store";
 
 export const Route = createFileRoute("/commande-rapide")({
@@ -33,6 +33,14 @@ export const Route = createFileRoute("/commande-rapide")({
       // Les questions/réponses ci-dessous sont réellement rendues sur la page (FAQ) :
       // le balisage FAQPage est donc conforme au contenu affiché.
       scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+            { "@type": "ListItem", position: 2, name: "Commande rapide", item: canonical("/commande-rapide") },
+          ],
+        }),
         jsonLd({
           "@context": "https://schema.org",
           "@type": "FAQPage",

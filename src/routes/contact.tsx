@@ -4,7 +4,7 @@ import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { submitContact } from "@/lib/api/contact";
-import { seo } from "@/lib/seo";
+import { seo, jsonLd, canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
@@ -12,8 +12,18 @@ export const Route = createFileRoute("/contact")({
     seo({
       title: "Contact",
       description:
-        "Contactez Souss Droguerie S.A.R.L à Agadir pour vos devis en matériaux de construction : téléphone, email, adresse et horaires.",
+        "Contactez Souss Droguerie SARL à Agadir pour vos devis en matériaux de construction : téléphone, email, adresse et horaires.",
       path: "/contact",
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+            { "@type": "ListItem", position: 2, name: "Contact", item: canonical("/contact") },
+          ],
+        }),
+      ],
     }),
 });
 

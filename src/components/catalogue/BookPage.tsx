@@ -57,7 +57,7 @@ export const CoverPage = forwardRef<HTMLDivElement, { variant: "front" | "back";
             </h2>
             <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
             <p className="mt-4 text-xs leading-relaxed text-paper/70 sm:text-sm">
-              Matériaux de construction &amp; finitions — Souss Droguerie S.A.R.L.
+              Matériaux de construction &amp; finitions — Souss Droguerie SARL.
             </p>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/50">
@@ -72,7 +72,7 @@ export const CoverPage = forwardRef<HTMLDivElement, { variant: "front" | "back";
           <span className="block h-1 w-12 rounded-full bg-accent-red" />
           <div className="space-y-1 text-xs text-paper/70 sm:text-sm">
             <p className="font-display text-base font-bold uppercase text-paper">
-              Souss Droguerie S.A.R.L
+              Souss Droguerie SARL
             </p>
             <p>Zone industrielle, Agadir, Maroc</p>
             <p>+212 528 838 992</p>

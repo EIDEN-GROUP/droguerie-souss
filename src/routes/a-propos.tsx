@@ -20,7 +20,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
-import { seo } from "@/lib/seo";
+import { seo, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
 import storyImg from "@/assets/1.png";
 import zoneImg from "@/assets/22.png";
 
@@ -32,7 +32,16 @@ const DESCRIPTION =
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "HardwareStore",
-  name: "Souss Droguerie S.A.R.L",
+  name: "Souss Droguerie SARL",
+  // Le panneau local et la recherche associent l'orthographe courante à
+  // « Droguerie Souss » : les deux noms désignent le même dépôt.
+  alternateName: ALTERNATE_NAME,
+  foundingDate: "1992",
+  slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1992",
+  url: `${SITE_URL}/`,
+  image: `${SITE_URL}/logo.png`,
+  hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
+  sameAs: ["https://maps.app.goo.gl/q54qmxeEv752bJMTA"],
   description: DESCRIPTION,
   telephone: "+212528838992",
   email: "contact@soussdroguerie.com",

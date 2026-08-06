@@ -67,7 +67,7 @@ function baseHtml(content: string): string {
           <tr>
             <td style="padding:20px 32px 0;text-align:center;">
               <p style="margin:0;font-size:12px;line-height:1.6;color:${BRAND.inkSoft};">
-                <strong style="color:${BRAND.ink};">Souss Droguerie S.A.R.L</strong><br />
+                <strong style="color:${BRAND.ink};">Souss Droguerie SARL</strong><br />
                 Zone Industrielle, Agadir 80000, Maroc
               </p>
               <p style="margin:8px 0 0;font-size:12px;color:${BRAND.inkSoft};">
@@ -179,7 +179,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
     </p>
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
     <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
-      Souss Droguerie S.A.R.L Zone Industrielle, Agadir 80000, Maroc
+      Souss Droguerie SARL Zone Industrielle, Agadir 80000, Maroc
     </p>
   `);
 }

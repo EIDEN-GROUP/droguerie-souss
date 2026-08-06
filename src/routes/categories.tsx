@@ -8,7 +8,7 @@ import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { categories, categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
-import { seo } from "@/lib/seo";
+import { seo, jsonLd, canonical } from "@/lib/seo";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
@@ -33,12 +33,34 @@ export const Route = createFileRoute("/categories")({
     // indexées séparément). La recherche (?q=) est en plus marquée noindex.
     const catPath = cat ? `?cat=${encodeURIComponent(cat)}` : "";
     return seo({
-      title: catInfo ? `${catInfo.name} à Agadir` : "Boutique",
+      title: catInfo
+        ? `${catInfo.name} à Agadir chez Souss Droguerie`
+        : "Droguerie & Matériaux de construction à Agadir | Souss Droguerie",
       description: catInfo
         ? `Achetez ${catInfo.name.toLowerCase()} à Agadir chez Souss Droguerie : ${catInfo.description}. Devis gratuit sous 48h, livraison dans tout le Souss.`
-        : "Catalogue complet de matériaux de construction à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité. Devis gratuit sous 48h.",
+        : "Souss Droguerie (Droguerie Souss) : droguerie et catalogue complet de matériaux de construction à Agadir. Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie. Devis gratuit sous 48h.",
       path: `/categories${catPath}`,
       noindex: !!q,
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+            { "@type": "ListItem", position: 2, name: "Boutique", item: canonical("/categories") },
+            ...(cat
+              ? [
+                  {
+                    "@type": "ListItem",
+                    position: 3,
+                    name: catInfo?.name ?? cat,
+                    item: canonical(`/categories?cat=${encodeURIComponent(cat)}`),
+                  },
+                ]
+              : []),
+          ],
+        }),
+      ],
     });
   },
 });

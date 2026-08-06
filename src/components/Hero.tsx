@@ -32,10 +32,10 @@ export function Hero() {
             transition={{ duration: 0.7, ease: "easeOut" }}
           >
             <h1 className="font-display text-5xl font-bold uppercase leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
-              Bâtissez avec les meilleurs matériaux
+              Souss Droguerie — Matériaux de construction à Agadir
             </h1>
             <p className="mt-5 max-w-lg text-base text-paper/80 sm:text-lg">
-              Ciment, granulats, plâtre   tout pour votre chantier livré rapidement dans le Souss.
+              Votre droguerie de référence dans le Souss depuis 1992 : ciment, carrelage, peinture, plomberie, électricité et quincaillerie, livrés sur votre chantier.
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link
