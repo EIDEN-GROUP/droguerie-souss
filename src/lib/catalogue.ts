@@ -61,7 +61,7 @@ export const catalogueEditions: CatalogueEdition[] = [
     description:
       "La version feuilletable, construite depuis le catalogue produits : sommaire, recherche par référence et export PDF.",
     /** La photo de couverture de la liseuse elle-même, servie depuis `public/`. */
-    cover: "/catalogue-photos/facade-nuit.jpg",
+    cover: "/catalogue-photos/cover.png",
     isNew: true,
     format: "interactive",
   },

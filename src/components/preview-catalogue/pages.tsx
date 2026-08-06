@@ -158,7 +158,7 @@ export const Cover = forwardRef<HTMLDivElement, object>(function Cover(_, ref) {
     <Sheet ref={ref}>
       <div className="relative flex h-full flex-col">
         <Photo
-          src={`${PH}facade-nuit.jpg`}
+          src={`${PH}cover.png`}
           alt="Siège de Sté. Souss Droguerie, Dcheira — Inezgane"
           className="absolute inset-0 h-full w-full"
         />
