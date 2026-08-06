@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
 
 function NotFoundComponent() {
   return (
@@ -77,17 +78,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Souss Droguerie S.A.R.L   Matériaux de construction Agadir" },
+      { title: "Matériaux de construction à Agadir | Souss Droguerie" },
       {
         name: "description",
         content:
           "Souss Droguerie S.A.R.L : votre fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plâtre, électricité, plomberie et quincaillerie.",
       },
       { name: "author", content: "Souss Droguerie S.A.R.L" },
-      { property: "og:title", content: "Souss Droguerie S.A.R.L   Matériaux de construction" },
-      { property: "og:description", content: "Votre partenaire de confiance en matériaux de construction dans le Souss." },
+      { property: "og:title", content: "Matériaux de construction à Agadir | Souss Droguerie" },
+      {
+        property: "og:description",
+        content:
+          "Votre partenaire de confiance en matériaux de construction dans le Souss : carrelage, marbre, peinture, ciment, plomberie et électricité à Agadir.",
+      },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: `${SITE_URL}/` },
+      { property: "og:image", content: `${SITE_URL}${DEFAULT_OG_IMAGE}` },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Matériaux de construction à Agadir | Souss Droguerie" },
+      { name: "twitter:description", content: "Votre fournisseur de matériaux de construction à Agadir : carrelage, marbre, peinture, ciment et plomberie." },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

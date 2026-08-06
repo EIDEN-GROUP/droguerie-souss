@@ -3,24 +3,20 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, Hand, Maximize2, Search } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { seo } from "@/lib/seo";
 
 // react-pageflip manipule le DOM au montage : jamais rendu côté serveur.
 const Flipbook = lazy(() => import("@/components/preview-catalogue/Flipbook"));
 
 export const Route = createFileRoute("/catalogue/interactif")({
   component: CatalogueInteractif,
-  head: () => ({
-    meta: [
-      { title: "Catalogue Général 2026 en ligne   Souss Droguerie" },
-      {
-        name: "description",
-        content:
-          "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 48 h.",
-      },
-      { property: "og:title", content: "Catalogue Général 2026   Souss Droguerie" },
-      { property: "og:type", content: "website" },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Catalogue Général 2026 en ligne",
+      description:
+        "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 48 h.",
+      path: "/catalogue/interactif",
+    }),
 });
 
 const tips = [

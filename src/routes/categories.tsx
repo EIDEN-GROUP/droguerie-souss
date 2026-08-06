@@ -6,8 +6,9 @@ import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
-import { categoryGroup, type Category } from "@/lib/products";
+import { categories, categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
+import { seo } from "@/lib/seo";
 import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
 
 const searchSchema = z.object({
@@ -21,12 +22,25 @@ type Search = z.infer<typeof searchSchema>;
 export const Route = createFileRoute("/categories")({
   validateSearch: searchSchema,
   component: Shop,
-  head: () => ({
-    meta: [
-      { title: "Boutique   Souss Droguerie" },
-      { name: "description", content: "Catalogue complet de matériaux de construction : carrelage, marbre, peinture, ciment, plomberie et plus." },
-    ],
-  }),
+  head: ({ match }) => {
+    // Le contexte head n'expose pas `search` directement : il est porté par le match.
+    const search = (match.search ?? {}) as { cat?: string; subcat?: string; q?: string };
+    const cat = search.cat;
+    const q = search.q;
+    const catInfo = categories.find((c) => c.category === cat);
+    // Facettes : le canonical ne garde que la catégorie (les sous-catégories et la
+    // recherche sont des variantes du même contenu, elles ne doivent pas être
+    // indexées séparément). La recherche (?q=) est en plus marquée noindex.
+    const catPath = cat ? `?cat=${encodeURIComponent(cat)}` : "";
+    return seo({
+      title: catInfo ? `${catInfo.name} à Agadir` : "Boutique",
+      description: catInfo
+        ? `Achetez ${catInfo.name.toLowerCase()} à Agadir chez Souss Droguerie : ${catInfo.description}. Devis gratuit sous 48h, livraison dans tout le Souss.`
+        : "Catalogue complet de matériaux de construction à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité. Devis gratuit sous 48h.",
+      path: `/categories${catPath}`,
+      noindex: !!q,
+    });
+  },
 });
 
 type SubcatTab = { label: string; value: string | undefined; count: number };

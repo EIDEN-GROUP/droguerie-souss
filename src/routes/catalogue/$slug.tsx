@@ -4,6 +4,7 @@ import { ArrowLeft, Hand, Maximize2, ZoomIn } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CatalogueViewer } from "@/components/catalogue/CatalogueViewer";
 import { findEdition } from "@/lib/catalogue";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/catalogue/$slug")({
   /** Une édition PDF n'a pas de visionneuse maison : on renvoie sur le fichier, que le
@@ -17,12 +18,13 @@ export const Route = createFileRoute("/catalogue/$slug")({
   component: CatalogueEdition,
   head: ({ params }) => {
     const edition = findEdition(params.slug);
-    return {
-      meta: [
-        { title: `${edition?.title ?? "Catalogue"}   Souss Droguerie` },
-        { name: "description", content: edition?.description ?? "" },
-      ],
-    };
+    return seo({
+      title: edition?.title ?? "Catalogue",
+      description:
+        edition?.description ??
+        "Consultez les catalogues Souss Droguerie : carrelage, marbre, zellige, peinture, ciment et électricité.",
+      path: `/catalogue/${params.slug}`,
+    });
   },
 });
 

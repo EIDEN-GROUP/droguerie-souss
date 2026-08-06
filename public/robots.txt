@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Espaces privés ou à faible valeur : inutiles à indexer.
+Disallow: /admin
+Disallow: /compte
+Disallow: /checkout
+Disallow: /confirmation
+# Version plein écran du catalogue : laissée crawlable pour que Google puisse
+# lire son canonical et consolider l'indexation sur /catalogue/interactif.
+
+Sitemap: https://soussdroguerie.com/sitemap.xml

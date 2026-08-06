@@ -39,7 +39,7 @@ import {
 import { setProductVariants as setProductVariantsFn } from "@/lib/api/products";
 import type { DbProductGift, ProductInput } from "./database.types";
 
-function mapDbProduct(p: any) {
+export function mapDbProduct(p: any) {
   return {
     ...p,
     price_mode: p.price_mode || "fixed",

@@ -1,17 +1,97 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { ChevronRight, Gift, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
 import { SectionHeader } from "@/components/SectionHeader";
-import { useProducts } from "@/lib/adminStore";
-import { useProduct } from "@/lib/adminStore";
+import { mapDbProduct } from "@/lib/adminStore";
+import { getProduct, getProducts } from "@/lib/api/products";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { ProductPromoPrice } from "@/components/ProductPrice";
+import { seo, jsonLd, absoluteUrl, descriptionFrom, canonical } from "@/lib/seo";
 
 export const Route = createFileRoute("/product/$id")({
+  loader: async ({ params }) => {
+    let raw: unknown;
+    try {
+      raw = await getProduct({ data: { id: params.id } });
+    } catch (error: any) {
+      // PGRST116 : aucune ligne renvoyée — le produit n'existe pas (ou plus).
+      if (error?.code === "PGRST116" || /0 rows|no rows/i.test(error?.message ?? "")) throw notFound();
+      throw error;
+    }
+    const all = await getProducts();
+    return {
+      product: mapDbProduct(raw) as Product,
+      products: (all || []).map((p: any) => mapDbProduct(p) as Product),
+    };
+  },
+  pendingComponent: ProductPending,
+  notFoundComponent: ProductNotFound,
+  // Garde le loaderData en cache une minute : éviter de refaire deux requêtes
+  // Supabase (produit + catalogue complet) à chaque navigation entre produits.
+  staleTime: 60_000,
+  head: ({ loaderData }) => {
+    const product = (loaderData as { product?: Product } | undefined)?.product;
+    if (!product) return {};
+
+    const pct = product.promo ?? 0;
+    const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
+    const pageUrl = canonical(`/product/${product.id}`);
+
+    const productSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      sku: product.id,
+      // On n'annonce que des images réellement servies (URL absolue ou chemin public) :
+      // les simples noms de fichiers des données d'origine n'existent pas en ligne.
+      image: (product.image && (/^https?:\/\//i.test(product.image) || product.image.startsWith("/"))
+        ? [absoluteUrl(product.image)]
+        : []),
+      description: descriptionFrom(product.description, 300),
+      category: product.category,
+      brand: { "@type": "Brand", name: "Souss Droguerie" },
+      ...(product.price_mode === "fixed" && product.price > 0
+        ? {
+            offers: {
+              "@type": "Offer",
+              priceCurrency: "MAD",
+              price: String(price),
+              availability: "https://schema.org/InStock",
+              url: pageUrl,
+            },
+          }
+        : {}),
+    };
+
+    const breadcrumbSchema = {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+        { "@type": "ListItem", position: 2, name: "Boutique", item: canonical("/categories") },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: product.category,
+          item: canonical(`/categories?cat=${encodeURIComponent(product.category)}`),
+        },
+        { "@type": "ListItem", position: 4, name: product.name, item: pageUrl },
+      ],
+    };
+
+    return seo({
+      title: `${product.name} — ${product.category}`,
+      description: descriptionFrom(product.description, 155),
+      path: `/product/${product.id}`,
+      image: product.image,
+      ogType: "product",
+      scripts: [jsonLd(productSchema), jsonLd(breadcrumbSchema)],
+    });
+  },
   component: ProductDetail,
 });
 
@@ -37,57 +117,36 @@ function descriptionPoints(description: string): string[] {
 }
 
 function ProductDetail() {
-  const { id } = Route.useParams();
-  const { data: product, isLoading, isError } = useProduct(id);
-  const { data: allProducts } = useProducts();
+  const { product, products } = Route.useLoaderData();
+  return <ProductDetailContent product={product} products={products} />;
+}
 
-  if (isLoading) {
-    return (
-      <Layout>
-        <div className="container-x flex items-center justify-center py-24">
-          <Loader2 className="h-8 w-8 animate-spin text-brand" />
-        </div>
-      </Layout>
-    );
-  }
+function ProductPending() {
+  return (
+    <Layout>
+      <div className="container-x flex items-center justify-center py-24">
+        <Loader2 className="h-8 w-8 animate-spin text-brand" />
+      </div>
+    </Layout>
+  );
+}
 
-  if (isError) {
-    return (
-      <Layout>
-        <div className="container-x py-24 text-center">
-          <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
-          <p className="mt-4 font-display text-xl font-bold uppercase">Erreur de chargement</p>
-          <p className="mt-1 text-sm text-ink-soft">Impossible de charger le produit. Veuillez réessayer.</p>
-          <Link
-            to="/categories"
-            className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
-          >
-            Retour à la boutique
-          </Link>
-        </div>
-      </Layout>
-    );
-  }
-
-  if (!product) {
-    return (
-      <Layout>
-        <div className="container-x py-24 text-center">
-          <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
-          <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
-          <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
-          <Link
-            to="/categories"
-            className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
-          >
-            Voir la boutique
-          </Link>
-        </div>
-      </Layout>
-    );
-  }
-
-  return <ProductDetailContent product={product as unknown as Product} products={(allProducts || []) as unknown as Product[]} />;
+function ProductNotFound() {
+  return (
+    <Layout>
+      <div className="container-x py-24 text-center">
+        <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
+        <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
+        <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
+        <Link
+          to="/categories"
+          className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
+        >
+          Voir la boutique
+        </Link>
+      </div>
+    </Layout>
+  );
 }
 
 function ProductDetailContent({ product, products }: { product: Product; products: Product[] }) {

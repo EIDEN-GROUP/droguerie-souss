@@ -20,10 +20,10 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
+import { seo } from "@/lib/seo";
 import storyImg from "@/assets/1.png";
 import zoneImg from "@/assets/22.png";
 
-const TITLE = "À propos   Souss Droguerie S.A.R.L, matériaux de construction à Agadir";
 const DESCRIPTION =
   "Depuis 1992, Souss Droguerie accompagne les professionnels du BTP et les particuliers avec une gamme complète de matériaux de construction, des marques partenaires reconnues et un accompagnement technique dans toute la région Souss-Massa.";
 
@@ -73,18 +73,12 @@ const structuredData = {
 
 export const Route = createFileRoute("/a-propos")({
   component: APropos,
-  head: () => ({
-    meta: [
-      { title: TITLE },
-      { name: "description", content: DESCRIPTION },
-      { property: "og:title", content: TITLE },
-      { property: "og:description", content: DESCRIPTION },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: TITLE },
-      { name: "twitter:description", content: DESCRIPTION },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "À propos",
+      description: DESCRIPTION,
+      path: "/a-propos",
+    }),
 });
 
 const stats = [

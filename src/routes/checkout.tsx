@@ -7,10 +7,18 @@ import { createOrder } from "@/lib/api/orders";
 
 import { cartTotal, useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/checkout")({
   component: Checkout,
-  head: () => ({ meta: [{ title: "Devis   Souss Droguerie" }] }),
+  head: () =>
+    seo({
+      title: "Devis",
+      description:
+        "Finalisez votre demande de devis en matériaux de construction. Réponse chiffrée sous 48h, sans paiement en ligne.",
+      path: "/checkout",
+      noindex: true,
+    }),
 });
 
 function Checkout() {

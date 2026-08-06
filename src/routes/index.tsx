@@ -14,9 +14,51 @@ import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
 import { motion } from "framer-motion";
 import { ArrowRight, Loader2 } from "lucide-react";
+import { seo, jsonLd, SITE_URL } from "@/lib/seo";
+
+/** Fiche organisation : alimente le logo, le téléphone et l'adresse dans les
+ *  résultats enrichis de la recherche (complémentaire du HardwareStore sur /a-propos). */
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Souss Droguerie S.A.R.L",
+  url: `${SITE_URL}/`,
+  logo: `${SITE_URL}/logo.png`,
+  telephone: "+212528838992",
+  email: "contact@soussdroguerie.com",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Zone Industrielle",
+    addressLocality: "Agadir",
+    postalCode: "80000",
+    addressCountry: "MA",
+  },
+};
+
+/** Recherche sur site (la page boutique filtre par ?q=) : donne un lien
+ *  d'action de recherche dans les résultats Google. */
+const webSiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "Souss Droguerie",
+  url: `${SITE_URL}/`,
+  potentialAction: {
+    "@type": "SearchAction",
+    target: `${SITE_URL}/categories?q={search_term_string}`,
+    "query-input": "required name=search_term_string",
+  },
+};
 
 export const Route = createFileRoute("/")({
   component: Home,
+  head: () =>
+    seo({
+      title: "Matériaux de construction à Agadir",
+      description:
+        "Souss Droguerie S.A.R.L : fournisseur de matériaux de construction à Agadir depuis 1992. Carrelage, marbre, zellige, peinture, ciment, plâtre, électricité, plomberie et quincaillerie.",
+      path: "/",
+      scripts: [jsonLd(organizationSchema), jsonLd(webSiteSchema)],
+    }),
 });
 
 function Home() {

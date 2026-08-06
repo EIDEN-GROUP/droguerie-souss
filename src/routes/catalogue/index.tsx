@@ -4,19 +4,17 @@ import { ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { CatalogueCard } from "@/components/catalogue/CatalogueCard";
 import { catalogueEditions } from "@/lib/catalogue";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/catalogue/")({
   component: Catalogue,
-  head: () => ({
-    meta: [
-      { title: "Catalogue   Souss Droguerie" },
-      {
-        name: "description",
-        content:
-          "Consultez les catalogues Souss Droguerie 2026 : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Catalogue",
+      description:
+        "Consultez les catalogues Souss Droguerie 2026 : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité.",
+      path: "/catalogue",
+    }),
 });
 
 function Catalogue() {

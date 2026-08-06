@@ -4,15 +4,17 @@ import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { submitContact } from "@/lib/api/contact";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/contact")({
   component: Contact,
-  head: () => ({
-    meta: [
-      { title: "Contact   Souss Droguerie" },
-      { name: "description", content: "Contactez Souss Droguerie S.A.R.L pour vos devis en matériaux de construction." },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Contact",
+      description:
+        "Contactez Souss Droguerie S.A.R.L à Agadir pour vos devis en matériaux de construction : téléphone, email, adresse et horaires.",
+      path: "/contact",
+    }),
 });
 
 function Contact() {

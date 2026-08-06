@@ -16,10 +16,18 @@ import { Layout } from "@/components/Layout";
 import { useProducts, useCustomerOrders } from "@/lib/adminStore";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { useApp } from "@/lib/store";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/compte")({
   component: AccountPage,
-  head: () => ({ meta: [{ title: "Mon compte   Souss Droguerie" }] }),
+  head: () =>
+    seo({
+      title: "Mon compte",
+      description:
+        "Gérez vos commandes et vos favoris dans votre espace client Souss Droguerie.",
+      path: "/compte",
+      noindex: true,
+    }),
 });
 
 type Tab = "orders" | "favorites";

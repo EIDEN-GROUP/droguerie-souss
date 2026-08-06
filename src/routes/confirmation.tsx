@@ -2,10 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { CheckCircle2, Home, Phone } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/confirmation")({
   component: Confirmation,
-  head: () => ({ meta: [{ title: "Confirmation   Souss Droguerie" }] }),
+  head: () =>
+    seo({
+      title: "Confirmation de demande",
+      description:
+        "Votre demande de devis Souss Droguerie est enregistrée. Notre équipe vous contactera rapidement.",
+      path: "/confirmation",
+      noindex: true,
+    }),
 });
 
 function Confirmation() {

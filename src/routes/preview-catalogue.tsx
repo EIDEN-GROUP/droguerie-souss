@@ -1,24 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import { seo } from "@/lib/seo";
 
 // react-pageflip manipule le DOM au montage : jamais rendu côté serveur.
 const Flipbook = lazy(() => import("@/components/preview-catalogue/Flipbook"));
 
 export const Route = createFileRoute("/preview-catalogue")({
   component: CataloguePage,
-  head: () => ({
-    meta: [
-      { title: "Catalogue Général 2026   Souss Droguerie" },
-      {
-        name: "description",
-        content:
-          "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 24 h.",
-      },
-      { property: "og:title", content: "Catalogue Général 2026   Souss Droguerie" },
-      { property: "og:type", content: "website" },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Catalogue Général 2026",
+      description:
+        "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 24 h.",
+      // Version plein écran de /catalogue/interactif : le canonical consolide les deux.
+      path: "/catalogue/interactif",
+    }),
 });
 
 function Loading() {

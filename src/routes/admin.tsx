@@ -8,7 +8,14 @@ import { PageLoader } from "@/components/Loader";
 
 export const Route = createFileRoute("/admin")({
   component: AdminLayout,
-  head: () => ({ meta: [{ title: "Admin Souss Droguerie" }] }),
+  head: () => ({
+    meta: [
+      { title: "Administration | Souss Droguerie" },
+      // L'ensemble des pages /admin est couvert : la meta robots du layout
+      // s'ajoute au head de chaque sous-route.
+      { name: "robots", content: "noindex, nofollow" },
+    ],
+  }),
 });
 
 function AdminLayout() {

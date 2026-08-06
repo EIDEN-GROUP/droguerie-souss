@@ -19,20 +19,31 @@ import { useProducts, useCategories } from "@/lib/adminStore";
 import { createOrder } from "@/lib/api/orders";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { searchProducts } from "@/lib/search";
+import { seo, jsonLd } from "@/lib/seo";
 import { cartLineKey } from "@/lib/store";
 
 export const Route = createFileRoute("/commande-rapide")({
   component: CommandeRapide,
-  head: () => ({
-    meta: [
-      { title: "Commande rapide   Souss Droguerie" },
-      {
-        name: "description",
-        content:
-          "Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré sous 48h. Gratuit et sans engagement.",
-      },
-    ],
-  }),
+  head: () =>
+    seo({
+      title: "Commande rapide",
+      description:
+        "Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré sous 48h. Gratuit et sans engagement.",
+      path: "/commande-rapide",
+      // Les questions/réponses ci-dessous sont réellement rendues sur la page (FAQ) :
+      // le balisage FAQPage est donc conforme au contenu affiché.
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqs.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+      ],
+    }),
 });
 
 const steps = [
