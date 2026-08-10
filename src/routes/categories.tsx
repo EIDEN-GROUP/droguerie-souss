@@ -69,6 +69,9 @@ type SubcatTab = { label: string; value: string | undefined; count: number };
 
 function Shop() {
   const { cat: urlCat, subcat: urlSubcat, q: urlQ } = Route.useSearch();
+  // Fiche de la catégorie sélectionnée : alimente le H1, le texte SEO et les liens
+  // internes vers les autres rayons (undefined si ?cat= est absent ou inconnu).
+  const catInfo = urlCat ? categories.find((c) => c.category === urlCat) : undefined;
   const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
   const { data: dbSubcategories } = useSubcategories();
@@ -187,12 +190,13 @@ function Shop() {
               </nav>
 
               <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-                Boutique
+                {catInfo ? `${catInfo.name} à Agadir` : "Boutique"}
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Matériaux, outillage et finitions sélectionnés pour tous vos projets de
-                construction dans le Souss.
+                {catInfo
+                  ? `${catInfo.description}. Achetez en ligne ou demandez un devis gratuit : livraison dans tout le Souss sous 48h.`
+                  : "Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."}
               </p>
             </div>
           </motion.div>
@@ -278,6 +282,74 @@ function Shop() {
           </div>
         )}
       </div>
+
+      {/* Texte SEO + maillage interne : visible uniquement sur une catégorie précise.
+          Rédigé pour les visiteurs (contexte, conseil, NAP), jamais pour bourrer des
+          mots-clés. L'ItemList est rendu côté client une fois les produits chargés. */}
+      {catInfo && (
+        <section className="border-t border-border/60 bg-cream/50">
+          <div className="container-x py-14">
+            <div className="max-w-3xl">
+              <h2 className="font-display text-2xl font-bold uppercase leading-tight text-ink sm:text-3xl">
+                {catInfo.name} à Agadir : notre expertise
+              </h2>
+              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">{catInfo.seoText}</p>
+              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
+                Besoin d'un conseil ou d'un devis ? Appelez le{" "}
+                <a href="tel:+212528838992" className="font-semibold text-brand underline-offset-4 hover:underline">
+                  +212 528 838 992
+                </a>{" "}
+                ou{" "}
+                <Link to="/contact" className="font-semibold text-brand underline-offset-4 hover:underline">
+                  contactez-nous
+                </Link>{" "}
+                : réponse sous 48h ouvrées.
+              </p>
+            </div>
+
+            <div className="mt-10">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
+                Autres rayons de la droguerie
+              </p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {categories
+                  .filter((c) => c.category !== catInfo.category)
+                  .map((c) => (
+                    <Link
+                      key={c.category}
+                      to="/categories"
+                      search={{ cat: c.category }}
+                      className="rounded-full border border-border bg-paper px-4 py-2 text-xs font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:text-brand"
+                    >
+                      {c.name}
+                    </Link>
+                  ))}
+              </div>
+            </div>
+
+            {filtered.length > 0 && (
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    name: `${catInfo.name} à Agadir`,
+                    url: canonical(`/categories?cat=${encodeURIComponent(catInfo.category)}`),
+                    numberOfItems: filtered.length,
+                    itemListElement: filtered.slice(0, 30).map((p: any, i: number) => ({
+                      "@type": "ListItem",
+                      position: i + 1,
+                      name: p.name,
+                      url: canonical(`/product/${p.id}`),
+                    })),
+                  }).replace(/</g, "\\u003c"),
+                }}
+              />
+            )}
+          </div>
+        </section>
+      )}
     </Layout>
   );
 }

@@ -42,8 +42,10 @@ export const SITE_NAME = "Souss Droguerie";
  *  recherche « droguerie souss » comme « souss droguerie »). */
 export const ALTERNATE_NAME = "Droguerie Souss";
 
-/** Image par défaut des partages sociaux (logo de la marque). */
-export const DEFAULT_OG_IMAGE = "/logo.png";
+/** Image par défaut des partages sociaux : recadrée en 1200×630 (ratio 1.91:1,
+ *  recommandé pour Facebook/LinkedIn/WhatsApp). L'ancienne image (logo 2337×1102)
+ *  dépassait le ratio max et se faisait recadrer par les plateformes. */
+export const DEFAULT_OG_IMAGE = "/og-image.png";
 
 /** Transforme un chemin de route (ou absolu `/x`) en URL absolue du site. */
 export function canonical(path: string): string {
@@ -58,11 +60,16 @@ export function absoluteUrl(src?: string | null): string | undefined {
   return `${SITE_URL}${src.startsWith("/") ? src : `/${src}`}`;
 }
 
-/** Réduit un texte libre à une meta description lisible (~155 caractères). */
+/** Réduit un texte libre à une meta description lisible (~155 caractères). La coupe
+ *  tombe sur un espace : on ne coupe jamais un mot en deux (« …depuis » → « …dep »). */
 export function descriptionFrom(text: string, max = 155): string {
   const clean = text.replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
-  return `${clean.slice(0, max).trim()}…`;
+  const cut = clean.slice(0, max);
+  const lastSpace = cut.lastIndexOf(" ");
+  // Garde-fou : si le dernier espace est trop loin (phrase sans espaces), on coupe sec.
+  const end = lastSpace > max * 0.6 ? lastSpace : max;
+  return `${cut.slice(0, end).trim()}…`;
 }
 
 /** Sérialise une structure pour une balise <script type="application/ld+json">.

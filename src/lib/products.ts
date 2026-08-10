@@ -52,6 +52,11 @@ export interface CategoryInfo {
   image: string;
   description: string;
   /**
+   * Paragraphe SEO affiché en bas de la page de catégorie (texte naturel, rédigé pour
+   * les visiteurs : contexte, conseil et mot-clé « <rayon> à Agadir » sans bourrage).
+   */
+  seoText?: string;
+  /**
    * Categories de l'admin regroupees derriere cette carte, quand la vitrine est plus
    * large que le decoupage du catalogue. Par defaut la carte ne couvre que `category`.
    */
@@ -59,14 +64,79 @@ export interface CategoryInfo {
 }
 
 export const categories: CategoryInfo[] = [
-  { slug: "carrelage", category: "Carrelage", name: "Carrelage & Zellige", image: tiles, description: "Carreaux céramiques, grès cérame et zellige", covers: ["Carrelage", "Céramique", "Zellige"] },
-  { slug: "marbre", category: "Marbre", name: "Marbre", image: marble, description: "Marbre et pierres naturelles" },
-  { slug: "peinture", category: "Peinture", name: "Peinture", image: paint, description: "Peintures intérieures et extérieures" },
-  { slug: "ciment", category: "Ciment & Granulats", name: "Ciment, Sable & Gravier", image: cement, description: "Matériaux de gros œuvre" },
-  { slug: "platre", category: "Plâtre", name: "Plâtre", image: plaster, description: "Plâtre et enduits" },
-  { slug: "electrique", category: "Électricité", name: "Câbles & Électricité", image: cables, description: "Câbles, fils et accessoires" },
-  { slug: "plomberie", category: "Plomberie", name: "Tuyaux & Gouttières", image: pipes, description: "Plomberie et évacuation" },
-  { slug: "quincaillerie", category: "Quincaillerie", name: "Quincaillerie", image: hardware, description: "Outils et fournitures" },
+  {
+    slug: "carrelage",
+    category: "Carrelage",
+    name: "Carrelage & Zellige",
+    image: tiles,
+    description: "Carreaux céramiques, grès cérame et zellige",
+    covers: ["Carrelage", "Céramique", "Zellige"],
+    seoText:
+      "Carrelage et zellige à Agadir : Souss Droguerie vous propose des carreaux céramiques, du grès cérame, de la faïence et du zellige marocain pour vos sols, murs et façades. Notre équipe vous aide à choisir le calibre, la finition et la nuance adaptés à chaque pièce, puis assure la livraison dans toute la région Souss-Massa.",
+  },
+  {
+    slug: "marbre",
+    category: "Marbre",
+    name: "Marbre",
+    image: marble,
+    description: "Marbre et pierres naturelles",
+    seoText:
+      "Marbre et pierres naturelles à Agadir : dalles, plans de travail et revêtements en marbre poli ou adouci pour vos projets résidentiels et hôteliers. Nous sélectionnons des blocs réguliers, vérifions la nuance de chaque lot et vous conseillons sur la pose et l'entretien.",
+  },
+  {
+    slug: "peinture",
+    category: "Peinture",
+    name: "Peinture",
+    image: paint,
+    description: "Peintures intérieures et extérieures",
+    seoText:
+      "Peintures intérieures et extérieures à Agadir : peinture vinylique, acrylique, glycéro, lasures et enduits décoratifs des grandes marques. Nous vous conseillons le produit adapté à chaque support, la quantité nécessaire et la teinte, pour un rendu durable en climat côtier.",
+  },
+  {
+    slug: "ciment",
+    category: "Ciment & Granulats",
+    name: "Ciment, Sable & Gravier",
+    image: cement,
+    description: "Matériaux de gros œuvre",
+    seoText:
+      "Ciment, sable et granulats à Agadir : sacs de ciment CPJ et CPJ-CEM, agrégats, fer à béton et matériaux de gros œuvre livrés directement sur votre chantier. Nous tenons les références courantes en stock pour que le gros œuvre ne s'arrête jamais faute d'approvisionnement.",
+  },
+  {
+    slug: "platre",
+    category: "Plâtre",
+    name: "Plâtre",
+    image: plaster,
+    description: "Plâtre et enduits",
+    seoText:
+      "Plâtre et enduits à Agadir : plâtre fin, plâtre projeté, enduits monocouche et produits de finition des marques Knauf, Weber et Sika. Du rebouchage au dressage des murs, nous vous aidons à choisir le bon produit et la bonne quantité pour chaque surface.",
+  },
+  {
+    slug: "electrique",
+    category: "Électricité",
+    name: "Câbles & Électricité",
+    image: cables,
+    description: "Câbles, fils et accessoires",
+    seoText:
+      "Câbles, fils et électricité à Agadir : câbles, fils, interrupteurs, prises, tableaux et matériel électrique Schneider et Legrand, conforme aux normes marocaines et disponible en stock. Un rayon complet pour les travaux neufs comme pour la rénovation.",
+  },
+  {
+    slug: "plomberie",
+    category: "Plomberie",
+    name: "Tuyaux & Gouttières",
+    image: pipes,
+    description: "Plomberie et évacuation",
+    seoText:
+      "Plomberie et évacuation à Agadir : tuyaux, gouttières, raccords, robinetterie et sanitaire des marques Grohe, Astral et autres fabricants reconnus. Notre rayon couvre l'alimentation, l'évacuation et la robinetterie, pour les chantiers neufs comme pour la rénovation.",
+  },
+  {
+    slug: "quincaillerie",
+    category: "Quincaillerie",
+    name: "Quincaillerie",
+    image: hardware,
+    description: "Outils et fournitures",
+    seoText:
+      "Quincaillerie et outillage à Agadir : outils, fixations, visserie, serrures et fournitures de chantier. Le rayon qui complète vos achats de matériaux au même endroit, avec le conseil d'une équipe qui connaît les exigences des chantiers du Souss.",
+  },
 ];
 
 /**

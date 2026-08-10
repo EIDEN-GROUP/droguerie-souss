@@ -86,18 +86,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "google-site-verification",
         content: "Z0qIkPxx8LMIeJkz0aVC6VxH8_SmG36Tf72Ge3T3yk0",
       },
-      { title: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
+      { title: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction" },
       {
         name: "description",
         content:
-          "Souss Droguerie (Droguerie Souss) : votre droguerie et fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, zellige, plomberie, électricité et quincaillerie.",
+          "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
       },
       { name: "author", content: "Souss Droguerie SARL" },
-      { property: "og:title", content: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
+      {
+        property: "og:title",
+        content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+      },
       {
         property: "og:description",
         content:
-          "Souss Droguerie : votre droguerie et fournisseur de matériaux de construction à Agadir. Carrelage, marbre, peinture, ciment, plomberie, électricité et quincaillerie.",
+          "Votre droguerie à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
       },
       { property: "og:type", content: "website" },
       { property: "og:locale", content: "fr_FR" },
@@ -105,15 +108,27 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:url", content: `${SITE_URL}/` },
       { property: "og:image", content: `${SITE_URL}${DEFAULT_OG_IMAGE}` },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:title", content: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
-      { name: "twitter:description", content: "Souss Droguerie : votre droguerie et fournisseur de matériaux de construction à Agadir." },
+      {
+        name: "twitter:title",
+        content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+      },
+      {
+        name: "twitter:description",
+        content: "Votre droguerie à Agadir : matériaux de construction depuis 1992.",
+      },
     ],
     // Google Analytics 4 : rien n'est injecté tant que VITE_GA_MEASUREMENT_ID
     // n'est pas renseigné (voir .env.example).
     scripts: gaHeadScripts(),
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      // Favicons : PNG 96×96 = multiple de 48px, la référence que Google accepte
+      // pour afficher l'icône dans les résultats (l'ancien favicon.ico était un PNG
+      // 1102×1102 renommé, rejeté par Google — d'où l'icône absente).
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
+      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

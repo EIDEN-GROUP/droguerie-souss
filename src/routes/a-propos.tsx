@@ -20,12 +20,12 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
-import { seo, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
-import storyImg from "@/assets/1.png";
-import zoneImg from "@/assets/22.png";
+import { seo, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
+import storyImg from "@/assets/1.jpg";
+import zoneImg from "@/assets/22.jpg";
 
 const DESCRIPTION =
-  "Depuis 1992, Souss Droguerie accompagne les professionnels du BTP et les particuliers avec une gamme complète de matériaux de construction, des marques partenaires reconnues et un accompagnement technique dans toute la région Souss-Massa.";
+  "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1992 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
 
 /** Fiche établissement pour les moteurs de recherche : c'est elle qui alimente le panneau
  *  local de Google (adresse, horaires, zone desservie). */
@@ -93,8 +93,9 @@ export const Route = createFileRoute("/a-propos")({
   component: APropos,
   head: () =>
     seo({
-      title: "À propos",
-      description: DESCRIPTION,
+      title: "À propos | Souss Droguerie, droguerie à Agadir depuis 1992",
+      // DESCRIPTION dépasse 155 caractères : on le tronque proprement (coupe sur mot).
+      description: descriptionFrom(DESCRIPTION),
       path: "/a-propos",
     }),
 });

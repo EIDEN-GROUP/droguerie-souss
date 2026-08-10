@@ -11,6 +11,8 @@ export function Hero() {
         transition={{ duration: 1.2, ease: "easeOut" }}
         className="absolute inset-0"
       >
+        {/* preload=metadata : la vidéo (5,3 Mo) ne bloque plus le premier rendu sur
+            mobile — le poster s'affiche par défaut, le reste se charge à la lecture. */}
         <video
           src="/hero.mp4"
           poster="/hero-poster.jpg"
@@ -18,7 +20,7 @@ export function Hero() {
           loop
           muted
           playsInline
-          preload="auto"
+          preload="metadata"
           className="h-full w-full object-cover object-center"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />

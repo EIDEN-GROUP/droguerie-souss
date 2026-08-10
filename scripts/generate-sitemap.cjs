@@ -75,6 +75,19 @@ const CORE_PAGES = [
   { loc: "/contact", lastmod: null },
 ];
 
+/** Pages de catégories (`/categories?cat=…`) : mêmes valeurs que les cartes du site
+ *  et le canonical des routes, encodées comme le router les génère. */
+const CATEGORY_PAGES = [
+  "Carrelage",
+  "Marbre",
+  "Peinture",
+  "Ciment & Granulats",
+  "Plâtre",
+  "Électricité",
+  "Plomberie",
+  "Quincaillerie",
+].map((cat) => ({ loc: `/categories?cat=${encodeURIComponent(cat)}`, lastmod: null }));
+
 const isoDate = (d) => (d ? new Date(d).toISOString().slice(0, 10) : null);
 
 async function main() {
@@ -82,7 +95,7 @@ async function main() {
   const supabaseUrl = env.VITE_SUPABASE_URL;
   const key = env.SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_ANON_KEY;
 
-  let entries = CORE_PAGES.map((p) => ({ loc: p.loc, lastmod: p.lastmod }));
+  let entries = [...CORE_PAGES, ...CATEGORY_PAGES].map((p) => ({ loc: p.loc, lastmod: p.lastmod }));
 
   if (!supabaseUrl || !key) {
     console.warn("[sitemap] VITE_SUPABASE_URL / clé absentes : sitemap limité aux pages principales.");

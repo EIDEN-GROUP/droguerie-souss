@@ -10,9 +10,9 @@ export const Route = createFileRoute("/contact")({
   component: Contact,
   head: () =>
     seo({
-      title: "Contact",
+      title: "Contact | Souss Droguerie, droguerie à Agadir",
       description:
-        "Contactez Souss Droguerie SARL à Agadir pour vos devis en matériaux de construction : téléphone, email, adresse et horaires.",
+        "Contactez Souss Droguerie, votre droguerie à Agadir : devis de matériaux de construction, +212 528 838 992, Zone Industrielle Agadir 80000. Réponse sous 48h ouvrées.",
       path: "/contact",
       scripts: [
         jsonLd({
