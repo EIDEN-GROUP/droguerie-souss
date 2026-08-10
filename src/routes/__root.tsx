@@ -80,6 +80,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      // Vérification Google Search Console (métadonnée HTML). Rend le propriété
+      // de préfixe d'URL vérifiable sans toucher au DNS.
+      {
+        name: "google-site-verification",
+        content: "Z0qIkPxx8LMIeJkz0aVC6VxH8_SmG36Tf72Ge3T3yk0",
+      },
       { title: "Souss Droguerie SARL | Matériaux de construction à Agadir" },
       {
         name: "description",
