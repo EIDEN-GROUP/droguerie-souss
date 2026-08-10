@@ -36,6 +36,28 @@ const organizationSchema = {
   email: "contact@soussdroguerie.com",
   hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
   sameAs: ["https://maps.app.goo.gl/q54qmxeEv752bJMTA"],
+  // Coordonnées GPS réelles du dépôt (mêmes valeurs que la fiche HardwareStore).
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 30.3830705,
+    longitude: -9.5184337,
+  },
+  priceRange: "$$",
+  currenciesAccepted: "MAD",
+  openingHoursSpecification: [
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "08:30",
+      closes: "18:30",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "08:30",
+      closes: "17:00",
+    },
+  ],
   address: {
     "@type": "PostalAddress",
     streetAddress: "Zone Industrielle",

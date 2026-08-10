@@ -42,6 +42,15 @@ const structuredData = {
   image: `${SITE_URL}/logo.png`,
   hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
   sameAs: ["https://maps.app.goo.gl/q54qmxeEv752bJMTA"],
+  // Coordonnées GPS réelles du dépôt (extraites du lien Google Maps de la marque).
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 30.3830705,
+    longitude: -9.5184337,
+  },
+  priceRange: "$$",
+  currenciesAccepted: "MAD",
+  paymentAccepted: "Cash, Virement bancaire",
   description: DESCRIPTION,
   telephone: "+212528838992",
   email: "contact@soussdroguerie.com",
