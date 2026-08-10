@@ -7,10 +7,33 @@
  * éventuellement du JSON-LD via `scripts`.
  */
 
-export const SITE_URL = (
-  (typeof import.meta !== "undefined" && import.meta.env?.VITE_SITE_URL) ||
-  "https://soussdroguerie.com"
-).replace(/\/+$/, "");
+/** Domaine canonique de production : tous les canoniques, og:url et URLs du
+ *  sitemap doivent pointer ici — même quand la build tourne sur une
+ *  prévisualisation. Sinon Google indexe l'URL de preview à la place du domaine
+ *  réel, ce qui se traduit par un résultat « domaine nu », sans titre ni
+ *  description (exactement le symptôme rencontré : VITE_SITE_URL pointait vers
+ *  droguerie-souss.vercel.app). À mettre à jour si le domaine change. */
+const CANONICAL_HOST = "https://www.soussdroguerie.com";
+
+function resolveSiteUrl(): string {
+  const envUrl =
+    typeof import.meta !== "undefined" ? import.meta.env?.VITE_SITE_URL : undefined;
+  // Une URL d'environnement de type preview (Vercel, localhost) ne doit jamais
+  // devenir le canonique : on retombe sur le domaine de production.
+  if (typeof envUrl === "string" && envUrl.trim()) {
+    const host = envUrl.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].toLowerCase();
+    if (
+      !host.includes("vercel.app") &&
+      !host.startsWith("localhost") &&
+      !host.startsWith("127.0.0.1")
+    ) {
+      return envUrl;
+    }
+  }
+  return CANONICAL_HOST;
+}
+
+export const SITE_URL = resolveSiteUrl().replace(/\/+$/, "");
 
 export const SITE_NAME = "Souss Droguerie";
 

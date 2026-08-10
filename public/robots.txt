@@ -9,4 +9,4 @@ Disallow: /confirmation
 # Version plein écran du catalogue : laissée crawlable pour que Google puisse
 # lire son canonical et consolider l'indexation sur /catalogue/interactif.
 
-Sitemap: https://soussdroguerie.com/sitemap.xml
+Sitemap: https://www.soussdroguerie.com/sitemap.xml

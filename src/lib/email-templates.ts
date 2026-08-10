@@ -1,3 +1,5 @@
+import { SITE_URL } from "./seo";
+
 // Matches the website palette (src/styles.css). Indigo brand + red accent.
 const BRAND = {
   primary: "#2f378d",
@@ -14,8 +16,8 @@ const BRAND = {
 };
 
 // Public URL of the logo (served from /public). Absolute URL is required so it
-// renders inside email clients.
-const SITE_URL = "https://droguerie-souss.vercel.app";
+// renders inside email clients. Uses the canonical production domain from
+// src/lib/seo.ts (see the SITE_URL resolution there).
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
 // Font stacks that echo the site: Fraunces (serif display) falls back to

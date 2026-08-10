@@ -15,7 +15,25 @@ const { createRequire } = require("module");
 
 const ROOT = path.resolve(__dirname, "..");
 const OUT = path.join(ROOT, "public", "sitemap.xml");
-const SITE_URL = (process.env.VITE_SITE_URL || "https://soussdroguerie.com").replace(/\/+$/, "");
+
+// Domaine canonique de production : le sitemap doit toujours pointer vers lui,
+// jamais vers une preview Vercel (sinon Google indexe la preview).
+const CANONICAL_HOST = "https://www.soussdroguerie.com";
+function resolveSiteUrl() {
+  const envUrl = process.env.VITE_SITE_URL;
+  if (envUrl && envUrl.trim()) {
+    const host = envUrl.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].toLowerCase();
+    if (
+      !host.includes("vercel.app") &&
+      !host.startsWith("localhost") &&
+      !host.startsWith("127.0.0.1")
+    ) {
+      return envUrl;
+    }
+  }
+  return CANONICAL_HOST;
+}
+const SITE_URL = resolveSiteUrl().replace(/\/+$/, "");
 
 function loadEnv() {
   const env = {};
