@@ -207,7 +207,7 @@ function MyOrders({ email }: { email: string }) {
               {(o.items || []).map((i: any, idx: number) => (
                 <li key={idx} className="flex items-center gap-3">
                   {i.product_image ? (
-                    <img src={i.product_image} alt="" className="h-12 w-12 rounded object-cover" />
+                    <img src={i.product_image} alt={i.product_name} className="h-12 w-12 rounded object-cover" />
                   ) : (
                     <div className="grid h-12 w-12 place-items-center rounded bg-mint">
                       <Package className="h-5 w-5 text-ink-soft" />

@@ -148,7 +148,7 @@ export function Navbar() {
             <div className="h-16 w-auto">
               <img
                 src={logo}
-                alt="Souss Droguerie Logo"
+                alt="Souss Droguerie, droguerie à Agadir"
                 className="max-h-16 w-auto object-contain"
               />
             </div>
@@ -309,7 +309,7 @@ export function Navbar() {
                   <div className="h-10 w-10">
                     <img
                       src={logoMobile}
-                      alt="Souss Droguerie Logo"
+                      alt="Souss Droguerie, droguerie à Agadir"
                       className="max-h-10 w-auto object-contain"
                     />
                   </div>

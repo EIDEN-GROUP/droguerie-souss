@@ -12,7 +12,7 @@ function DrawnCover({ edition }: { edition: CatalogueEdition }) {
   return (
     <div className="flex h-full w-full flex-col justify-between bg-brand-secondary p-6 text-paper">
       <div className="h-10 w-10">
-        <img src={logoWhite} alt="" className="h-full w-full object-contain" />
+        <img src={logoWhite} alt="Souss Droguerie" className="h-full w-full object-contain" />
       </div>
       <div>
         <p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-sky">

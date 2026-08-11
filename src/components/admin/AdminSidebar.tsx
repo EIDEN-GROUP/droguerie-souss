@@ -86,7 +86,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         className="flex items-center gap-3 px-6 py-7"
       >
         <div className="h-11 w-11 shrink-0 overflow-hidden">
-          <img src={logo} alt="Souss Droguerie Logo" className="h-full w-full object-cover" />
+          <img src={logo} alt="Souss Droguerie, droguerie à Agadir" className="h-full w-full object-cover" />
         </div>
         <div className="leading-tight">
           <div className="font-display text-base font-bold tracking-wide">Espace admin</div>

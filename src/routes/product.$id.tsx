@@ -179,7 +179,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
         <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
           <Link to="/" className="hover:text-brand">Accueil</Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/categories" className="hover:text-brand">Shop</Link>
+          <Link to="/categories" className="hover:text-brand">Boutique</Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">{product.name}</span>
         </div>
@@ -211,7 +211,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                       i === activeImage ? "ring-brand" : "ring-transparent hover:ring-brand/40"
                     }`}
                   >
-                    <img src={img} alt="" className="h-full w-full object-cover" />
+                    <img src={img} alt={`${product.name} — vue ${i + 1}`} className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

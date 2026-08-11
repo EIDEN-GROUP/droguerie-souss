@@ -270,7 +270,7 @@ export function ProductFormDialog({
             <div className="flex flex-wrap gap-3">
               {imageUrls.map((url, i) => (
                 <div key={url + i} className="relative h-20 w-20 overflow-hidden rounded-lg border">
-                  <img src={url} alt="" className="h-full w-full object-cover" />
+                  <img src={url} alt="Aperçu de l'image du produit" className="h-full w-full object-cover" />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}

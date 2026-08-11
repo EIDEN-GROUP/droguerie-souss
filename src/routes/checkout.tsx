@@ -93,7 +93,7 @@ function Checkout() {
           </Link>
           <ChevronRight className="h-3 w-3" />
           <Link to="/categories" className="hover:text-brand">
-            Shop
+            Boutique
           </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">Demande de devis</span>
@@ -214,7 +214,7 @@ function Checkout() {
                     <li key={i.product.id + "|" + (i.dimension ?? "")} className="flex gap-3 py-3">
                       <img
                         src={i.product.image}
-                        alt=""
+                        alt={i.product.name}
                         className="h-14 w-14 rounded object-cover"
                       />
                       <div className="flex min-w-0 flex-1">

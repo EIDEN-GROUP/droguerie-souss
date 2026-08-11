@@ -602,7 +602,7 @@ function CommandeRapide() {
                                 {p.image ? (
                                   <img
                                     src={p.image}
-                                    alt=""
+                                    alt={p.name}
                                     loading="lazy"
                                     className="h-16 w-16 shrink-0 rounded-lg object-cover"
                                   />

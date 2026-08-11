@@ -9,7 +9,7 @@ export function Footer() {
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <div className="h-16 w-16">
-              <img src={logo} alt="Souss Droguerie Logo" className="h-full w-full object-cover" />
+              <img src={logo} alt="Souss Droguerie, droguerie à Agadir" className="h-full w-full object-cover" />
             </div>
           </div>
           <p className="mt-4 text-sm text-paper/70">

@@ -304,7 +304,7 @@ function AdminProducts() {
               >
                 <TableCell>
                   <div className="flex items-center gap-3">
-                    <img src={p.image} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
+                    <img src={p.image} alt={p.name} className="h-10 w-10 shrink-0 rounded-lg object-cover" />
                     <div className="min-w-0">
                       <p className="max-w-[220px] truncate text-sm font-semibold text-ink">{p.name}</p>
                       <div className="mt-2 flex gap-1.5">

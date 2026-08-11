@@ -313,7 +313,7 @@ function AdminCategories() {
                   {c.image_url ? (
                     <img
                       src={c.image_url}
-                      alt=""
+                      alt={c.name}
                       className="h-10 w-10 rounded-lg border object-cover"
                     />
                   ) : (
@@ -378,7 +378,7 @@ function AdminCategories() {
               <div className="flex items-start gap-3">
                 {formImage ? (
                   <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border">
-                    <img src={formImage} alt="" className="h-full w-full object-cover" />
+                    <img src={formImage} alt="Aperçu de l'image de la catégorie" className="h-full w-full object-cover" />
                     <button
                       type="button"
                       onClick={() => setFormImage("")}

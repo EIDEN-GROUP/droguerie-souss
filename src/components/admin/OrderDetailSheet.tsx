@@ -85,7 +85,7 @@ export function OrderDetailSheet({
                 <ul className="divide-y rounded-xl border">
                   {order.items.map((item) => (
                       <li key={item.productId + (item.dimension ?? "")} className="flex gap-3 p-3">
-                      <img src={item.image} alt="" className="h-12 w-12 rounded-lg object-cover" />
+                      <img src={item.image} alt={item.name} className="h-12 w-12 rounded-lg object-cover" />
                       <div className="min-w-0 flex-1">
                         <p className="line-clamp-2 text-xs font-semibold">{item.name}</p>
                         {item.dimension && (

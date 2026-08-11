@@ -91,7 +91,7 @@ export const PlaceholderPage = forwardRef<HTMLDivElement, { page: number; total:
     <BookPage ref={ref} className="bg-cream">
       <div className="flex h-full w-full flex-col items-center justify-center gap-4 p-[10%] text-center">
         <div className="h-12 w-12 opacity-40">
-          <img src={logoBlue} alt="" className="h-full w-full object-contain" />
+          <img src={logoBlue} alt="Souss Droguerie" className="h-full w-full object-contain" />
         </div>
         <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-ink-soft">
           Page à venir

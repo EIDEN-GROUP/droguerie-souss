@@ -122,11 +122,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: gaHeadScripts(),
     links: [
       { rel: "stylesheet", href: appCss },
-      // Favicons : PNG 96×96 = multiple de 48px, la référence que Google accepte
-      // pour afficher l'icône dans les résultats (l'ancien favicon.ico était un PNG
-      // 1102×1102 renommé, rejeté par Google — d'où l'icône absente).
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+      // Favicons : la PNG 96×96 (multiple de 48px, l'exigence de Google) est déclarée
+      // EN PREMIER pour que Google ne retienne jamais la 32×32 (qui échoue à la règle
+      // du multiple de 48). Le .ico est en entrées BITMAP classiques (16/32/48) — le
+      // format historique le plus compatible, celui des icônes qui s'affichent
+      // partout (l'ancien favicon.ico était un PNG 1102×1102 renommé, rejeté par
+      // Google — d'où l'icône absente des résultats).
       { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
+      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
       { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
