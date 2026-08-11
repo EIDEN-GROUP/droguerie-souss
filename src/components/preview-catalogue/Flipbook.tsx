@@ -58,53 +58,53 @@ const fmtKey = (f: [number, number]) => `${f[0]}×${f[1]}`;
  */
 const FORMAT_PHOTO: Record<string, { photo: string; caption: string }> = {
   "19×57": {
-    photo: `${PH}showroom-gayafores.jpg`,
+    photo: `${PH}showroom-gayafores.webp`,
     caption: "Présentoirs Gayaforés · showroom Dcheira",
   },
   "20×60": {
-    photo: `${PH}ambiance-bois-restaurant.jpg`,
+    photo: `${PH}ambiance-bois-restaurant.webp`,
     caption: "Carreau effet bois 20×60 · restaurant",
   },
   "20×120": {
-    photo: `${PH}ambiance-cuisine.jpg`,
+    photo: `${PH}ambiance-cuisine.webp`,
     caption: "Grand format effet bois · cuisine ouverte",
   },
-  "25×75": { photo: `${PH}showroom-multicerame.jpg`, caption: "Multicérame & Argenta · 25×75 mat" },
-  "25×50": { photo: `${PH}ambiance-sdb.jpg`, caption: "Faïence murale · salle de bain" },
-  "30×60": { photo: `${PH}ambiance-sdb-rose.jpg`, caption: "Marbré rosé 30×60 · salle de bain" },
-  "30×90": { photo: `${PH}showroom-deco.jpg`, caption: "Décors et listels · présentoir Gayaforés" },
-  "45×45": { photo: `${PH}ambiance-salon.jpg`, caption: "Effet parquet 45×45 · séjour" },
-  "41×41": { photo: `${PH}showroom-cerpa.jpg`, caption: "Présentoirs Cerpa · formats carrés" },
+  "25×75": { photo: `${PH}showroom-multicerame.webp`, caption: "Multicérame & Argenta · 25×75 mat" },
+  "25×50": { photo: `${PH}ambiance-sdb.webp`, caption: "Faïence murale · salle de bain" },
+  "30×60": { photo: `${PH}ambiance-sdb-rose.webp`, caption: "Marbré rosé 30×60 · salle de bain" },
+  "30×90": { photo: `${PH}showroom-deco.webp`, caption: "Décors et listels · présentoir Gayaforés" },
+  "45×45": { photo: `${PH}ambiance-salon.webp`, caption: "Effet parquet 45×45 · séjour" },
+  "41×41": { photo: `${PH}showroom-cerpa.webp`, caption: "Présentoirs Cerpa · formats carrés" },
   "60×60": {
-    photo: `${PH}ambiance-reception.jpg`,
+    photo: `${PH}ambiance-reception.webp`,
     caption: "Marbré poli 60×60 · réception d'hôtel",
   },
-  "120×60": { photo: `${PH}showroom-premium.jpg`, caption: "Multicérame Premium · grands formats" },
-  "240×120": { photo: `${PH}beton-cire.jpg`, caption: "Dalle grand format · effet béton ciré" },
+  "120×60": { photo: `${PH}showroom-premium.webp`, caption: "Multicérame Premium · grands formats" },
+  "240×120": { photo: `${PH}beton-cire.webp`, caption: "Dalle grand format · effet béton ciré" },
 };
 
 /** Ambiance d'ouverture par famille. */
 const FAMILY_PHOTO: Record<string, string> = {
-  Céramique: `${PH}showroom-premium.jpg`,
-  Carrelage: `${PH}showroom-deco.jpg`,
-  Marbre: `${PH}ambiance-reception.jpg`,
-  Zellige: `${PH}ambiance-sdb.jpg`,
-  "Sanitaire, Robinetterie, Plomberie": `${PH}showroom-sanitaire.jpg`,
-  Plomberie: `${PH}showroom-sanitaire.jpg`,
-  "Ciment Colle & Mortiers": `${PH}ciment-colle.jpg`,
-  "Béton Armé, Ciments, Agrégats": `${PH}beton-cire.jpg`,
-  "Ciment & Granulats": `${PH}beton-cire.jpg`,
-  "Plâtres, Mono & Bicouche": `${PH}ambiance-salon.jpg`,
-  Plâtre: `${PH}ambiance-salon.jpg`,
-  "Peinture & Décoration": `${PH}ambiance-cuisine.jpg`,
-  Peinture: `${PH}ambiance-cuisine.jpg`,
-  "Étanchéité, Isolation, Bitume": `${PH}beton-cire.jpg`,
-  "Fer à Béton, Treillis Soudé": `${PH}beton-cire.jpg`,
-  Métallurgie: `${PH}showroom-cerpa.jpg`,
-  "Produits Préfabriqués": `${PH}beton-cire.jpg`,
-  "Énergie Solaire, Électricité": `${PH}ambiance-cuisine.jpg`,
-  Électricité: `${PH}ambiance-cuisine.jpg`,
-  "Sécurité au travail": `${PH}showroom-gayafores.jpg`,
+  Céramique: `${PH}showroom-premium.webp`,
+  Carrelage: `${PH}showroom-deco.webp`,
+  Marbre: `${PH}ambiance-reception.webp`,
+  Zellige: `${PH}ambiance-sdb.webp`,
+  "Sanitaire, Robinetterie, Plomberie": `${PH}showroom-sanitaire.webp`,
+  Plomberie: `${PH}showroom-sanitaire.webp`,
+  "Ciment Colle & Mortiers": `${PH}ciment-colle.webp`,
+  "Béton Armé, Ciments, Agrégats": `${PH}beton-cire.webp`,
+  "Ciment & Granulats": `${PH}beton-cire.webp`,
+  "Plâtres, Mono & Bicouche": `${PH}ambiance-salon.webp`,
+  Plâtre: `${PH}ambiance-salon.webp`,
+  "Peinture & Décoration": `${PH}ambiance-cuisine.webp`,
+  Peinture: `${PH}ambiance-cuisine.webp`,
+  "Étanchéité, Isolation, Bitume": `${PH}beton-cire.webp`,
+  "Fer à Béton, Treillis Soudé": `${PH}beton-cire.webp`,
+  Métallurgie: `${PH}showroom-cerpa.webp`,
+  "Produits Préfabriqués": `${PH}beton-cire.webp`,
+  "Énergie Solaire, Électricité": `${PH}ambiance-cuisine.webp`,
+  Électricité: `${PH}ambiance-cuisine.webp`,
+  "Sécurité au travail": `${PH}showroom-gayafores.webp`,
 };
 
 const BLURB: Record<string, string> = {
@@ -254,7 +254,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
         kicker="Mot du directeur"
         light="Construire avec"
         bold="expérience"
-        photo={`${PH}facade-jour.jpg`}
+        photo={`${PH}facade-jour.webp`}
         caption="Notre siège · 29 Bd Mohamed V, Dcheira — Inezgane"
         body={[
           "Chers clients et partenaires, depuis 1993 Souss Droguerie accompagne les professionnels et les particuliers dans leurs projets de construction à travers une offre complète de matériaux fiables et performants.",
@@ -299,7 +299,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
       <FullBleed
         key="ouverture"
         page={n}
-        photo={`${PH}beton-cire.jpg`}
+        photo={`${PH}beton-cire.webp`}
         quote="Chaque chantier commence par le choix d'une matière."
         caption="Effet béton ciré · grand format"
       />,
@@ -321,7 +321,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
           category={fam}
           count={group.length}
           page={n}
-          photo={FAMILY_PHOTO[fam] ?? `${PH}showroom-gayafores.jpg`}
+          photo={FAMILY_PHOTO[fam] ?? `${PH}showroom-gayafores.webp`}
           blurb={
             BLURB[fam] ??
             "Une sélection de références disponibles en stock sur nos dépôts d'Agadir, Inezgane et Ait Melloul."

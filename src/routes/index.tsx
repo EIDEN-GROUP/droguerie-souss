@@ -60,9 +60,10 @@ const organizationSchema = {
   ],
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Zone Industrielle",
-    addressLocality: "Agadir",
-    postalCode: "80000",
+    streetAddress: "Bd Mohamed V, Q.I. Tassila III, N°29",
+    addressLocality: "Dcheira",
+    addressRegion: "Souss-Massa",
+    postalCode: "80360",
     addressCountry: "MA",
   },
   areaServed: ["Agadir", "Inezgane", "Aït Melloul", "Taroudant", "Tiznit", "Souss-Massa"],

@@ -47,7 +47,7 @@ export function Footer() {
         <div className="min-w-0">
           <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Contact</h4>
           <ul className="mt-4 space-y-3 text-sm text-paper/70">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="https://maps.app.goo.gl/q54qmxeEv752bJMTA" className="min-w-0 break-words hover:text-white">Zone industrielle, Agadir, Maroc</a></li>
+            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="https://maps.app.goo.gl/q54qmxeEv752bJMTA" className="min-w-0 break-words hover:text-white">Bd Mohamed V, Q.I. Tassila III, N°29, Dcheira, Agadir 80360, Maroc</a></li>
             <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="tel:+212528838992" className="min-w-0 break-words hover:text-white">+212 528 838 992</a></li>
             <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="mailto:contact@soussdroguerie.com" className="min-w-0 break-words hover:text-white">contact@soussdroguerie.com</a></li>
           </ul>

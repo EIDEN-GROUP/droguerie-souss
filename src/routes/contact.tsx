@@ -98,7 +98,7 @@ function Contact() {
             className="space-y-4"
           >
             {[
-              { icon: MapPin, title: "Adresse", text: "Zone Industrielle, Agadir 80000, Maroc", href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7" },
+              { icon: MapPin, title: "Adresse", text: "Bd MOHAMED V - Q.I TASSILA III N°29 - Agadir", href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7" },
               { icon: Phone, title: "Téléphone", text: "+212 528 838 992", href: "tel:+212528838992" },
               { icon: Mail, title: "Email", text: "contact@soussdroguerie.com", href: "mailto:contact@soussdroguerie.com" },
             ].map((c) => (

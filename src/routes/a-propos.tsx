@@ -56,9 +56,10 @@ const structuredData = {
   email: "contact@soussdroguerie.com",
   address: {
     "@type": "PostalAddress",
-    streetAddress: "Zone Industrielle",
-    addressLocality: "Agadir",
-    postalCode: "80000",
+    streetAddress: "Bd Mohamed V, Q.I. Tassila III, N°29",
+    addressLocality: "Dcheira",
+    addressRegion: "Souss-Massa",
+    postalCode: "80360",
     addressCountry: "MA",
   },
   areaServed: [

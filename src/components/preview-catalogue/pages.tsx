@@ -158,7 +158,7 @@ export const Cover = forwardRef<HTMLDivElement, object>(function Cover(_, ref) {
     <Sheet ref={ref}>
       <div className="relative flex h-full flex-col">
         <Photo
-          src={`${PH}cover.png`}
+          src={`${PH}cover.webp`}
           alt="Siège de Sté. Souss Droguerie, Dcheira — Inezgane"
           className="absolute inset-0 h-full w-full"
         />
@@ -297,7 +297,7 @@ export const Brands = forwardRef<
 
         <div className="relative mt-6 h-[28%] w-full">
           <Photo
-            src={`${PH}showroom-multicerame.jpg`}
+            src={`${PH}showroom-multicerame.webp`}
             alt="Présentoirs Multicérame et Argenta, showroom de Dcheira"
             className="h-full w-full"
           />
@@ -627,7 +627,7 @@ export const BackCover = forwardRef<HTMLDivElement, { page: number }>(function B
   return (
     <Sheet ref={ref}>
       <div className="relative h-full">
-        <Photo src={`${PH}ambiance-restaurant.jpg`} className="h-full w-full" />
+        <Photo src={`${PH}ambiance-restaurant.webp`} className="h-full w-full" />
         <div className="absolute inset-0 bg-brand-secondary/88" />
         <div className="absolute inset-0 flex flex-col px-9 pt-11 text-paper">
           <img
