@@ -14,13 +14,17 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
 import { gaHeadScripts, trackPageview } from "../lib/analytics";
+import { SiteGate } from "../components/SiteGate";
+import { getGateStatus } from "../lib/api/site-gate";
 
 function NotFoundComponent() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="font-display text-7xl font-bold text-brand">404</h1>
-        <h2 className="mt-4 font-display text-xl font-bold uppercase text-foreground">Page introuvable</h2>
+        <h2 className="mt-4 font-display text-xl font-bold uppercase text-foreground">
+          Page introuvable
+        </h2>
         <p className="mt-2 text-sm text-muted-foreground">
           Cette page n'existe pas ou a été déplacée.
         </p>
@@ -140,6 +144,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
+  // SITE-GATE:BEGIN — retire ce bloc pour désactiver le verrou d'accès.
+  beforeLoad: async () => {
+    const gate = await getGateStatus();
+    return { gateUnlocked: gate.unlocked };
+  },
+  // SITE-GATE:END
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -162,10 +172,17 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  // SITE-GATE:BEGIN — retire ce bloc pour désactiver le verrou d'accès.
+  const { gateUnlocked } = Route.useRouteContext();
+  // SITE-GATE:END
   return (
     <QueryClientProvider client={queryClient}>
-      <PageviewTracker />
-      <Outlet />
+      {/* SITE-GATE:BEGIN */}
+      <SiteGate initiallyUnlocked={gateUnlocked}>
+        <PageviewTracker />
+        <Outlet />
+      </SiteGate>
+      {/* SITE-GATE:END */}
     </QueryClientProvider>
   );
 }
