@@ -22,7 +22,10 @@ const CANONICAL_HOST = "https://www.soussdroguerie.com";
 function resolveSiteUrl() {
   const envUrl = process.env.VITE_SITE_URL;
   if (envUrl && envUrl.trim()) {
-    const host = envUrl.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].toLowerCase();
+    const host = envUrl
+      .replace(/^https?:\/\//i, "")
+      .split(/[/?#]/)[0]
+      .toLowerCase();
     if (
       !host.includes("vercel.app") &&
       !host.startsWith("localhost") &&
@@ -59,20 +62,24 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-const url = (loc, lastmod) =>
-  `  <url>\n    <loc>${esc(SITE_URL + loc)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}\n  </url>`;
+const url = (loc, lastmod, changefreq, priority) =>
+  `  <url>\n    <loc>${esc(SITE_URL + loc)}</loc>` +
+  (lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "") +
+  (changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : "") +
+  (priority ? `\n    <priority>${priority}</priority>` : "") +
+  `\n  </url>`;
 
 /** Pages principales du site (toutes les routes publiques indexables). */
 const CORE_PAGES = [
-  { loc: "/", lastmod: null },
-  { loc: "/categories", lastmod: null },
-  { loc: "/catalogue", lastmod: null },
-  { loc: "/catalogue/2026", lastmod: null },
-  { loc: "/catalogue/souss-droguerie-2026", lastmod: null },
-  { loc: "/catalogue/interactif", lastmod: null },
-  { loc: "/a-propos", lastmod: null },
-  { loc: "/commande-rapide", lastmod: null },
-  { loc: "/contact", lastmod: null },
+  { loc: "/", lastmod: null, changefreq: "weekly", priority: "1.0" },
+  { loc: "/categories", lastmod: null, changefreq: "weekly", priority: "0.8" },
+  { loc: "/catalogue", lastmod: null, changefreq: "weekly", priority: "0.8" },
+  { loc: "/catalogue/2026", lastmod: null, changefreq: "monthly", priority: "0.7" },
+  { loc: "/catalogue/souss-droguerie-2026", lastmod: null, changefreq: "monthly", priority: "0.7" },
+  { loc: "/catalogue/interactif", lastmod: null, changefreq: "weekly", priority: "0.8" },
+  { loc: "/a-propos", lastmod: null, changefreq: "monthly", priority: "0.7" },
+  { loc: "/commande-rapide", lastmod: null, changefreq: "monthly", priority: "0.7" },
+  { loc: "/contact", lastmod: null, changefreq: "monthly", priority: "0.7" },
 ];
 
 /** Pages de catégories (`/categories?cat=…`) : mêmes valeurs que les cartes du site
@@ -86,22 +93,39 @@ const CATEGORY_PAGES = [
   "Électricité",
   "Plomberie",
   "Quincaillerie",
-].map((cat) => ({ loc: `/categories?cat=${encodeURIComponent(cat)}`, lastmod: null }));
+].map((cat) => ({
+  loc: `/categories?cat=${encodeURIComponent(cat)}`,
+  lastmod: null,
+  changefreq: "weekly",
+  priority: "0.7",
+}));
 
 const isoDate = (d) => (d ? new Date(d).toISOString().slice(0, 10) : null);
 
 async function main() {
   const env = loadEnv();
   const supabaseUrl = env.VITE_SUPABASE_URL;
-  const key = env.SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_SERVICE_ROLE_KEY || env.VITE_SUPABASE_ANON_KEY;
+  const key =
+    env.SUPABASE_SERVICE_ROLE_KEY ||
+    env.VITE_SUPABASE_SERVICE_ROLE_KEY ||
+    env.VITE_SUPABASE_ANON_KEY;
 
-  let entries = [...CORE_PAGES, ...CATEGORY_PAGES].map((p) => ({ loc: p.loc, lastmod: p.lastmod }));
+  let entries = [...CORE_PAGES, ...CATEGORY_PAGES].map((p) => ({
+    loc: p.loc,
+    lastmod: p.lastmod,
+    changefreq: p.changefreq,
+    priority: p.priority,
+  }));
 
   if (!supabaseUrl || !key) {
-    console.warn("[sitemap] VITE_SUPABASE_URL / clé absentes : sitemap limité aux pages principales.");
+    console.warn(
+      "[sitemap] VITE_SUPABASE_URL / clé absentes : sitemap limité aux pages principales.",
+    );
   } else {
     try {
-      const { createClient } = createRequire(path.join(ROOT, "package.json"))("@supabase/supabase-js");
+      const { createClient } = createRequire(path.join(ROOT, "package.json"))(
+        "@supabase/supabase-js",
+      );
       const sb = createClient(supabaseUrl, key, { auth: { persistSession: false } });
       const { data, error } = await sb
         .from("products")
@@ -112,18 +136,22 @@ async function main() {
       const productEntries = (data || []).map((p) => ({
         loc: `/product/${p.id}`,
         lastmod: isoDate(p.updated_at || p.created_at),
+        changefreq: "monthly",
+        priority: "0.6",
       }));
       entries = [...entries, ...productEntries];
       console.log(`[sitemap] ${productEntries.length} produits ajoutés.`);
     } catch (e) {
-      console.warn(`[sitemap] Échec de la lecture des produits (${e.message}) : sitemap limité aux pages principales.`);
+      console.warn(
+        `[sitemap] Échec de la lecture des produits (${e.message}) : sitemap limité aux pages principales.`,
+      );
     }
   }
 
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    entries.map((e) => url(e.loc, e.lastmod)).join("\n") +
+    entries.map((e) => url(e.loc, e.lastmod, e.changefreq, e.priority)).join("\n") +
     `\n</urlset>\n`;
 
   fs.writeFileSync(OUT, xml, "utf8");

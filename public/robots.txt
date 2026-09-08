@@ -9,4 +9,24 @@ Disallow: /confirmation
 # Version plein écran du catalogue : laissée crawlable pour que Google puisse
 # lire son canonical et consolider l'indexation sur /catalogue/interactif.
 
+# Assistants IA et moteurs génératifs : exploration autorisée (citations avec
+# URL canonique appréciées). Fichier machine : /llms.txt
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://www.soussdroguerie.com/sitemap.xml

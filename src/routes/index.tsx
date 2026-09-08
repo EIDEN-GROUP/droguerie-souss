@@ -9,7 +9,13 @@ import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { PromoCards } from "@/components/PromoCards";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
-import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
 import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
 import { motion } from "framer-motion";
@@ -44,17 +50,30 @@ const organizationSchema = {
   },
   priceRange: "$$",
   currenciesAccepted: "MAD",
+  // Mêmes horaires coupés que /contact et /a-propos (balisage uniquement).
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "08:30",
+      closes: "12:30",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "14:30",
       closes: "18:30",
     },
     {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: "Saturday",
       opens: "08:30",
+      closes: "12:30",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "14:30",
       closes: "17:00",
     },
   ],
@@ -122,13 +141,13 @@ function Home() {
             <Loader2 className="h-8 w-8 animate-spin text-brand" />
           </div>
         ) : (
-          <Carousel
-            opts={{ align: "start", loop: true }}
-            className="mt-12 mx-10 md:mx-14"
-          >
+          <Carousel opts={{ align: "start", loop: true }} className="mt-12 mx-10 md:mx-14">
             <CarouselContent>
               {bestSellers.map((p: any, i: number) => (
-                <CarouselItem key={p.id} className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
+                <CarouselItem
+                  key={p.id}
+                  className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                >
                   <div className="mx-auto h-full max-w-xs md:max-w-none">
                     <ProductCard product={p} index={i} />
                   </div>
@@ -180,7 +199,6 @@ function Home() {
           </div>
         </div>
       </section> */}
-
 
       <CtaBanner />
     </Layout>

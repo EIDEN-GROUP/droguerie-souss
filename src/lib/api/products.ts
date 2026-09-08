@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { DbProductGift, ProductInput } from "@/lib/database.types";
+import { requireFullAdmin } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 /** Rattache les variantes (dimension) à chaque produit en une seule requête. */
@@ -23,10 +24,7 @@ async function withVariants<T extends { id: string }>(rows: T[]) {
 
 export const getProducts = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("name");
+  const { data, error } = await supabase.from("products").select("*").order("name");
   if (error) throw error;
   return withVariants(data || []);
 });
@@ -46,19 +44,17 @@ export const getProduct = createServerFn({ method: "GET" })
   });
 
 export const createProduct = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: ProductInput) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("products")
-      .insert(ctx.data)
-      .select()
-      .single();
+    const { data, error } = await supabase.from("products").insert(ctx.data).select().single();
     if (error) throw error;
     return data;
   });
 
 export const updateProduct = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { id: string; patch: Partial<ProductInput> }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -73,38 +69,33 @@ export const updateProduct = createServerFn({ method: "POST" })
   });
 
 export const deleteProduct = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("products")
-      .delete()
-      .eq("id", ctx.data.id);
+    const { error } = await supabase.from("products").delete().eq("id", ctx.data.id);
     if (error) throw error;
     return { success: true };
   });
 
 export const importProductsCsv = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { products: ProductInput[] }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("products")
-      .insert(ctx.data.products)
-      .select();
+    const { data, error } = await supabase.from("products").insert(ctx.data.products).select();
     if (error) throw error;
     return { count: data.length, products: data };
   });
 
-export const exportProductsCsv = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("name");
-  if (error) throw error;
-  return data;
-});
+export const exportProductsCsv = createServerFn({ method: "GET" })
+  .middleware([requireFullAdmin])
+  .handler(async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from("products").select("*").order("name");
+    if (error) throw error;
+    return data;
+  });
 
 /* ── Gifts ── */
 
@@ -121,7 +112,10 @@ export const getProductGifts = createServerFn({ method: "GET" })
   });
 
 export const setProductGifts = createServerFn({ method: "POST" })
-  .validator((data: { product_id: string; gifts: Omit<DbProductGift, "id" | "product_id">[] }) => data)
+  .middleware([requireFullAdmin])
+  .validator(
+    (data: { product_id: string; gifts: Omit<DbProductGift, "id" | "product_id">[] }) => data,
+  )
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     await supabase.from("product_gifts").delete().eq("product_id", ctx.data.product_id);
@@ -136,6 +130,7 @@ export const setProductGifts = createServerFn({ method: "POST" })
 
 /** Remplace l'ensemble des variantes (dimension) d'un produit. */
 export const setProductVariants = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { product_id: string; variants: { dimension: string }[] }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -149,6 +144,3 @@ export const setProductVariants = createServerFn({ method: "POST" })
     if (error) throw error;
     return data;
   });
-
-
-

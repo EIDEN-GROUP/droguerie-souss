@@ -74,17 +74,31 @@ const structuredData = {
     "Chtouka-Aït Baha",
     "Souss-Massa",
   ],
+  // Horaires synchronisés avec la page /contact (coupure méridienne) : Google
+  // sanctionne les divergences NAP/horaires entre page visible et balisage.
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
       opens: "08:30",
+      closes: "12:30",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+      opens: "14:30",
       closes: "18:30",
     },
     {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: "Saturday",
       opens: "08:30",
+      closes: "12:30",
+    },
+    {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: "Saturday",
+      opens: "14:30",
       closes: "17:00",
     },
   ],
@@ -201,7 +215,10 @@ function APropos() {
             </h1>
             <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
             <p className="mt-4 max-w-2xl text-sm text-paper/70 sm:text-base">
-              Depuis plus de 30 ans, Souss Droguerie accompagne les professionnels du BTP et les particuliers avec une offre complète de matériaux de construction. De la structure aux finitions, nous mettons à votre disposition des produits certifiés, des marques reconnues et un accompagnement technique à chaque étape de votre projet.
+              Depuis plus de 30 ans, Souss Droguerie accompagne les professionnels du BTP et les
+              particuliers avec une offre complète de matériaux de construction. De la structure aux
+              finitions, nous mettons à votre disposition des produits certifiés, des marques
+              reconnues et un accompagnement technique à chaque étape de votre projet.
             </p>
           </motion.div>
         </div>
@@ -244,13 +261,21 @@ function APropos() {
             </h2>
             <div className="mt-6 space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base">
               <p>
-                Depuis 1992, Souss Droguerie développe son expertise dans la distribution de matériaux de construction destinés aux professionnels et aux particuliers. Notre objectif est resté le même : proposer des produits fiables, disponibles et adaptés aux exigences des chantiers modernes.
+                Depuis 1992, Souss Droguerie développe son expertise dans la distribution de
+                matériaux de construction destinés aux professionnels et aux particuliers. Notre
+                objectif est resté le même : proposer des produits fiables, disponibles et adaptés
+                aux exigences des chantiers modernes.
               </p>
               <p>
-                Au fil des années, notre catalogue s'est enrichi pour couvrir l'ensemble des besoins du gros œuvre, du second œuvre et de la finition. Carrelage, sanitaire, métallurgie, isolation, peinture, électricité ou énergie solaire : une seule adresse pour l'ensemble de vos projets.
+                Au fil des années, notre catalogue s'est enrichi pour couvrir l'ensemble des besoins
+                du gros œuvre, du second œuvre et de la finition. Carrelage, sanitaire, métallurgie,
+                isolation, peinture, électricité ou énergie solaire : une seule adresse pour
+                l'ensemble de vos projets.
               </p>
               <p>
-                Aujourd'hui, nous poursuivons cette évolution en intégrant progressivement des solutions innovantes afin d'améliorer notre accompagnement, optimiser le choix des matériaux et proposer un service toujours plus performant.
+                Aujourd'hui, nous poursuivons cette évolution en intégrant progressivement des
+                solutions innovantes afin d'améliorer notre accompagnement, optimiser le choix des
+                matériaux et proposer un service toujours plus performant.
               </p>
             </div>
             <div className="mt-8 flex flex-wrap gap-3">
@@ -390,7 +415,10 @@ function APropos() {
               Au service des chantiers dans toute la région Souss-Massa
             </h2>
             <p className="mt-5 text-sm leading-relaxed text-ink-soft sm:text-base">
-              Implantée à Agadir, Souss Droguerie accompagne quotidiennement les entreprises du bâtiment, les artisans et les particuliers dans toute la région Souss-Massa. Nos équipes assurent un accompagnement commercial et technique afin de répondre rapidement aux besoins de chaque chantier.
+              Implantée à Agadir, Souss Droguerie accompagne quotidiennement les entreprises du
+              bâtiment, les artisans et les particuliers dans toute la région Souss-Massa. Nos
+              équipes assurent un accompagnement commercial et technique afin de répondre rapidement
+              aux besoins de chaque chantier.
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">

@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAdminUser } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 export interface DbDimension {
@@ -7,33 +8,30 @@ export interface DbDimension {
   created_at: string;
 }
 
-export const getDimensions = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("dimensions")
-    .select("*")
-    .order("value");
-  if (error) throw error;
-  return (data || []) as DbDimension[];
-});
+export const getDimensions = createServerFn({ method: "GET" })
+  .middleware([requireAdminUser])
+  .handler(async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from("dimensions").select("*").order("value");
+    if (error) throw error;
+    return (data || []) as DbDimension[];
+  });
 
 export const createDimension = createServerFn({ method: "POST" })
+  .middleware([requireAdminUser])
   .validator((data: { value: string }) => data)
   .handler(async (ctx) => {
     const value = ctx.data.value.trim();
     if (!value) throw new Error("Dimension vide.");
     const supabase = createAdminClient();
-    const { data, error } = await supabase
-      .from("dimensions")
-      .insert({ value })
-      .select()
-      .single();
+    const { data, error } = await supabase.from("dimensions").insert({ value }).select().single();
     if (error) throw new Error("Cette dimension existe déjà.");
     return data as DbDimension;
   });
 
 /** Renomme le preset et propage la nouvelle valeur sur les produits et variantes. */
 export const updateDimension = createServerFn({ method: "POST" })
+  .middleware([requireAdminUser])
   .validator((data: { id: string; value: string }) => data)
   .handler(async (ctx) => {
     const value = ctx.data.value.trim();
@@ -70,7 +68,10 @@ export const updateDimension = createServerFn({ method: "POST" })
         .in("product_id", productIds);
     }
 
-    await supabase.from("product_dimensions").update({ dimension: value }).eq("dimension", oldValue);
+    await supabase
+      .from("product_dimensions")
+      .update({ dimension: value })
+      .eq("dimension", oldValue);
     await supabase.from("products").update({ dimension: value }).eq("dimension", oldValue);
     const { data, error } = await supabase
       .from("dimensions")
@@ -84,6 +85,7 @@ export const updateDimension = createServerFn({ method: "POST" })
 
 /** Supprime le preset, retire les variantes correspondantes et les dimension des produits. */
 export const deleteDimension = createServerFn({ method: "POST" })
+  .middleware([requireAdminUser])
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();

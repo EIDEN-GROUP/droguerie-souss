@@ -27,7 +27,10 @@ export const getCurrentUser = createServerFn({ method: "GET" }).handler(async ()
   return { user: data.user };
 });
 
-function createSessionClient() {
+/** Client Supabase lié aux cookies de la requête : lit la session Auth de
+ *  l'appelant (posée par createBrowserClient côté navigateur) et propage les
+ *  Set-Cookie (refresh). Réutilisé par le garde admin (admin-guard.ts). */
+export function createSessionClient() {
   const url = getEnv("VITE_SUPABASE_URL");
   const key = getEnv("VITE_SUPABASE_ANON_KEY");
   return createServerClient(url, key, {

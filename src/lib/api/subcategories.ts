@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireFullAdmin } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 export interface DbSubcategory {
@@ -21,6 +22,7 @@ export const getSubcategories = createServerFn({ method: "GET" }).handler(async 
 });
 
 export const createSubcategory = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { name: string; slug: string; description: string; category: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -39,6 +41,7 @@ export const createSubcategory = createServerFn({ method: "POST" })
   });
 
 export const updateSubcategory = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator(
     (data: {
       id: string;
@@ -58,18 +61,17 @@ export const updateSubcategory = createServerFn({ method: "POST" })
   });
 
 export const deleteSubcategory = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("subcategories")
-      .delete()
-      .eq("id", ctx.data.id);
+    const { error } = await supabase.from("subcategories").delete().eq("id", ctx.data.id);
     if (error) throw error;
     return { success: true };
   });
 
 export const importSubcategoriesCsv = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator(
     (data: {
       subcategories: { name: string; slug: string; description: string; category: string }[];
@@ -82,20 +84,20 @@ export const importSubcategoriesCsv = createServerFn({ method: "POST" })
       .upsert(ctx.data.subcategories, { onConflict: "category,name" })
       .select();
     if (error) {
-      throw new Error(
-        "Import impossible : vérifiez que chaque catégorie indiquée existe déjà.",
-      );
+      throw new Error("Import impossible : vérifiez que chaque catégorie indiquée existe déjà.");
     }
     return { count: data.length };
   });
 
-export const exportSubcategoriesCsv = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("subcategories")
-    .select("*")
-    .order("category")
-    .order("name");
-  if (error) throw error;
-  return data as DbSubcategory[];
-});
+export const exportSubcategoriesCsv = createServerFn({ method: "GET" })
+  .middleware([requireFullAdmin])
+  .handler(async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase
+      .from("subcategories")
+      .select("*")
+      .order("category")
+      .order("name");
+    if (error) throw error;
+    return data as DbSubcategory[];
+  });

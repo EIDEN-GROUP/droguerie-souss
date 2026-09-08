@@ -1,7 +1,9 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireAuth } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 export const getAdminRole = createServerFn({ method: "GET" })
+  .middleware([requireAuth])
   .validator((data: { email: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();

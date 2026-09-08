@@ -119,20 +119,19 @@ export function orderConfirmationEmail(order: {
   items: { product_name: string; qty: number; price: number; dimension?: string }[];
 }): string {
   const isQuote = order.type === "quote";
-  const allZero = order.items.every(i => i.price === 0);
+  const allZero = order.items.every((i) => i.price === 0);
   const pricedTotal = order.items.reduce((s, i) => s + i.price * i.qty, 0);
-  const priceFmt = (v: number, qty?: number) => (v === 0 ? "Prix à confirmer" : (v * (qty || 1)).toFixed(2) + " MAD");
+  const priceFmt = (v: number, qty?: number) =>
+    v === 0 ? "Prix à confirmer" : (v * (qty || 1)).toFixed(2) + " MAD";
 
   const itemsHtml = order.items
-    .map(
-      (i) => {
-        const itemPrice = i.price === 0 ? "Prix à confirmer" : (i.price * i.qty).toFixed(2) + " MAD";
-        const dimensionHtml = i.dimension
-          ? `<br /><span style="font-size:11px;color:${BRAND.inkSoft};">Format : ${i.dimension}</span>`
-          : "";
-        return `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${i.product_name}${dimensionHtml}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${itemPrice}</td></tr>`;
-      },
-    )
+    .map((i) => {
+      const itemPrice = i.price === 0 ? "Prix à confirmer" : (i.price * i.qty).toFixed(2) + " MAD";
+      const dimensionHtml = i.dimension
+        ? `<br /><span style="font-size:11px;color:${BRAND.inkSoft};">Format : ${escapeHtml(i.dimension)}</span>`
+        : "";
+      return `<tr><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};">${escapeHtml(i.product_name)}${dimensionHtml}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.inkSoft};text-align:center;">${i.qty}</td><td style="padding:6px 0;font-size:13px;color:${BRAND.ink};text-align:right;font-weight:600;">${itemPrice}</td></tr>`;
+    })
     .join("");
 
   return baseHtml(`
@@ -141,11 +140,11 @@ export function orderConfirmationEmail(order: {
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       ${labelValue(isQuote ? "Devis" : "Commande", `#${order.id.slice(0, 8)}`)}
-      ${labelValue("Client", order.customer_name)}
-      ${labelValue("Téléphone", order.customer_phone)}
-      ${order.customer_email ? labelValue("Email", order.customer_email) : ""}
-      ${labelValue("Ville", order.customer_city)}
-      ${labelValue("Adresse", order.customer_address)}
+      ${labelValue("Client", escapeHtml(order.customer_name))}
+      ${labelValue("Téléphone", escapeHtml(order.customer_phone))}
+      ${order.customer_email ? labelValue("Email", escapeHtml(order.customer_email)) : ""}
+      ${labelValue("Ville", escapeHtml(order.customer_city))}
+      ${labelValue("Adresse", escapeHtml(order.customer_address))}
       ${labelValue("Paiement", order.payment_method === "cod" ? "Livraison" : order.payment_method === "bank" ? "Virement" : "Représentant")}
       ${order.note ? labelValue("Besoin décrit", escapeHtml(order.note)) : ""}
     </table>
@@ -173,7 +172,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
   return baseHtml(`
     ${heading("Merci de nous avoir contactés")}
     <p style="margin:0 0 20px;font-size:14px;color:${BRAND.ink};line-height:1.6;">
-      Bonjour <strong>${contact.name}</strong>,
+      Bonjour <strong>${escapeHtml(contact.name)}</strong>,
     </p>
     <p style="margin:0 0 16px;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
       Nous avons bien reçu votre message. Notre équipe vous recontactera
@@ -186,7 +185,12 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
   `);
 }
 
-export function orderCustomerConfirmation(order: { customer_name: string; total: number; type?: "order" | "quote"; items?: { price: number; qty: number }[] }): string {
+export function orderCustomerConfirmation(order: {
+  customer_name: string;
+  total: number;
+  type?: "order" | "quote";
+  items?: { price: number; qty: number }[];
+}): string {
   return baseHtml(`
     <p style="margin:0 0 6px;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:${BRAND.accent};">
       Demande bien reçue
@@ -194,7 +198,7 @@ export function orderCustomerConfirmation(order: { customer_name: string; total:
     ${heading("Merci pour votre commande")}
 
     <p style="margin:0 0 16px;font-size:15px;color:${BRAND.ink};line-height:1.6;">
-      Bonjour <strong>${order.customer_name}</strong>,
+      Bonjour <strong>${escapeHtml(order.customer_name)}</strong>,
     </p>
     <p style="margin:0 0 24px;font-size:14px;color:${BRAND.inkSoft};line-height:1.7;">
       Nous avons bien reçu votre demande de devis. Notre équipe la prépare et
@@ -212,9 +216,12 @@ export function orderCustomerConfirmation(order: { customer_name: string; total:
                 Montant estimé
               </td>
               <td style="text-align:right;font-family:${DISPLAY_FONT};font-size:26px;font-weight:600;color:${BRAND.primary};">
-                ${order.items && order.items.every(i => i.price === 0)
-                  ? "Prix à confirmer"
-                  : (order.items || []).reduce((s, i) => s + i.price * i.qty, 0).toFixed(2) + " MAD"}
+                ${
+                  order.items && order.items.every((i) => i.price === 0)
+                    ? "Prix à confirmer"
+                    : (order.items || []).reduce((s, i) => s + i.price * i.qty, 0).toFixed(2) +
+                      " MAD"
+                }
               </td>
             </tr>
           </table>
@@ -256,15 +263,15 @@ export function contactNotificationEmail(contact: {
     <p style="margin:0 0 20px;font-size:13px;color:${BRAND.inkSoft};">Un client a envoyé un message depuis le formulaire de contact.</p>
 
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-      ${labelValue("Nom", contact.name)}
-      ${labelValue("Téléphone", contact.phone)}
-      ${contact.email ? labelValue("Email", contact.email) : ""}
-      ${contact.city ? labelValue("Ville", contact.city) : ""}
+      ${labelValue("Nom", escapeHtml(contact.name))}
+      ${labelValue("Téléphone", escapeHtml(contact.phone))}
+      ${contact.email ? labelValue("Email", escapeHtml(contact.email)) : ""}
+      ${contact.city ? labelValue("Ville", escapeHtml(contact.city)) : ""}
     </table>
 
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
 
     <h3 style="margin:0 0 8px;font-size:13px;color:${BRAND.inkSoft};text-transform:uppercase;">Message</h3>
-    <p style="margin:0;font-size:14px;color:${BRAND.ink};line-height:1.6;white-space:pre-wrap;">${contact.message}</p>
+    <p style="margin:0;font-size:14px;color:${BRAND.ink};line-height:1.6;white-space:pre-wrap;">${escapeHtml(contact.message)}</p>
   `);
 }

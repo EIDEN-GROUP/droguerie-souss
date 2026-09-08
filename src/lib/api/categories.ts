@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { requireFullAdmin } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 interface DbCategory {
@@ -10,16 +11,16 @@ interface DbCategory {
 
 export const getCategories = createServerFn({ method: "GET" }).handler(async () => {
   const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("name");
+  const { data, error } = await supabase.from("categories").select("*").order("name");
   if (error) throw error;
   return data as DbCategory[];
 });
 
 export const createCategory = createServerFn({ method: "POST" })
-  .validator((data: { name: string; slug: string; description: string; image_url?: string | null }) => data)
+  .middleware([requireFullAdmin])
+  .validator(
+    (data: { name: string; slug: string; description: string; image_url?: string | null }) => data,
+  )
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     const { data, error } = await supabase
@@ -37,7 +38,13 @@ export const createCategory = createServerFn({ method: "POST" })
   });
 
 export const updateCategory = createServerFn({ method: "POST" })
-  .validator((data: { name: string; patch: { name?: string; slug?: string; description?: string; image_url?: string | null } }) => data)
+  .middleware([requireFullAdmin])
+  .validator(
+    (data: {
+      name: string;
+      patch: { name?: string; slug?: string; description?: string; image_url?: string | null };
+    }) => data,
+  )
   .handler(async (ctx) => {
     const supabase = createAdminClient();
     const { data, error } = await supabase
@@ -51,18 +58,17 @@ export const updateCategory = createServerFn({ method: "POST" })
   });
 
 export const deleteCategory = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { name: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
-    const { error } = await supabase
-      .from("categories")
-      .delete()
-      .eq("name", ctx.data.name);
+    const { error } = await supabase.from("categories").delete().eq("name", ctx.data.name);
     if (error) throw error;
     return { success: true };
   });
 
 export const importCategoriesCsv = createServerFn({ method: "POST" })
+  .middleware([requireFullAdmin])
   .validator((data: { categories: { name: string; slug: string; description: string }[] }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -74,12 +80,11 @@ export const importCategoriesCsv = createServerFn({ method: "POST" })
     return { count: data.length };
   });
 
-export const exportCategoriesCsv = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
-    .from("categories")
-    .select("*")
-    .order("name");
-  if (error) throw error;
-  return data as DbCategory[];
-});
+export const exportCategoriesCsv = createServerFn({ method: "GET" })
+  .middleware([requireFullAdmin])
+  .handler(async () => {
+    const supabase = createAdminClient();
+    const { data, error } = await supabase.from("categories").select("*").order("name");
+    if (error) throw error;
+    return data as DbCategory[];
+  });

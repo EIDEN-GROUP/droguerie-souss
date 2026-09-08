@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import type { OrderInput } from "@/lib/database.types";
+import { requireAdminUser } from "./admin-guard";
 import { createAdminClient, sendEmail } from "./db";
 import { orderConfirmationEmail, orderCustomerConfirmation } from "@/lib/email-templates";
 
@@ -61,7 +62,9 @@ export const createOrder = createServerFn({ method: "POST" })
 
     const isQuote = type === "quote";
     sendEmail({
-      adminSubject: isQuote ? "Nouvelle demande de devis   Souss Droguerie" : "Nouvelle commande   Souss Droguerie",
+      adminSubject: isQuote
+        ? "Nouvelle demande de devis   Souss Droguerie"
+        : "Nouvelle commande   Souss Droguerie",
       adminHtml: orderConfirmationEmail({
         id: order.id,
         customer_name: ctx.data.customer_name,
@@ -82,44 +85,53 @@ export const createOrder = createServerFn({ method: "POST" })
       }),
       customerTo: ctx.data.customer_email || undefined,
       customerSubject: ctx.data.customer_email
-        ? (isQuote ? "Confirmation de votre demande de devis   Souss Droguerie" : "Confirmation de votre commande   Souss Droguerie")
+        ? isQuote
+          ? "Confirmation de votre demande de devis   Souss Droguerie"
+          : "Confirmation de votre commande   Souss Droguerie"
         : undefined,
       customerHtml: ctx.data.customer_email
-        ? orderCustomerConfirmation({ customer_name: ctx.data.customer_name, total, type, items: ctx.data.items })
+        ? orderCustomerConfirmation({
+            customer_name: ctx.data.customer_name,
+            total,
+            type,
+            items: ctx.data.items,
+          })
         : undefined,
     }).catch((err) => console.error("sendEmail (order) failed:", err));
 
     return { id: order.id, total };
   });
 
-export const getOrders = createServerFn({ method: "GET" }).handler(async () => {
-  const supabase = createAdminClient();
-  const { data: orders, error } = await supabase
-    .from("orders")
-    .select("*")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
+export const getOrders = createServerFn({ method: "GET" })
+  .middleware([requireAdminUser])
+  .handler(async () => {
+    const supabase = createAdminClient();
+    const { data: orders, error } = await supabase
+      .from("orders")
+      .select("*")
+      .order("created_at", { ascending: false });
+    if (error) throw error;
 
-  const orderIds = orders.map((o: any) => o.id);
-  const { data: items, error: itemsError } = await supabase
-    .from("order_items")
-    .select("*")
-    .in("order_id", orderIds);
+    const orderIds = orders.map((o: any) => o.id);
+    const { data: items, error: itemsError } = await supabase
+      .from("order_items")
+      .select("*")
+      .in("order_id", orderIds);
 
-  if (itemsError) throw itemsError;
+    if (itemsError) throw itemsError;
 
-  const itemsByOrder = new Map<string, any[]>();
-  for (const item of items || []) {
-    const list = itemsByOrder.get(item.order_id) || [];
-    list.push(item);
-    itemsByOrder.set(item.order_id, list);
-  }
+    const itemsByOrder = new Map<string, any[]>();
+    for (const item of items || []) {
+      const list = itemsByOrder.get(item.order_id) || [];
+      list.push(item);
+      itemsByOrder.set(item.order_id, list);
+    }
 
-  return (orders || []).map((o: any) => ({
-    ...o,
-    items: itemsByOrder.get(o.id) || [],
-  }));
-});
+    return (orders || []).map((o: any) => ({
+      ...o,
+      items: itemsByOrder.get(o.id) || [],
+    }));
+  });
 
 export const getOrdersByEmail = createServerFn({ method: "GET" })
   .validator((data: { email: string }) => data)
@@ -154,6 +166,7 @@ export const getOrdersByEmail = createServerFn({ method: "GET" })
   });
 
 export const getOrderItems = createServerFn({ method: "GET" })
+  .middleware([requireAdminUser])
   .validator((data: { orderId: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -166,6 +179,7 @@ export const getOrderItems = createServerFn({ method: "GET" })
   });
 
 export const updateOrderStatus = createServerFn({ method: "POST" })
+  .middleware([requireAdminUser])
   .validator((data: { id: string; status: "pending" | "confirmed" | "cancelled" }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
@@ -180,6 +194,7 @@ export const updateOrderStatus = createServerFn({ method: "POST" })
   });
 
 export const deleteOrder = createServerFn({ method: "POST" })
+  .middleware([requireAdminUser])
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();
