@@ -8,11 +8,16 @@ import { verifyGateCredentials } from "../lib/api/site-gate";
  * identifiants. Tant que le site est verrouillé, aucun contenu n'est rendu
  * (ni côté serveur, ni côté client).
  *
+ * INTERRUPTEUR ENV : le verrou n'est actif que si `VITE_SITE_GATE_ENABLED=true`.
+ * Sans cette variable (ou à `false`), ce composant rend directement `children`
+ * sans aucun prompt — le site est public et crawlable. Mettez `=true` pour
+ * reverrouiller (chantier / pré-lancement).
+ *
  * Les identifiants sont vérifiés SUR LE SERVEUR contre Supabase (table
  * `site_gate_users`, migration 018_site_gate.sql) et la session est un cookie
  * httpOnly signé — voir src/lib/api/site-gate.ts.
  *
- * ── POUR RETIRER LE VERROU APRÈS COUP ─────────────────────────────────
+ * ── POUR RETIRER DÉFINITIVEMENT LE VERROU ─────────────────────────────
  * 1. src/routes/__root.tsx : retirer l'import de SiteGate, l'import de
  *    getGateStatus, le bloc beforeLoad « SITE-GATE » et les balises
  *    <SiteGate> (tout est balisé par des commentaires SITE-GATE).
@@ -20,6 +25,21 @@ import { verifyGateCredentials } from "../lib/api/site-gate";
  * 3. (Optionnel) DROP TABLE site_gate_users; dans Supabase.
  * ──────────────────────────────────────────────────────────────────────
  */
+
+/** Lecture sûre de l'interrupteur côté client (défaut : désactivé = ouvert). */
+function isGateEnabledOnClient(): boolean {
+  try {
+    const env = (import.meta as unknown as { env?: Record<string, unknown> }).env;
+    const raw = env?.VITE_SITE_GATE_ENABLED;
+    return (
+      String(raw ?? "")
+        .trim()
+        .toLowerCase() === "true"
+    );
+  } catch {
+    return false;
+  }
+}
 export function SiteGate({
   initiallyUnlocked,
   children,
@@ -29,9 +49,11 @@ export function SiteGate({
 }) {
   const [unlocked, setUnlocked] = useState(initiallyUnlocked);
   const router = useRouter();
+  // Verrou désactivé par ENV → aucun prompt, contenu rendu immédiatement.
+  const gateEnabled = isGateEnabledOnClient();
 
   useEffect(() => {
-    if (unlocked) return;
+    if (unlocked || !gateEnabled) return;
 
     let cancelled = false;
     let timer: ReturnType<typeof setTimeout> | undefined;
@@ -73,12 +95,12 @@ export function SiteGate({
       cancelled = true;
       if (timer !== undefined) clearTimeout(timer);
     };
-  }, [unlocked, router]);
+  }, [unlocked, gateEnabled, router]);
 
-  if (!unlocked) {
-    // Écran blanc : rien d'autre n'est rendu ni exécuté.
-    return <div className="fixed inset-0 z-[2147483647] bg-white" aria-hidden="true" />;
+  if (!gateEnabled || unlocked) {
+    return <>{children}</>;
   }
 
-  return <>{children}</>;
+  // Écran blanc : rien d'autre n'est rendu ni exécuté.
+  return <div className="fixed inset-0 z-[2147483647] bg-white" aria-hidden="true" />;
 }

@@ -8,6 +8,13 @@ import { getEnv } from "./env";
 /**
  * SITE-GATE — vérification serveur des identifiants d'accès au site.
  *
+ * INTERRUPTEUR ENV : le verrou n'est actif que si
+ * `VITE_SITE_GATE_ENABLED=true` (ou `SITE_GATE_ENABLED=true` côté serveur).
+ * Toute autre valeur — ou variable absente — = site OUVERT (pas de prompt,
+ * `getGateStatus()` renvoie `{ unlocked: true }`). Mettez `=true` pour
+ * reverrouiller (ex. chantier / pré-lancement), `=false` ou supprimez la
+ * variable pour ouvrir le site au public et aux crawlers SEO.
+ *
  * Le mot de passe n'apparaît JAMAIS côté client :
  * - il est stocké haché (bcrypt) dans la table Supabase `site_gate_users`
  *   (migration 018_site_gate.sql) ;
@@ -15,11 +22,31 @@ import { getEnv } from "./env";
  * - une fois validé, un cookie httpOnly signé (HMAC) est posé : impossible à
  *   forger sans la clé de service, relu par le serveur à chaque requête SSR.
  *
- * POUR RETIRER LE VERROU : voir l'en-tête de src/components/SiteGate.tsx.
+ * POUR RETIRER DÉFINITIVEMENT LE VERROU : voir l'en-tête de
+ * src/components/SiteGate.tsx.
  */
 
 const GATE_COOKIE = "site_gate_access";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 jours
+
+/** Interrupteur d'activation — défaut : DÉSACTIVÉ (site ouvert). */
+export function isSiteGateEnabled(): boolean {
+  const read = (key: string): string | undefined => {
+    try {
+      if (typeof import.meta !== "undefined" && import.meta.env?.[key] != null) {
+        return String(import.meta.env[key]);
+      }
+    } catch {
+      /* import.meta indisponible côté pur Node */
+    }
+    if (typeof process !== "undefined" && process.env?.[key] != null) {
+      return String(process.env[key]);
+    }
+    return undefined;
+  };
+  const raw = read("VITE_SITE_GATE_ENABLED") ?? read("SITE_GATE_ENABLED");
+  return raw?.trim().toLowerCase() === "true";
+}
 
 /** Clé de signature : la clé de service Supabase, jamais exposée au navigateur. */
 function signingSecret(): string {
@@ -52,6 +79,8 @@ let attempts: number[] = [];
 
 /** Le site est-il déverrouillé pour ce visiteur ? (appelé côté serveur) */
 export const getGateStatus = createServerFn({ method: "GET" }).handler(async () => {
+  // Verrou désactivé par ENV → site ouvert pour tout le monde (public + crawlers).
+  if (!isSiteGateEnabled()) return { unlocked: true };
   try {
     const cookies = getCookies();
     return { unlocked: verifyToken(cookies[GATE_COOKIE]) };
@@ -64,6 +93,8 @@ export const getGateStatus = createServerFn({ method: "GET" }).handler(async () 
 export const verifyGateCredentials = createServerFn({ method: "POST" })
   .validator((data: { username: string; password: string }) => data)
   .handler(async ({ data }) => {
+    // Verrou désactivé par ENV → rien à vérifier, on laisse passer.
+    if (!isSiteGateEnabled()) return { ok: true as const };
     const now = Date.now();
     attempts = attempts.filter((t) => now - t < WINDOW_MS);
     if (attempts.length >= MAX_ATTEMPTS) {

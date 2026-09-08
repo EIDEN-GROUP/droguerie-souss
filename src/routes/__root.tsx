@@ -144,7 +144,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
-  // SITE-GATE:BEGIN — retire ce bloc pour désactiver le verrou d'accès.
+  // SITE-GATE:BEGIN — verrou d'accès activable par ENV.
+  // Actif uniquement si VITE_SITE_GATE_ENABLED=true (voir site-gate.ts) ;
+  // sinon getGateStatus() renvoie { unlocked: true } et <SiteGate> laisse passer.
   beforeLoad: async () => {
     const gate = await getGateStatus();
     return { gateUnlocked: gate.unlocked };
@@ -172,7 +174,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  // SITE-GATE:BEGIN — retire ce bloc pour désactiver le verrou d'accès.
+  // SITE-GATE:BEGIN — traversant quand VITE_SITE_GATE_ENABLED ≠ "true".
   const { gateUnlocked } = Route.useRouteContext();
   // SITE-GATE:END
   return (
