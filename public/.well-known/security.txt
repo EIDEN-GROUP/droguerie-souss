@@ -56,39 +56,39 @@
 #  ###############   ################
 # %%%%%%%%%%%%%%%   %%%%%%%%%%%%%%%%
 #
-# Security contact:
+# Contact sécurité :
 Contact: mailto:contact@soussdroguerie.com
 #
-# Security vulnerability disclosure policy:
+# Politique de divulgation des vulnérabilités de sécurité :
 Policy: https://www.soussdroguerie.com/security
 #
-# Canonical location of this security.txt file:
+# Emplacement canonique de ce fichier security.txt :
 Canonical: https://www.soussdroguerie.com/.well-known/security.txt
 #
-# Security acknowledgments:
+# Remerciements sécurité :
 Acknowledgments: https://www.soussdroguerie.com/security#acknowledgments
 #
-# Preferred languages for vulnerability reports:
+# Langues préférées pour les rapports de vulnérabilité :
 Preferred-Languages: fr, en
 #
-# Security-related reports should include:
-# - A clear description of the vulnerability
-# - The affected URL, endpoint, or component
-# - Steps to reproduce the issue
-# - Proof of concept when applicable
-# - Potential security impact
+# Les rapports liés à la sécurité doivent inclure :
+# - Une description claire de la vulnérabilité
+# - L'URL, le point d'accès ou le composant concerné
+# - Les étapes pour reproduire le problème
+# - Une preuve de concept lorsque c'est possible
+# - L'impact potentiel sur la sécurité
 #
-# Please do not:
-# - Access, modify, delete, or expose customer data
-# - Perform denial-of-service or resource-exhaustion testing
-# - Conduct social engineering or phishing attacks
-# - Attempt physical attacks against personnel or infrastructure
-# - Publish a vulnerability before it has been addressed
+# Merci de ne pas :
+# - Accéder aux données clients, les modifier, les supprimer ou les divulguer
+# - Effectuer des tests de déni de service ou d'épuisement des ressources
+# - Mener des attaques d'ingénierie sociale ou d'hameçonnage
+# - Tenter des attaques physiques contre le personnel ou l'infrastructure
+# - Publier une vulnérabilité avant qu'elle ait été corrigée
 #
-# Souss Droguerie appreciates responsible security research.
-# Researchers who report valid vulnerabilities responsibly may be
-# recognized on our security acknowledgments page.
+# Souss Droguerie remercie la recherche responsable en sécurité.
+# Les chercheurs qui signalent des vulnérabilités avérées de manière
+# responsable pourront être cités sur notre page de remerciements.
 #
-# This file should be reviewed and renewed periodically.
+# Ce fichier doit être relu et renouvelé périodiquement.
 Expires: 2027-09-09T23:59:59Z
 -----END SECURITY.TXT-----

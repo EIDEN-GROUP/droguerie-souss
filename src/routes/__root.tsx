@@ -86,6 +86,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       typeof import.meta !== "undefined"
         ? (import.meta.env?.VITE_BING_VERIFICATION as string | undefined)
         : undefined;
+    // Origine Supabase (images produits) : pré-connexion invisible, head seul.
+    const supabaseOrigin = (() => {
+      try {
+        const raw =
+          typeof import.meta !== "undefined"
+            ? (import.meta.env?.VITE_SUPABASE_URL as string | undefined)
+            : undefined;
+        return raw ? new URL(raw).origin : undefined;
+      } catch {
+        return undefined;
+      }
+    })();
     return {
       meta: [
         { charSet: "utf-8" },
@@ -147,6 +159,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
         { rel: "preconnect", href: "https://fonts.googleapis.com" },
         { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        // Les photos produits sont servies par Supabase Storage : on ouvre la
+        // connexion plus tôt (LCP des pages boutique/produit).
+        ...(supabaseOrigin ? [{ rel: "preconnect", href: supabaseOrigin }] : []),
         {
           rel: "stylesheet",
           href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap",

@@ -20,7 +20,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
-import { seo, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
+import { seo, jsonLd, canonical, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
 import storyImg from "@/assets/1.jpg";
 import zoneImg from "@/assets/22.jpg";
 
@@ -112,6 +112,16 @@ export const Route = createFileRoute("/a-propos")({
       // DESCRIPTION dépasse 155 caractères : on le tronque proprement (coupe sur mot).
       description: descriptionFrom(DESCRIPTION),
       path: "/a-propos",
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "À propos | Souss Droguerie",
+          url: canonical("/a-propos"),
+          inLanguage: "fr-FR",
+          speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1"] },
+        }),
+      ],
     }),
 });
 

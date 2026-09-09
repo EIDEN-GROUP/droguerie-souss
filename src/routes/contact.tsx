@@ -6,6 +6,27 @@ import { Layout } from "@/components/Layout";
 import { submitContact } from "@/lib/api/contact";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 
+/** Questions affichées telles quelles plus bas : le balisage FAQPage ci-dessous
+ *  reprend exactement ces textes (exigence Google pour les résultats enrichis). */
+const FAQS = [
+  {
+    q: "Livrez-vous en dehors d'Agadir ?",
+    a: "Oui, nous livrons dans tout le Souss-Massa : Inezgane, Aït Melloul, Dcheira, Taroudant, Tiznit, Biougra et Oulad Teima.",
+  },
+  {
+    q: "En combien de temps recevrai-je une réponse ?",
+    a: "Notre équipe vous répond sous 48h ouvrées, pour un devis comme pour une simple question.",
+  },
+  {
+    q: "Quels moyens de paiement acceptez-vous ?",
+    a: "Espèces et virement bancaire. Chaque devis détaille les quantités avant tout paiement.",
+  },
+  {
+    q: "Travaillez-vous avec les professionnels du BTP ?",
+    a: "Oui : entreprises, artisans et particuliers. Devis détaillés, prix dégressifs sur volumes et conseils de métier.",
+  },
+];
+
 export const Route = createFileRoute("/contact")({
   component: Contact,
   head: () =>
@@ -22,6 +43,23 @@ export const Route = createFileRoute("/contact")({
             { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
             { "@type": "ListItem", position: 2, name: "Contact", item: canonical("/contact") },
           ],
+        }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: FAQS.map((f) => ({
+            "@type": "Question",
+            name: f.q,
+            acceptedAnswer: { "@type": "Answer", text: f.a },
+          })),
+        }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "Contact | Souss Droguerie",
+          url: canonical("/contact"),
+          inLanguage: "fr-FR",
+          speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1"] },
         }),
       ],
     }),
@@ -43,7 +81,9 @@ function Contact() {
     setError("");
     setSubmitting(true);
     try {
-      await submitContact({ data: { name, phone, email: email || undefined, city: city || undefined, message } });
+      await submitContact({
+        data: { name, phone, email: email || undefined, city: city || undefined, message },
+      });
       setSent(true);
       formRef.current?.reset();
       setName("");
@@ -81,8 +121,8 @@ function Contact() {
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Notre équipe vous répond sous 48h ouvrées pour tous vos projets de
-                construction dans le Souss.
+                Notre équipe vous répond sous 48h ouvrées pour tous vos projets de construction dans
+                le Souss.
               </p>
             </div>
           </motion.div>
@@ -98,9 +138,24 @@ function Contact() {
             className="space-y-4"
           >
             {[
-              { icon: MapPin, title: "Adresse", text: "Bd MOHAMED V - Q.I TASSILA III N°29 - Agadir", href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7" },
-              { icon: Phone, title: "Téléphone", text: "+212 528 838 992", href: "tel:+212528838992" },
-              { icon: Mail, title: "Email", text: "contact@soussdroguerie.com", href: "mailto:contact@soussdroguerie.com" },
+              {
+                icon: MapPin,
+                title: "Adresse",
+                text: "Bd MOHAMED V - Q.I TASSILA III N°29 - Agadir",
+                href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7",
+              },
+              {
+                icon: Phone,
+                title: "Téléphone",
+                text: "+212 528 838 992",
+                href: "tel:+212528838992",
+              },
+              {
+                icon: Mail,
+                title: "Email",
+                text: "contact@soussdroguerie.com",
+                href: "mailto:contact@soussdroguerie.com",
+              },
             ].map((c) => (
               <a
                 key={c.title}
@@ -111,7 +166,9 @@ function Contact() {
                   <c.icon className="h-5 w-5" />
                 </div>
                 <div>
-                  <p className="font-display text-sm font-bold uppercase tracking-wider">{c.title}</p>
+                  <p className="font-display text-sm font-bold uppercase tracking-wider">
+                    {c.title}
+                  </p>
                   <p className="mt-1 text-sm text-ink-soft">{c.text}</p>
                 </div>
               </a>
@@ -127,13 +184,17 @@ function Contact() {
                 <li className="flex items-center justify-between gap-4 py-2.5 first:pt-0">
                   <span className="font-semibold text-ink">Lun - Ven</span>
                   <span className="text-right leading-snug text-ink-soft">
-                    8h30 - 12h30<br />14h30 - 18h30
+                    8h30 - 12h30
+                    <br />
+                    14h30 - 18h30
                   </span>
                 </li>
                 <li className="flex items-center justify-between gap-4 py-2.5">
                   <span className="font-semibold text-ink">Samedi</span>
                   <span className="text-right leading-snug text-ink-soft">
-                    8h30 - 12h30<br />14h30 - 17h00
+                    8h30 - 12h30
+                    <br />
+                    14h30 - 17h00
                   </span>
                 </li>
                 <li className="flex items-center justify-between gap-4 py-2.5 last:pb-0">
@@ -168,40 +229,110 @@ function Contact() {
             )}
             <div className="mt-6 grid gap-4 sm:grid-cols-2 mb-4">
               <Field label="Nom complet" required htmlFor="name">
-                <input id="name" name="name" required value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand" />
+                <input
+                  id="name"
+                  name="name"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand"
+                />
               </Field>
               <Field label="Téléphone" required htmlFor="phone">
-                <input id="phone" name="phone" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand" />
+                <input
+                  id="phone"
+                  name="phone"
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand"
+                />
               </Field>
               <Field label="Email" htmlFor="email">
-                <input id="email" name="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand"
+                />
               </Field>
               <Field label="Ville" htmlFor="city">
-                <input id="city" name="city" value={city} onChange={(e) => setCity(e.target.value)} className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand" />
+                <input
+                  id="city"
+                  name="city"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand"
+                />
               </Field>
             </div>
             <Field label="Message" required htmlFor="message">
-              <textarea id="message" name="message" required rows={5} value={message} onChange={(e) => setMessage(e.target.value)} className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand" />
+              <textarea
+                id="message"
+                name="message"
+                required
+                rows={5}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="w-full rounded-lg border border-border bg-white px-4 py-3 text-sm outline-none transition focus:border-brand"
+              />
             </Field>
             <button
               type="submit"
               disabled={submitting}
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper hover:bg-accent-red/90 disabled:opacity-60"
             >
-              {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
+              {submitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
               {submitting ? "Envoi en cours…" : "Envoyer le message"}
             </button>
           </motion.form>
         </div>
+
+        {/* Questions fréquentes : texte repris tel quel dans le balisage FAQPage. */}
+        <section className="mx-auto mt-16 max-w-3xl">
+          <h2 className="font-display text-2xl font-bold uppercase text-ink">
+            Questions fréquentes
+          </h2>
+          <div className="mt-6 divide-y divide-border rounded-2xl border bg-paper">
+            {FAQS.map((f) => (
+              <div key={f.q} className="p-5 sm:p-6">
+                <h3 className="font-display text-sm font-bold uppercase tracking-wide text-ink sm:text-base">
+                  {f.q}
+                </h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{f.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </Layout>
   );
 }
 
-function Field({ label, required, htmlFor, children }: { label: string; required?: boolean; htmlFor: string; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  htmlFor,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  htmlFor: string;
+  children: React.ReactNode;
+}) {
   return (
     <div>
-      <label htmlFor={htmlFor} className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+      <label
+        htmlFor={htmlFor}
+        className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink"
+      >
         {label} {required && <span className="text-accent-red">*</span>}
       </label>
       {children}

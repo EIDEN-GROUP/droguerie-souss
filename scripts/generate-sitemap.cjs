@@ -62,12 +62,31 @@ const esc = (s) =>
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;");
 
-const url = (loc, lastmod, changefreq, priority) =>
-  `  <url>\n    <loc>${esc(SITE_URL + loc)}</loc>` +
-  (lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "") +
-  (changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : "") +
-  (priority ? `\n    <priority>${priority}</priority>` : "") +
-  `\n  </url>`;
+const url = (loc, lastmod, changefreq, priority, images) => {
+  const imgs = (images || [])
+    .slice(0, 5)
+    .map(
+      (src) => `\n    <image:image>\n      <image:loc>${esc(src)}</image:loc>\n    </image:image>`,
+    )
+    .join("");
+  return (
+    `  <url>\n    <loc>${esc(SITE_URL + loc)}</loc>` +
+    (lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : "") +
+    (changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : "") +
+    (priority ? `\n    <priority>${priority}</priority>` : "") +
+    imgs +
+    `\n  </url>`
+  );
+};
+
+/** Même règle que Product.image côté front : seuls les chemins publics absolus
+ *  et les URLs complètes existent réellement en ligne. */
+function absoluteImage(src) {
+  if (!src || typeof src !== "string") return null;
+  if (/^https?:\/\//i.test(src)) return src;
+  if (src.startsWith("/")) return SITE_URL + src;
+  return null;
+}
 
 /** Pages principales du site (toutes les routes publiques indexables). */
 const CORE_PAGES = [
@@ -117,6 +136,7 @@ async function main() {
     lastmod: p.lastmod,
     changefreq: p.changefreq,
     priority: p.priority,
+    images: [],
   }));
 
   if (!supabaseUrl || !key) {
@@ -131,16 +151,24 @@ async function main() {
       const sb = createClient(supabaseUrl, key, { auth: { persistSession: false } });
       const { data, error } = await sb
         .from("products")
-        .select("id, updated_at, created_at")
+        .select("id, updated_at, created_at, image_url, images_urls")
         .order("name");
       if (error) throw new Error(error.message);
 
-      const productEntries = (data || []).map((p) => ({
-        loc: `/product/${p.id}`,
-        lastmod: isoDate(p.updated_at || p.created_at),
-        changefreq: "monthly",
-        priority: "0.6",
-      }));
+      const productEntries = (data || []).map((p) => {
+        const candidates = [
+          p.image_url,
+          ...((Array.isArray(p.images_urls) && p.images_urls) || []),
+        ];
+        const images = [...new Set(candidates.map(absoluteImage).filter(Boolean))];
+        return {
+          loc: `/product/${p.id}`,
+          lastmod: isoDate(p.updated_at || p.created_at),
+          changefreq: "monthly",
+          priority: "0.6",
+          images,
+        };
+      });
       entries = [...entries, ...productEntries];
       console.log(`[sitemap] ${productEntries.length} produits ajoutés.`);
     } catch (e) {
@@ -152,8 +180,9 @@ async function main() {
 
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
-    entries.map((e) => url(e.loc, e.lastmod, e.changefreq, e.priority)).join("\n") +
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"\n` +
+    `  xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">\n` +
+    entries.map((e) => url(e.loc, e.lastmod, e.changefreq, e.priority, e.images)).join("\n") +
     `\n</urlset>\n`;
 
   fs.writeFileSync(OUT, xml, "utf8");
