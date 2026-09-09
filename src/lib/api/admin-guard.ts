@@ -34,10 +34,14 @@ async function resolveAdminUser(): Promise<{ email: string; role: AdminRole }> {
     throw new Error("Non autorisé : connexion requise.");
   }
   const admin = createAdminClient();
+  // Comparaison insensible à la casse : l'e-mail du formulaire (utilisé par
+  // getAdminRole côté login) et celui du token Auth peuvent différer en casse
+  // alors qu'il s'agit du même compte. Sans ça, un admin connecté avec une
+  // capitale se verrait refuser toutes les pages verrouillées.
   const { data: row } = await admin
     .from("admin_users")
     .select("role")
-    .eq("email", email)
+    .ilike("email", email)
     .maybeSingle();
   if (!row) {
     throw new Error("Accès refusé : compte non administrateur.");

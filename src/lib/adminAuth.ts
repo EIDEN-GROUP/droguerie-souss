@@ -27,7 +27,15 @@ export const useAdminAuth = create<AdminAuthState>()((set, get) => ({
         const email = data.user.email!;
         const roleResult = await getAdminRole({ data: { email } });
         const role = roleResult?.role ?? null;
-        set({ isAuthed: true, userEmail: email, role, loading: false });
+        // Session valide mais e-mail inconnu de admin_users (ou rôle retiré) :
+        // on reste sur l'écran de connexion au lieu d'un back-office vide qui
+        // échouerait sur chaque requête verrouillée.
+        if (!role) {
+          await supabase.auth.signOut();
+          set({ isAuthed: false, userEmail: null, role: null, loading: false });
+        } else {
+          set({ isAuthed: true, userEmail: email, role, loading: false });
+        }
       } else {
         set({ isAuthed: false, userEmail: null, role: null, loading: false });
       }
@@ -51,6 +59,12 @@ export const useAdminAuth = create<AdminAuthState>()((set, get) => ({
     if (error) throw new Error("Email ou mot de passe incorrect");
     const roleResult = await getAdminRole({ data: { email } });
     const role = roleResult?.role ?? null;
+    // Compte Auth valide mais pas déclaré dans admin_users : on refuse
+    // l'entrée (avec un message clair) plutôt qu'un back-office en erreur.
+    if (!role) {
+      await supabase.auth.signOut();
+      throw new Error("Ce compte n'a pas accès à l'administration.");
+    }
     set({ isAuthed: true, userEmail: data.user.email, role, loading: false });
   },
 
