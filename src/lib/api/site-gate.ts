@@ -6,11 +6,11 @@ import { createAdminClient } from "./db";
 import { getEnv } from "./env";
 
 /**
- * SITE-GATE — vérification serveur des identifiants d'accès au site.
+ * SITE-GATE - vérification serveur des identifiants d'accès au site.
  *
  * INTERRUPTEUR ENV : le verrou n'est actif que si
  * `VITE_SITE_GATE_ENABLED=true` (ou `SITE_GATE_ENABLED=true` côté serveur).
- * Toute autre valeur — ou variable absente — = site OUVERT (pas de prompt,
+ * Toute autre valeur - ou variable absente - = site OUVERT (pas de prompt,
  * `getGateStatus()` renvoie `{ unlocked: true }`). Mettez `=true` pour
  * reverrouiller (ex. chantier / pré-lancement), `=false` ou supprimez la
  * variable pour ouvrir le site au public et aux crawlers SEO.
@@ -29,7 +29,7 @@ import { getEnv } from "./env";
 const GATE_COOKIE = "site_gate_access";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // 7 jours
 
-/** Interrupteur d'activation — défaut : DÉSACTIVÉ (site ouvert). */
+/** Interrupteur d'activation - défaut : DÉSACTIVÉ (site ouvert). */
 export function isSiteGateEnabled(): boolean {
   const read = (key: string): string | undefined => {
     try {

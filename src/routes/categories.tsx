@@ -115,7 +115,7 @@ function Shop() {
       .filter((name) => !managed.includes(name))
       .sort();
     const names = [...managed.filter((name) => counts.has(name)), ...unmanaged];
-    /** A search can empty the selected subcategory — keep its chip so the active filter
+    /** A search can empty the selected subcategory - keep its chip so the active filter
      *  never disappears out from under the user. */
     if (activeSubcat && !names.includes(activeSubcat)) names.push(activeSubcat);
     return names.map((name) => ({ name, count: counts.get(name) ?? 0 }));
@@ -149,7 +149,7 @@ function Shop() {
           search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }),
         });
       } else {
-        /** resetScroll: false — the router's scroll reset would otherwise cancel the jump below. */
+        /** resetScroll: false - the router's scroll reset would otherwise cancel the jump below. */
         navigate({
           to: "/categories",
           search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),

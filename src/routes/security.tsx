@@ -11,7 +11,7 @@ export const Route = createFileRoute("/security")({
   component: Security,
   head: () =>
     seo({
-      title: "Sécurité — Signaler une faille | Souss Droguerie",
+      title: "Sécurité - Signaler une faille | Souss Droguerie",
       description: descriptionFrom(DESCRIPTION),
       path: "/security",
       scripts: [
@@ -60,7 +60,7 @@ function Security() {
             </h1>
             <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
             <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-              Vous avez trouvé une faille ? Merci de nous aider à protéger nos clients — nous la
+              Vous avez trouvé une faille ? Merci de nous aider à protéger nos clients - nous la
               corrigerons et vous en remercierons.
             </p>
           </motion.div>
@@ -94,7 +94,7 @@ function Security() {
             <p className="mt-3 text-sm leading-relaxed text-ink-soft sm:text-base">
               Sont concernés : le site www.soussdroguerie.com (vitrine, boutique, espace client,
               administration) et nos API publiques documentées. Sont exclus : les services tiers
-              (Google, Microsoft, Supabase, prestataires d'hébergement) — signalez-leur directement
+              (Google, Microsoft, Supabase, prestataires d'hébergement) - signalez-leur directement
               toute faille de leur côté.
             </p>
           </section>
@@ -145,7 +145,7 @@ function Security() {
             </h2>
             <p className="mt-3 flex items-start gap-3 text-sm leading-relaxed text-ink-soft sm:text-base">
               <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-brand" />
-              Aucun chercheur à remercier pour le moment — les signalements responsables validés
+              Aucun chercheur à remercier pour le moment - les signalements responsables validés
               seront cités ici (avec l'accord de leur auteur).
             </p>
           </section>

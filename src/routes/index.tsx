@@ -107,16 +107,16 @@ export const Route = createFileRoute("/")({
   head: () =>
     seo({
       // Marque en tête (conserve le #1 « Souss Droguerie » / « Droguerie Souss ») et
-      // la requête clé « droguerie agadir » juste après — les deux mots-clés cibles
+      // la requête clé « droguerie agadir » juste après - les deux mots-clés cibles
       // sont dans les 60 premiers caractères affichés par Google.
-      title: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+      title: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction",
       description: descriptionFrom(
         "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992. Devis gratuit sous 48h, livraison dans tout le Souss.",
       ),
       path: "/",
       scripts: [jsonLd(organizationSchema), jsonLd(webSiteSchema)],
       // LCP : le poster du hero est l'image la plus grande au-dessus de la ligne de
-      // flottaison — on la précharge sur la page d'accueil uniquement (là où le hero
+      // flottaison - on la précharge sur la page d'accueil uniquement (là où le hero
       // est rendu), pas sur les autres routes.
       links: [{ rel: "preload", as: "image", href: canonical("/hero-poster.jpg") }],
     }),

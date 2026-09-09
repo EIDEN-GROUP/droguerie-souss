@@ -155,7 +155,7 @@ export default function FlipBookViewer({
       <div
         ref={frameRef}
         /** `safe center` : centré tant que ça tient, aligné au début dès que le livre
-         *  déborde — sinon le zoom rendrait le bord gauche inatteignable au défilement. */
+         *  déborde - sinon le zoom rendrait le bord gauche inatteignable au défilement. */
         className={`flex min-h-0 flex-1 [justify-content:safe_center] ${
           zoom > 1 ? "styled-scrollbar overflow-auto" : "overflow-hidden"
         }`}
@@ -174,7 +174,7 @@ export default function FlipBookViewer({
               ref={bookRef}
               className="catalogue-book"
               /** `autoSize: false` : la librairie ne pose ni largeur ni hauteur sur son
-               *  élément racine, or `.stf__block` s'y positionne en absolu — sans hauteur
+               *  élément racine, or `.stf__block` s'y positionne en absolu - sans hauteur
                *  explicite le livre serait haut de 0. */
               style={{ width: size.width, height: size.height }}
               width={PAGE_WIDTH}

@@ -20,7 +20,7 @@ const normalize = (s: string) =>
     .toLowerCase();
 
 /**
- * Le score approximatif de cmdk retient trop large — « carr » remonterait « Toutes les
+ * Le score approximatif de cmdk retient trop large - « carr » remonterait « Toutes les
  * catégories » et « Béton Armé, Ciments, Agrégats ». On s'en tient à une sous-chaîne,
  * insensible aux accents, en faisant remonter les libellés qui commencent par la saisie.
  */

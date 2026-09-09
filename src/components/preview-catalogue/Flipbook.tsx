@@ -47,7 +47,7 @@ function readFormat(d?: string | null): [number, number] | null {
 }
 function readOrigin(d?: string | null): string | null {
   if (!d) return null;
-  const m = d.match(/—\s*([^.]+)\./);
+  const m = d.match(/-\s*([^.]+)\./);
   return m ? m[1].trim() : null;
 }
 const fmtKey = (f: [number, number]) => `${f[0]}×${f[1]}`;
@@ -196,7 +196,7 @@ interface BookHandle {
 
 /**
  * `embedded` : la liseuse est posée dans une page classique (en-tête et pied de
- * page visibles) plutôt qu'en plein écran. Seule la hauteur de la coque change —
+ * page visibles) plutôt qu'en plein écran. Seule la hauteur de la coque change -
  * la scène est mesurée au ResizeObserver, le livre se recale donc tout seul.
  */
 export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
@@ -255,7 +255,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
         light="Construire avec"
         bold="expérience"
         photo={`${PH}facade-jour.webp`}
-        caption="Notre siège · 29 Bd Mohamed V, Dcheira — Inezgane"
+        caption="Notre siège · 29 Bd Mohamed V, Dcheira - Inezgane"
         body={[
           "Chers clients et partenaires, depuis 1993 Souss Droguerie accompagne les professionnels et les particuliers dans leurs projets de construction à travers une offre complète de matériaux fiables et performants.",
           "Notre priorité a toujours été d'apporter qualité, disponibilité et conseil technique afin de garantir la réussite de vos réalisations, du gros œuvre à la finition.",
@@ -330,7 +330,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
       );
       n++;
 
-      // Pages « format », d'abord — c'est la logique du catalogue papier.
+      // Pages « format », d'abord - c'est la logique du catalogue papier.
       const byFormat = new Map<string, typeof group>();
       for (const p of group) {
         if (!p.dims) continue;
@@ -429,7 +429,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
    * Les pages sont composées à taille fixe (500 × 707) : c'est ce qui garantit
    * que la typographie, les marges et les filets gardent leurs proportions.
    * Pour remplir l'écran on agrandit le livre entier au transform, plutôt que
-   * de redimensionner les pages — sinon le texte, figé en pixels, rapetisse et
+   * de redimensionner les pages - sinon le texte, figé en pixels, rapetisse et
    * le bas des pages se vide.
    */
   const stageRef = useRef<HTMLDivElement>(null);
@@ -536,7 +536,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
           <span className="rounded bg-mint px-2.5 py-1 text-[11px] tabular-nums text-ink">
             {solo
               ? `page ${page + 1} sur ${total}`
-              : `pages ${page + 1} – ${Math.min(page + 2, total)} sur ${total}`}
+              : `pages ${page + 1} - ${Math.min(page + 2, total)} sur ${total}`}
           </span>
         </div>
         <button
@@ -697,7 +697,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
 
       {/*
         Scène d'export : les mêmes pages, rendues hors écran à leur taille de
-        composition. On ne peut pas photographier le livre lui-même — ses pages
+        composition. On ne peut pas photographier le livre lui-même - ses pages
         sont transformées, retournées, et la moitié n'est pas montée.
       */}
       <div

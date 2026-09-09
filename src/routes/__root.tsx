@@ -110,7 +110,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         // Bing : clé « msvalidate.01 » collée dans VITE_BING_VERIFICATION.
         ...(bingVerify ? [{ name: "msvalidate.01", content: bingVerify }] : []),
-        { title: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction" },
+        { title: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction" },
         {
           name: "description",
           content:
@@ -119,7 +119,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "author", content: "Souss Droguerie SARL" },
         {
           property: "og:title",
-          content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+          content: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction",
         },
         {
           property: "og:description",
@@ -134,7 +134,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { name: "twitter:card", content: "summary_large_image" },
         {
           name: "twitter:title",
-          content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+          content: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction",
         },
         {
           name: "twitter:description",
@@ -149,10 +149,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { rel: "stylesheet", href: appCss },
         // Favicons : la PNG 96×96 (multiple de 48px, l'exigence de Google) est déclarée
         // EN PREMIER pour que Google ne retienne jamais la 32×32 (qui échoue à la règle
-        // du multiple de 48). Le .ico est en entrées BITMAP classiques (16/32/48) — le
+        // du multiple de 48). Le .ico est en entrées BITMAP classiques (16/32/48) - le
         // format historique le plus compatible, celui des icônes qui s'affichent
         // partout (l'ancien favicon.ico était un PNG 1102×1102 renommé, rejeté par
-        // Google — d'où l'icône absente des résultats).
+        // Google - d'où l'icône absente des résultats).
         { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
         { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
         { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
@@ -169,7 +169,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ],
     };
   },
-  // SITE-GATE:BEGIN — verrou d'accès activable par ENV.
+  // SITE-GATE:BEGIN - verrou d'accès activable par ENV.
   // Actif uniquement si VITE_SITE_GATE_ENABLED=true (voir site-gate.ts) ;
   // sinon getGateStatus() renvoie { unlocked: true } et <SiteGate> laisse passer.
   beforeLoad: async () => {
@@ -199,7 +199,7 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
-  // SITE-GATE:BEGIN — traversant quand VITE_SITE_GATE_ENABLED ≠ "true".
+  // SITE-GATE:BEGIN - traversant quand VITE_SITE_GATE_ENABLED ≠ "true".
   const { gateUnlocked } = Route.useRouteContext();
   // SITE-GATE:END
   return (

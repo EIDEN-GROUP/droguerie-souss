@@ -271,7 +271,7 @@ export function Navbar() {
 
       {/* Voile sombre : la page passe au second plan derriere le panneau des categories.
           `z-30` le place sous l'en-tete (z-40), donc sous le panneau lui-meme, et
-          `pointer-events-none` lui interdit d'intercepter le curseur — c'est le survol du
+          `pointer-events-none` lui interdit d'intercepter le curseur - c'est le survol du
           lien qui commande l'ouverture, le voile n'est que decor. */}
       <AnimatePresence>
         {mega && (

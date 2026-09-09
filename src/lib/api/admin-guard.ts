@@ -18,7 +18,7 @@ import { createAdminClient } from "./db";
  *   exclu de /admin/products, /admin/categories, /admin/subcategories).
  *
  * Les lectures publiques du storefront (produits, catégories, commande,
- * contact, auth) restent SANS garde — seules les mutations et les lectures
+ * contact, auth) restent SANS garde - seules les mutations et les lectures
  * sensibles (commandes, messages, exports, uploads) sont verrouillées.
  */
 

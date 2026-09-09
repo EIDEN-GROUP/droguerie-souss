@@ -4,7 +4,7 @@
  *   node scripts/generate-sitemap.cjs
  *
  * Exécuté au début du build (`npm run build`). Lit les variables depuis
- * l'environnement (Vercel) puis, à défaut, depuis `.env` — même logique que
+ * l'environnement (Vercel) puis, à défaut, depuis `.env` - même logique que
  * `apply-product-images.cjs`. Sans identifiants valides, le script écrit quand
  * même un sitemap limité aux pages principales et prévient, pour ne jamais
  * casser un build.
@@ -186,7 +186,7 @@ async function main() {
     `\n</urlset>\n`;
 
   fs.writeFileSync(OUT, xml, "utf8");
-  console.log(`[sitemap] ${OUT} — ${entries.length} URLs.`);
+  console.log(`[sitemap] ${OUT} - ${entries.length} URLs.`);
 }
 
 main().catch((e) => {

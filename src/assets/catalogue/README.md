@@ -10,7 +10,7 @@ nouvel onglet, où c'est la visionneuse du navigateur qui l'affiche. `/catalogue
 vers le fichier, les deux adresses mènent donc au même endroit.
 
 L'URL, le poids et le nombre de pages sont renseignés dans `catalogueEditions`
-(`src/lib/catalogue.ts`) — `scripts/catalogue-covers.mjs` affiche les trois valeurs.
+(`src/lib/catalogue.ts`) - `scripts/catalogue-covers.mjs` affiche les trois valeurs.
 
 ## Format `flipbook`
 

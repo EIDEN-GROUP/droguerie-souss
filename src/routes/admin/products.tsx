@@ -338,7 +338,7 @@ function AdminProducts() {
                   ) : p.dimension ? (
                     <span className="text-sm text-ink-soft">{p.dimension}</span>
                   ) : (
-                    <span className="text-sm text-ink-soft/50">—</span>
+                    <span className="text-sm text-ink-soft/50">-</span>
                   )}
                 </TableCell>
                 <TableCell>
@@ -391,7 +391,7 @@ function AdminProducts() {
               {preview.rows.filter((r) => r.errors.length > 0).length > 0 && (
                 <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3">
                   <p className="text-xs font-bold text-accent-red">
-                    {preview.rows.filter((r) => r.errors.length > 0).length} ligne(s) avec des erreurs — elles seront ignorées.
+                    {preview.rows.filter((r) => r.errors.length > 0).length} ligne(s) avec des erreurs - elles seront ignorées.
                   </p>
                 </div>
               )}
@@ -414,7 +414,7 @@ function AdminProducts() {
                       <TableCell className="text-xs text-ink-soft">{r.rowNum}</TableCell>
                       <TableCell className="text-sm font-semibold">{r.name}</TableCell>
                       <TableCell className="text-xs text-ink-soft">{r.category}</TableCell>
-                      <TableCell className="text-sm">{r.price || "—"}</TableCell>
+                      <TableCell className="text-sm">{r.price || "-"}</TableCell>
                       <TableCell>
                         {r.errors.length > 0 ? (
                           <span className="inline-flex items-center gap-1 text-xs font-semibold text-accent-red">

@@ -3,19 +3,19 @@ import { useRouter } from "@tanstack/react-router";
 import { verifyGateCredentials } from "../lib/api/site-gate";
 
 /**
- * SITE-GATE — écran blanc + boîtes de dialogue natives demandant un nom
+ * SITE-GATE - écran blanc + boîtes de dialogue natives demandant un nom
  * d'utilisateur et un mot de passe tant que le serveur n'a pas validé les
  * identifiants. Tant que le site est verrouillé, aucun contenu n'est rendu
  * (ni côté serveur, ni côté client).
  *
  * INTERRUPTEUR ENV : le verrou n'est actif que si `VITE_SITE_GATE_ENABLED=true`.
  * Sans cette variable (ou à `false`), ce composant rend directement `children`
- * sans aucun prompt — le site est public et crawlable. Mettez `=true` pour
+ * sans aucun prompt - le site est public et crawlable. Mettez `=true` pour
  * reverrouiller (chantier / pré-lancement).
  *
  * Les identifiants sont vérifiés SUR LE SERVEUR contre Supabase (table
  * `site_gate_users`, migration 018_site_gate.sql) et la session est un cookie
- * httpOnly signé — voir src/lib/api/site-gate.ts.
+ * httpOnly signé - voir src/lib/api/site-gate.ts.
  *
  * ── POUR RETIRER DÉFINITIVEMENT LE VERROU ─────────────────────────────
  * 1. src/routes/__root.tsx : retirer l'import de SiteGate, l'import de

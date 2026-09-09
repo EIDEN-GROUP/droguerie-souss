@@ -44,7 +44,7 @@ export function TablePagination({
     <div className="flex flex-col gap-3 border-t px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
         <p className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
-          {from}–{to} sur {total} {label}
+          {from}-{to} sur {total} {label}
         </p>
         <select
           value={pageSize}

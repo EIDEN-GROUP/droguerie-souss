@@ -1,5 +1,5 @@
 /**
- * Google Analytics 4 — chargement conditionnel + consentement (vie privée).
+ * Google Analytics 4 - chargement conditionnel + consentement (vie privée).
  *
  * - Rien n'est chargé tant que `VITE_GA_MEASUREMENT_ID` est absent.
  * - Même avec un ID, AUCUNE requête vers Google ne part sans acceptation :

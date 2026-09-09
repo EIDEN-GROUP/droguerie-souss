@@ -51,7 +51,7 @@ function actionOf(edition: CatalogueEdition) {
 export function CatalogueCard({ edition, index }: { edition: CatalogueEdition; index: number }) {
   const isPdf = edition.format === "pdf";
   /** La liseuse interactive est une page du site : on y navigue normalement. Les autres
-   *  éditions partent dans un nouvel onglet — le PDF dans la visionneuse du navigateur,
+   *  éditions partent dans un nouvel onglet - le PDF dans la visionneuse du navigateur,
    *  le flipbook images sur sa page dédiée. */
   const inSite = edition.format === "interactive";
   const href = isPdf ? edition.pdf.url : `/catalogue/${edition.slug}`;

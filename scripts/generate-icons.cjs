@@ -11,12 +11,12 @@
  *     (48, 96, 144…). L'ancien favicon.ico était un PNG 1102×1102 renommé : Google le
  *     rejetait, d'où l'absence d'icône dans les résultats de recherche.
  *   - favicon-96x96.png (96 = multiple de 48) + <link rel="icon" type="image/png"
- *     sizes="96x96"> est la référence la plus fiable pour Google — elle est déclarée
+ *     sizes="96x96"> est la référence la plus fiable pour Google - elle est déclarée
  *     EN PREMIER dans <head> pour que Google ne retienne pas la 32×32 (qui échoue à
  *     la règle du multiple de 48).
  *   - favicon.ico (16/32/48 réels, entrées BITMAP classiques non compressées) couvre
  *     les navigateurs qui demandent l'ICO. Les entrées sont en BMP classique (et non
- *     en PNG compressé) : c'est le format le plus largement compatible — le même que
+ *     en PNG compressé) : c'est le format le plus largement compatible - le même que
  *     celui de droguerie-ifriquia.ma, dont l'icône s'affiche dans Google.
  */
 const { execFileSync } = require("child_process");
@@ -35,7 +35,7 @@ function ffmpeg(args, opts = {}) {
 }
 
 /** Construit un .ico avec des entrées BITMAP classiques (non compressées), le format
- *  que tout le monde lit — Windows, navigateurs et le crawler de favicons de Google.
+ *  que tout le monde lit - Windows, navigateurs et le crawler de favicons de Google.
  *
  *  Structure par entrée : BITMAPINFOHEADER (40 o) + pixels BGRA bottom-up + masque
  *  AND 1bpp (zéros = opaque). Les pixels bruts viennent de ffmpeg en rawvideo
@@ -136,7 +136,7 @@ function main() {
   ]) {
     const srcPath = path.join(ASSETS, src);
     if (!fs.existsSync(srcPath)) {
-      console.log(`[icons] ${src} absent (déjà converti ?) — étape ignorée.`);
+      console.log(`[icons] ${src} absent (déjà converti ?) - étape ignorée.`);
       continue;
     }
     ffmpeg([

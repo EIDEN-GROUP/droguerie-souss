@@ -97,7 +97,7 @@ function SidebarContent({ onNavigate }: { onNavigate?: () => void }) {
         La pastille active doit se fondre dans le panneau crème : sa barre de défilement
         est donc masquée (une barre visible rognerait 8px et détacherait la pastille du
         panneau), le coin arrondi à droite est proscrit, et le padding vertical laisse la
-        place aux encoches du premier et du dernier élément — que `overflow` rognerait.
+        place aux encoches du premier et du dernier élément - que `overflow` rognerait.
       */}
       <nav className="no-scrollbar flex-1 space-y-1.5 overflow-y-auto py-4 pl-4">
         {links.map((l, i) => {

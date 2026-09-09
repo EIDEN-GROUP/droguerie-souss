@@ -14,7 +14,7 @@ export const products: Product[] = [
     "name": "100",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "100.png"
@@ -23,7 +23,7 @@ export const products: Product[] = [
     "name": "107",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "107.png"
@@ -32,7 +32,7 @@ export const products: Product[] = [
     "name": "45000",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45000.png"
@@ -41,7 +41,7 @@ export const products: Product[] = [
     "name": "45009",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45009.png"
@@ -50,7 +50,7 @@ export const products: Product[] = [
     "name": "45020",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45020.png"
@@ -59,7 +59,7 @@ export const products: Product[] = [
     "name": "45021",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45021.png"
@@ -68,7 +68,7 @@ export const products: Product[] = [
     "name": "45046",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45046.png"
@@ -77,7 +77,7 @@ export const products: Product[] = [
     "name": "45048",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 45×45 — Carreaux Locaux. Catalogue SSD 2026, page 31.",
+    "description": "Carrelage céramique format 45×45 - Carreaux Locaux. Catalogue SSD 2026, page 31.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "45048.png"
@@ -86,7 +86,7 @@ export const products: Product[] = [
     "name": "62032",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×60 — Parquet. Catalogue SSD 2026, page 27.",
+    "description": "Carrelage céramique format 20×60 - Parquet. Catalogue SSD 2026, page 27.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "62032.png"
@@ -95,7 +95,7 @@ export const products: Product[] = [
     "name": "62035",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×60 — Parquet. Catalogue SSD 2026, page 27.",
+    "description": "Carrelage céramique format 20×60 - Parquet. Catalogue SSD 2026, page 27.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "62035.png"
@@ -104,7 +104,7 @@ export const products: Product[] = [
     "name": "62037",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×60 — Parquet. Catalogue SSD 2026, page 27.",
+    "description": "Carrelage céramique format 20×60 - Parquet. Catalogue SSD 2026, page 27.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "62037.png"
@@ -113,7 +113,7 @@ export const products: Product[] = [
     "name": "62055",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×60 — Parquet. Catalogue SSD 2026, page 27.",
+    "description": "Carrelage céramique format 20×60 - Parquet. Catalogue SSD 2026, page 27.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "62055.png"
@@ -122,7 +122,7 @@ export const products: Product[] = [
     "name": "82008",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "82008.png"
@@ -131,7 +131,7 @@ export const products: Product[] = [
     "name": "82111",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "82111.png"
@@ -167,7 +167,7 @@ export const products: Product[] = [
     "name": "Air Roble",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×120 — Carreaux d'Importation. Catalogue SSD 2026, page 42.",
+    "description": "Carrelage céramique format 20×120 - Carreaux d'Importation. Catalogue SSD 2026, page 42.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Air-Roble.png"
@@ -176,7 +176,7 @@ export const products: Product[] = [
     "name": "Alaska Gris Foncé",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Alaska-Gris-Fonce.png"
@@ -194,7 +194,7 @@ export const products: Product[] = [
     "name": "Anti-acide",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Anti-acide.png"
@@ -203,7 +203,7 @@ export const products: Product[] = [
     "name": "Antidérapant",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Antiderapant.png"
@@ -212,7 +212,7 @@ export const products: Product[] = [
     "name": "Antique",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Antique.png"
@@ -221,7 +221,7 @@ export const products: Product[] = [
     "name": "Apulia Gold",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux d'Importation. Catalogue SSD 2026, page 40.",
+    "description": "Carrelage céramique format 60×60 - Carreaux d'Importation. Catalogue SSD 2026, page 40.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Apulia-Gold.png"
@@ -248,7 +248,7 @@ export const products: Product[] = [
     "name": "Belem Beige Foncé",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Belem-Beige-Fonce.png"
@@ -275,7 +275,7 @@ export const products: Product[] = [
     "name": "Boreal Taupe",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×120 — Carreaux d'Importation. Catalogue SSD 2026, page 42.",
+    "description": "Carrelage céramique format 20×120 - Carreaux d'Importation. Catalogue SSD 2026, page 42.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Boreal-Taupe.png"
@@ -284,7 +284,7 @@ export const products: Product[] = [
     "name": "Brica Sable",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Brica-Sable.png"
@@ -311,7 +311,7 @@ export const products: Product[] = [
     "name": "Calacata",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux Locaux. Catalogue SSD 2026, page 35.",
+    "description": "Carrelage céramique format 120×60 - Carreaux Locaux. Catalogue SSD 2026, page 35.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Calacata.png"
@@ -320,7 +320,7 @@ export const products: Product[] = [
     "name": "Calacata",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux d'Importation. Catalogue SSD 2026, page 40.",
+    "description": "Carrelage céramique format 60×60 - Carreaux d'Importation. Catalogue SSD 2026, page 40.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Calacata.png"
@@ -329,7 +329,7 @@ export const products: Product[] = [
     "name": "Calara Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Calara-Gris.png"
@@ -347,7 +347,7 @@ export const products: Product[] = [
     "name": "Capio Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Capio-Beige.png"
@@ -356,7 +356,7 @@ export const products: Product[] = [
     "name": "Caprice Noir",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux Locaux. Catalogue SSD 2026, page 35.",
+    "description": "Carrelage céramique format 120×60 - Carreaux Locaux. Catalogue SSD 2026, page 35.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Caprice-Noir.png"
@@ -365,7 +365,7 @@ export const products: Product[] = [
     "name": "Carraplus",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Collections. Catalogue SSD 2026, page 8.",
+    "description": "Carrelage céramique format 60×60 - Collections. Catalogue SSD 2026, page 8.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Carraplus.png"
@@ -374,7 +374,7 @@ export const products: Product[] = [
     "name": "Carraplus",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 18.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 18.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Carraplus.png"
@@ -428,7 +428,7 @@ export const products: Product[] = [
     "name": "Chelsea Clair",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×75 — Carreaux Locaux. Catalogue SSD 2026, page 28.",
+    "description": "Carrelage céramique format 25×75 - Carreaux Locaux. Catalogue SSD 2026, page 28.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Chelsea-Clair.jpg"
@@ -518,7 +518,7 @@ export const products: Product[] = [
     "name": "Cosmos Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Carreaux Locaux. Catalogue SSD 2026, page 29.",
+    "description": "Carrelage céramique format 30×60 - Carreaux Locaux. Catalogue SSD 2026, page 29.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Cosmos-Gris.jpg"
@@ -536,7 +536,7 @@ export const products: Product[] = [
     "name": "Crema Marfil",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Crema-Marfil.jpg"
@@ -554,7 +554,7 @@ export const products: Product[] = [
     "name": "Crown",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux d'Importation. Catalogue SSD 2026, page 39.",
+    "description": "Carrelage céramique format 120×60 - Carreaux d'Importation. Catalogue SSD 2026, page 39.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Crown.jpg"
@@ -662,7 +662,7 @@ export const products: Product[] = [
     "name": "Estatuario",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux d'Importation. Catalogue SSD 2026, page 39.",
+    "description": "Carrelage céramique format 120×60 - Carreaux d'Importation. Catalogue SSD 2026, page 39.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Estatuario.jpg"
@@ -671,7 +671,7 @@ export const products: Product[] = [
     "name": "Évoque Perla",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×120 — Carreaux d'Importation. Catalogue SSD 2026, page 42.",
+    "description": "Carrelage céramique format 20×120 - Carreaux d'Importation. Catalogue SSD 2026, page 42.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Evoque-Perla.jpg"
@@ -716,7 +716,7 @@ export const products: Product[] = [
     "name": "Finix Crema Marfil",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Finix-Crema-Marfil.jpg"
@@ -734,7 +734,7 @@ export const products: Product[] = [
     "name": "Genova",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 15.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 15.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Genova.jpg"
@@ -743,7 +743,7 @@ export const products: Product[] = [
     "name": "Genova Dama",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 15.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 15.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Genova-Dama.jpg"
@@ -752,7 +752,7 @@ export const products: Product[] = [
     "name": "Glass",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×90 — Carreaux Locaux. Catalogue SSD 2026, page 36.",
+    "description": "Carrelage céramique format 30×90 - Carreaux Locaux. Catalogue SSD 2026, page 36.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Glass.jpg"
@@ -761,7 +761,7 @@ export const products: Product[] = [
     "name": "Golden Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Golden-Beige.jpg"
@@ -779,7 +779,7 @@ export const products: Product[] = [
     "name": "Green",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 240×120 — Carreaux d'Importation. Catalogue SSD 2026, page 38.",
+    "description": "Carrelage céramique format 240×120 - Carreaux d'Importation. Catalogue SSD 2026, page 38.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Green.jpg"
@@ -788,7 +788,7 @@ export const products: Product[] = [
     "name": "Grown",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×90 — Carreaux Locaux. Catalogue SSD 2026, page 36.",
+    "description": "Carrelage céramique format 30×90 - Carreaux Locaux. Catalogue SSD 2026, page 36.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Grown.jpg"
@@ -797,7 +797,7 @@ export const products: Product[] = [
     "name": "Hawz",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Carreaux Locaux. Catalogue SSD 2026, page 32.",
+    "description": "Carrelage céramique format 50×50 - Carreaux Locaux. Catalogue SSD 2026, page 32.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Hawz.jpg"
@@ -815,7 +815,7 @@ export const products: Product[] = [
     "name": "Jade",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×90 — Carreaux Locaux. Catalogue SSD 2026, page 36.",
+    "description": "Carrelage céramique format 30×90 - Carreaux Locaux. Catalogue SSD 2026, page 36.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Jade.jpg"
@@ -824,7 +824,7 @@ export const products: Product[] = [
     "name": "Java Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 16.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 16.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Java-Beige.jpg"
@@ -833,7 +833,7 @@ export const products: Product[] = [
     "name": "Java Dama",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 16.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 16.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Java-Dama.jpg"
@@ -842,7 +842,7 @@ export const products: Product[] = [
     "name": "Java Loft",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 16.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 16.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Java-Loft.jpg"
@@ -905,7 +905,7 @@ export const products: Product[] = [
     "name": "Lava Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Carreaux Locaux. Catalogue SSD 2026, page 29.",
+    "description": "Carrelage céramique format 30×60 - Carreaux Locaux. Catalogue SSD 2026, page 29.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Lava-Gris.jpg"
@@ -923,7 +923,7 @@ export const products: Product[] = [
     "name": "Light Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 20.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 20.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Beige.jpg"
@@ -932,7 +932,7 @@ export const products: Product[] = [
     "name": "Light Beige Déco",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 20.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 20.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Beige-Deco.jpg"
@@ -941,7 +941,7 @@ export const products: Product[] = [
     "name": "Light Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 22.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 22.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Gris.jpg"
@@ -950,7 +950,7 @@ export const products: Product[] = [
     "name": "Light Perla",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 21.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 21.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Perla.jpg"
@@ -959,7 +959,7 @@ export const products: Product[] = [
     "name": "Light Perla Déco",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 21.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 21.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Perla-Deco.jpg"
@@ -968,7 +968,7 @@ export const products: Product[] = [
     "name": "Light Verda",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×50 — Collections. Catalogue SSD 2026, page 22.",
+    "description": "Carrelage céramique format 25×50 - Collections. Catalogue SSD 2026, page 22.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Light-Verda.jpg"
@@ -977,7 +977,7 @@ export const products: Product[] = [
     "name": "Luna",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×75 — Carreaux Locaux. Catalogue SSD 2026, page 28.",
+    "description": "Carrelage céramique format 25×75 - Carreaux Locaux. Catalogue SSD 2026, page 28.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Luna.jpg"
@@ -986,7 +986,7 @@ export const products: Product[] = [
     "name": "Marbella",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Marbella.jpg"
@@ -1013,7 +1013,7 @@ export const products: Product[] = [
     "name": "Masse Teintée",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Masse-Teintee.jpg"
@@ -1022,7 +1022,7 @@ export const products: Product[] = [
     "name": "Medina Déco",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Carreaux Locaux. Catalogue SSD 2026, page 29.",
+    "description": "Carrelage céramique format 30×60 - Carreaux Locaux. Catalogue SSD 2026, page 29.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Medina-Deco.jpg"
@@ -1049,7 +1049,7 @@ export const products: Product[] = [
     "name": "Mirage",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Collections. Catalogue SSD 2026, page 10.",
+    "description": "Carrelage céramique format 60×60 - Collections. Catalogue SSD 2026, page 10.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Mirage.jpg"
@@ -1094,7 +1094,7 @@ export const products: Product[] = [
     "name": "Nano Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Collections. Catalogue SSD 2026, page 12.",
+    "description": "Carrelage céramique format 50×50 - Collections. Catalogue SSD 2026, page 12.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Nano-Beige.jpg"
@@ -1103,7 +1103,7 @@ export const products: Product[] = [
     "name": "Nano Crema",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Collections. Catalogue SSD 2026, page 12.",
+    "description": "Carrelage céramique format 50×50 - Collections. Catalogue SSD 2026, page 12.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Nano-Crema.jpg"
@@ -1112,7 +1112,7 @@ export const products: Product[] = [
     "name": "Nano Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Collections. Catalogue SSD 2026, page 13.",
+    "description": "Carrelage céramique format 50×50 - Collections. Catalogue SSD 2026, page 13.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Nano-Gris.jpg"
@@ -1121,7 +1121,7 @@ export const products: Product[] = [
     "name": "Nano Perla",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 50×50 — Collections. Catalogue SSD 2026, page 13.",
+    "description": "Carrelage céramique format 50×50 - Collections. Catalogue SSD 2026, page 13.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Nano-Perla.jpg"
@@ -1130,7 +1130,7 @@ export const products: Product[] = [
     "name": "Natural",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 240×120 — Carreaux d'Importation. Catalogue SSD 2026, page 38.",
+    "description": "Carrelage céramique format 240×120 - Carreaux d'Importation. Catalogue SSD 2026, page 38.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Natural.jpg"
@@ -1139,7 +1139,7 @@ export const products: Product[] = [
     "name": "Nero",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 240×120 — Carreaux d'Importation. Catalogue SSD 2026, page 38.",
+    "description": "Carrelage céramique format 240×120 - Carreaux d'Importation. Catalogue SSD 2026, page 38.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Nero.jpg"
@@ -1157,7 +1157,7 @@ export const products: Product[] = [
     "name": "Onyx Bleu",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux Locaux. Catalogue SSD 2026, page 35.",
+    "description": "Carrelage céramique format 120×60 - Carreaux Locaux. Catalogue SSD 2026, page 35.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Onyx-Bleu.jpg"
@@ -1166,7 +1166,7 @@ export const products: Product[] = [
     "name": "Onyx Bleu",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×90 — Carreaux Locaux. Catalogue SSD 2026, page 36.",
+    "description": "Carrelage céramique format 30×90 - Carreaux Locaux. Catalogue SSD 2026, page 36.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Onyx-Bleu.jpg"
@@ -1175,7 +1175,7 @@ export const products: Product[] = [
     "name": "Opulus",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux d'Importation. Catalogue SSD 2026, page 39.",
+    "description": "Carrelage céramique format 120×60 - Carreaux d'Importation. Catalogue SSD 2026, page 39.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Opulus.jpg"
@@ -1220,7 +1220,7 @@ export const products: Product[] = [
     "name": "Park Galéon",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 19×57 — Parquet. Catalogue SSD 2026, page 26.",
+    "description": "Carrelage céramique format 19×57 - Parquet. Catalogue SSD 2026, page 26.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Park-Galeon.jpg"
@@ -1229,7 +1229,7 @@ export const products: Product[] = [
     "name": "Park Gris Foncé",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 19×57 — Parquet. Catalogue SSD 2026, page 26.",
+    "description": "Carrelage céramique format 19×57 - Parquet. Catalogue SSD 2026, page 26.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Park-Gris-Fonce.jpg"
@@ -1238,7 +1238,7 @@ export const products: Product[] = [
     "name": "Park Marron",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 19×57 — Parquet. Catalogue SSD 2026, page 26.",
+    "description": "Carrelage céramique format 19×57 - Parquet. Catalogue SSD 2026, page 26.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Park-Marron.jpg"
@@ -1247,7 +1247,7 @@ export const products: Product[] = [
     "name": "Park Miel",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 19×57 — Parquet. Catalogue SSD 2026, page 26.",
+    "description": "Carrelage céramique format 19×57 - Parquet. Catalogue SSD 2026, page 26.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Park-Miel.jpg"
@@ -1256,7 +1256,7 @@ export const products: Product[] = [
     "name": "Park Nature",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 19×57 — Parquet. Catalogue SSD 2026, page 26.",
+    "description": "Carrelage céramique format 19×57 - Parquet. Catalogue SSD 2026, page 26.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Park-Nature.jpg"
@@ -1265,7 +1265,7 @@ export const products: Product[] = [
     "name": "Pâte Grise",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Pate-Grise.jpg"
@@ -1364,7 +1364,7 @@ export const products: Product[] = [
     "name": "Perlino Rosa",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux d'Importation. Catalogue SSD 2026, page 40.",
+    "description": "Carrelage céramique format 60×60 - Carreaux d'Importation. Catalogue SSD 2026, page 40.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Perlino-Rosa.jpg"
@@ -1373,7 +1373,7 @@ export const products: Product[] = [
     "name": "Pike Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux Locaux. Catalogue SSD 2026, page 33.",
+    "description": "Carrelage céramique format 60×60 - Carreaux Locaux. Catalogue SSD 2026, page 33.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Pike-Gris.jpg"
@@ -1454,7 +1454,7 @@ export const products: Product[] = [
     "name": "Pure Light",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Carreaux d'Importation. Catalogue SSD 2026, page 40.",
+    "description": "Carrelage céramique format 60×60 - Carreaux d'Importation. Catalogue SSD 2026, page 40.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Pure-Light.jpg"
@@ -1472,7 +1472,7 @@ export const products: Product[] = [
     "name": "Qala Pulido",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 240×120 — Carreaux d'Importation. Catalogue SSD 2026, page 38.",
+    "description": "Carrelage céramique format 240×120 - Carreaux d'Importation. Catalogue SSD 2026, page 38.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Qala-Pulido.jpg"
@@ -1499,7 +1499,7 @@ export const products: Product[] = [
     "name": "River Clair",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×75 — Carreaux Locaux. Catalogue SSD 2026, page 28.",
+    "description": "Carrelage céramique format 25×75 - Carreaux Locaux. Catalogue SSD 2026, page 28.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "River-Clair.jpg"
@@ -1535,7 +1535,7 @@ export const products: Product[] = [
     "name": "Saragossa",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 17.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 17.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Saragossa.jpg"
@@ -1544,7 +1544,7 @@ export const products: Product[] = [
     "name": "Saragossa Dama",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Collections. Catalogue SSD 2026, page 17.",
+    "description": "Carrelage céramique format 30×60 - Collections. Catalogue SSD 2026, page 17.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Saragossa-Dama.jpg"
@@ -1553,7 +1553,7 @@ export const products: Product[] = [
     "name": "Sienna Marengo",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×120 — Carreaux d'Importation. Catalogue SSD 2026, page 42.",
+    "description": "Carrelage céramique format 20×120 - Carreaux d'Importation. Catalogue SSD 2026, page 42.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Sienna-Marengo.jpg"
@@ -1598,7 +1598,7 @@ export const products: Product[] = [
     "name": "Technico Beige/Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Technico-Beige-Gris.jpg"
@@ -1607,7 +1607,7 @@ export const products: Product[] = [
     "name": "Technique",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 20×20 — Carreaux d'Importation. Catalogue SSD 2026, page 41.",
+    "description": "Carrelage céramique format 20×20 - Carreaux d'Importation. Catalogue SSD 2026, page 41.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Technique.jpg"
@@ -1616,7 +1616,7 @@ export const products: Product[] = [
     "name": "Teka Gris Foncé",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 30×60 — Carreaux Locaux. Catalogue SSD 2026, page 29.",
+    "description": "Carrelage céramique format 30×60 - Carreaux Locaux. Catalogue SSD 2026, page 29.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Teka-Gris-Fonce.jpg"
@@ -1625,7 +1625,7 @@ export const products: Product[] = [
     "name": "Terrazo Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux Locaux. Catalogue SSD 2026, page 35.",
+    "description": "Carrelage céramique format 120×60 - Carreaux Locaux. Catalogue SSD 2026, page 35.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Terrazo-Gris.jpg"
@@ -1661,7 +1661,7 @@ export const products: Product[] = [
     "name": "Travertin Beige",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 25×75 — Carreaux Locaux. Catalogue SSD 2026, page 28.",
+    "description": "Carrelage céramique format 25×75 - Carreaux Locaux. Catalogue SSD 2026, page 28.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Travertin-Beige.jpg"
@@ -1715,7 +1715,7 @@ export const products: Product[] = [
     "name": "Urano",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Urano.jpg"
@@ -1724,7 +1724,7 @@ export const products: Product[] = [
     "name": "Vail Créma",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Collections. Catalogue SSD 2026, page 9.",
+    "description": "Carrelage céramique format 60×60 - Collections. Catalogue SSD 2026, page 9.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Vail-Crema.jpg"
@@ -1733,7 +1733,7 @@ export const products: Product[] = [
     "name": "Vail Gris",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 60×60 — Collections. Catalogue SSD 2026, page 9.",
+    "description": "Carrelage céramique format 60×60 - Collections. Catalogue SSD 2026, page 9.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Vail-Gris.jpg"
@@ -1751,7 +1751,7 @@ export const products: Product[] = [
     "name": "Velhira",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 120×60 — Carreaux d'Importation. Catalogue SSD 2026, page 39.",
+    "description": "Carrelage céramique format 120×60 - Carreaux d'Importation. Catalogue SSD 2026, page 39.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Velhira.jpg"
@@ -1760,7 +1760,7 @@ export const products: Product[] = [
     "name": "Verdas",
     "category": "Céramique",
     "unit": "m²",
-    "description": "Carrelage céramique format 41×41 — Carreaux Locaux. Catalogue SSD 2026, page 30.",
+    "description": "Carrelage céramique format 41×41 - Carreaux Locaux. Catalogue SSD 2026, page 30.",
     "priceMode": "quote",
     "price": 0.0,
     "image": "Verdas.jpg"

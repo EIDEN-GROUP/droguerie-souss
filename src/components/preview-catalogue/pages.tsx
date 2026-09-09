@@ -159,7 +159,7 @@ export const Cover = forwardRef<HTMLDivElement, object>(function Cover(_, ref) {
       <div className="relative flex h-full flex-col">
         <Photo
           src={`${PH}cover.webp`}
-          alt="Siège de Sté. Souss Droguerie, Dcheira — Inezgane"
+          alt="Siège de Sté. Souss Droguerie, Dcheira - Inezgane"
           className="absolute inset-0 h-full w-full"
         />
         {/*
@@ -647,7 +647,7 @@ export const BackCover = forwardRef<HTMLDivElement, { page: number }>(function B
 
           <dl className="mt-7 space-y-3.5 text-[9px]">
             {[
-              ["Adresse", "29, Bd Mohamed V, Dcheira — Inezgane\nQI Tassila, 80360 · Agadir"],
+              ["Adresse", "29, Bd Mohamed V, Dcheira - Inezgane\nQI Tassila, 80360 · Agadir"],
               ["Fixe", "+212 528 83 66 91 · +212 528 83 89 92"],
               ["GSM / WhatsApp", "+212 661 55 54 63 · +212 661 84 77 59"],
               ["Email", "contact@soussdroguerie.com"],

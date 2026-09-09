@@ -8,7 +8,7 @@
  */
 
 /** Domaine canonique de production : tous les canoniques, og:url et URLs du
- *  sitemap doivent pointer ici — même quand la build tourne sur une
+ *  sitemap doivent pointer ici - même quand la build tourne sur une
  *  prévisualisation. Sinon Google indexe l'URL de preview à la place du domaine
  *  réel, ce qui se traduit par un résultat « domaine nu », sans titre ni
  *  description (exactement le symptôme rencontré : VITE_SITE_URL pointait vers

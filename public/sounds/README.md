@@ -8,15 +8,15 @@ Déposez ici un à trois enregistrements réels, nommés :
 
 Ils sont chargés automatiquement au premier clic et joués au hasard à chaque
 page tournée (avec une légère variation de vitesse). Tant qu'aucun fichier
-n'est présent, la liseuse retombe sur le son synthétisé — aucune erreur, aucune
+n'est présent, la liseuse retombe sur le son synthétisé - aucune erreur, aucune
 requête bloquante.
 
 ## Où trouver un son libre de droits
 
-- **Pixabay Sound Effects** — pixabay.com/sound-effects/search/page%20turn/
+- **Pixabay Sound Effects** - pixabay.com/sound-effects/search/page%20turn/
   Licence Pixabay : usage commercial autorisé, sans attribution.
-- **Freesound** — freesound.org, filtrer sur la licence **CC0**.
-- **Mixkit** — mixkit.co/free-sound-effects/page/ — usage commercial autorisé.
+- **Freesound** - freesound.org, filtrer sur la licence **CC0**.
+- **Mixkit** - mixkit.co/free-sound-effects/page/ - usage commercial autorisé.
 
 Cherchez « page turn », « paper flip », « book page ». Prenez un extrait court
 (0,3 à 0,6 s), recadré au plus près, sans silence en tête.
@@ -28,7 +28,7 @@ Ne reprenez pas le fichier audio de FlippingBook, d'Issuu ou d'un autre
 
 ## Fichier fourni
 
-`page-flip-1.ogg` — « Turning a page », par *planish*, **domaine public**,
+`page-flip-1.ogg` - « Turning a page », par *planish*, **domaine public**,
 via Wikimedia Commons :
 https://commons.wikimedia.org/wiki/File:Turning_a_page.ogg
 

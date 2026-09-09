@@ -25,7 +25,7 @@ export const createOrder = createServerFn({ method: "POST" })
     };
 
     /** `note` needs migration 011. Until it runs, retry without it rather than
-     *  losing the order — the note still reaches us in the email below. */
+     *  losing the order - the note still reaches us in the email below. */
     let { data: order, error: orderError } = await supabase
       .from("orders")
       .insert({ ...row, note: ctx.data.note || null })
@@ -33,7 +33,7 @@ export const createOrder = createServerFn({ method: "POST" })
       .single();
 
     if (orderError?.code === "42703") {
-      console.warn("orders.note missing (migration 011 not applied) — saving without it");
+      console.warn("orders.note missing (migration 011 not applied) - saving without it");
       ({ data: order, error: orderError } = await supabase
         .from("orders")
         .insert(row)

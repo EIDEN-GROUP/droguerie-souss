@@ -3,7 +3,7 @@
  *
  * Trois formats coexistent :
  *  - `pdf` : un fichier déposé dans `public/catalogue/`, ouvert tel quel dans un nouvel
- *    onglet — c'est la visionneuse du navigateur qui l'affiche.
+ *    onglet - c'est la visionneuse du navigateur qui l'affiche.
  *  - `flipbook` : les pages sont des images déposées dans `src/assets/catalogue/<slug>/`
  *    (nomenclature `page-01.jpg`, voir le README du dossier). Elles sont découvertes
  *    automatiquement ; tant qu'un dossier est vide, la visionneuse affiche des pages

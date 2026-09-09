@@ -6,7 +6,7 @@ import { PAGE_RATIO } from "@/lib/catalogue";
 /**
  * `react-pageflip` et `page-flip` sont strictement navigateur : la feuille de style est
  * injectée dès l'import et le livre se construit contre le DOM. Le composant n'est donc
- * jamais importé pendant le rendu serveur — d'où l'import dynamique derrière `mounted`.
+ * jamais importé pendant le rendu serveur - d'où l'import dynamique derrière `mounted`.
  */
 const FlipBookViewer = lazy(() => import("./FlipBookViewer"));
 

@@ -423,7 +423,7 @@ function AdminCategories() {
                     </button>
                   </div>
                   <p className="text-xs text-ink-soft">
-                    Optionnel — 1.5 Mo maximum. Sans image, le site utilise le visuel par défaut.
+                    Optionnel - 1.5 Mo maximum. Sans image, le site utilise le visuel par défaut.
                   </p>
                 </div>
               </div>

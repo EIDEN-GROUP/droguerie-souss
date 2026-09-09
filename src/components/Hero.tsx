@@ -12,7 +12,7 @@ export function Hero() {
         className="absolute inset-0"
       >
         {/* preload=metadata : la vidéo (5,3 Mo) ne bloque plus le premier rendu sur
-            mobile — le poster s'affiche par défaut, le reste se charge à la lecture. */}
+            mobile - le poster s'affiche par défaut, le reste se charge à la lecture. */}
         <video
           src="/hero.mp4"
           poster="/hero-poster.jpg"

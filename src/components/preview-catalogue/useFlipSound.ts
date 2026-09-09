@@ -5,14 +5,14 @@ import { useCallback, useEffect, useRef } from "react";
  *
  * Un vrai tournage de page n'est pas un souffle : c'est de l'air grave, une
  * vibration irrégulière des fibres, puis la feuille qui se pose. Trois couches
- * donc, et surtout pas de bruit blanc — au-delà de 4 kHz on n'entend qu'un
+ * donc, et surtout pas de bruit blanc - au-delà de 4 kHz on n'entend qu'un
  * « tss » métallique.
  *
  * Synthèse plutôt que fichier : rien à héberger, et chaque page sonne
  * légèrement différemment.
  */
 
-/** Bruit brun : bruit blanc intégré, spectre en 1/f² — le grave du papier. */
+/** Bruit brun : bruit blanc intégré, spectre en 1/f² - le grave du papier. */
 function brownNoise(ctx: BaseAudioContext, frames: number) {
   const buf = ctx.createBuffer(1, frames, ctx.sampleRate);
   const d = buf.getChannelData(0);

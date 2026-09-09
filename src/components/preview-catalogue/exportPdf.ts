@@ -10,7 +10,7 @@ import { PAGE_H, PAGE_W } from "./pages";
  *  - `skipFonts: true` : les polices (Fraunces, Inter, IBM Plex Mono) sont
  *    déjà chargées par la page. Sans cette option, html-to-image reparsait
  *    toutes les feuilles de style et ré-encastrait les fichiers de police sur
- *    CHAQUE feuille — c'était le poste de dépense dominant.
+ *    CHAQUE feuille - c'était le poste de dépense dominant.
  *  - JPEG au lieu de PNG : l'encodage est ~3× plus rapide et le PDF nettement
  *    plus léger, sans différence visible sur un contenu photographique.
  *  - captures par rafales (`CONCURRENCY`) plutôt qu'une à une : les phases
@@ -18,7 +18,7 @@ import { PAGE_H, PAGE_W } from "./pages";
  *  - les images et polices sont décodées d'avance : la première feuille ne
  *    part pas à froid.
  *
- * Les deux bibliothèques ne sont chargées qu'au clic — inutile d'alourdir la
+ * Les deux bibliothèques ne sont chargées qu'au clic - inutile d'alourdir la
  * liseuse pour une action occasionnelle.
  */
 const CONCURRENCY = 3; // captures simultanées (3 × ~5,6 Mo de canvas)

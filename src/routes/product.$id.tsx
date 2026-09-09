@@ -18,7 +18,7 @@ export const Route = createFileRoute("/product/$id")({
     try {
       raw = await getProduct({ data: { id: params.id } });
     } catch (error: any) {
-      // PGRST116 : aucune ligne renvoyée — le produit n'existe pas (ou plus).
+      // PGRST116 : aucune ligne renvoyée - le produit n'existe pas (ou plus).
       if (error?.code === "PGRST116" || /0 rows|no rows/i.test(error?.message ?? "")) throw notFound();
       throw error;
     }
@@ -84,7 +84,7 @@ export const Route = createFileRoute("/product/$id")({
     };
 
     return seo({
-      title: `${product.name} — ${product.category}`,
+      title: `${product.name} - ${product.category}`,
       description: descriptionFrom(product.description, 155),
       path: `/product/${product.id}`,
       image: product.image,
@@ -211,7 +211,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                       i === activeImage ? "ring-brand" : "ring-transparent hover:ring-brand/40"
                     }`}
                   >
-                    <img src={img} alt={`${product.name} — vue ${i + 1}`} className="h-full w-full object-cover" />
+                    <img src={img} alt={`${product.name} - vue ${i + 1}`} className="h-full w-full object-cover" />
                   </button>
                 ))}
               </div>

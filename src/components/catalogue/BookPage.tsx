@@ -30,7 +30,7 @@ export const ImagePage = forwardRef<
   <BookPage ref={ref} hard={page === 1 || page === total}>
     <img
       src={src}
-      alt={`${title} — page ${page} sur ${total}`}
+      alt={`${title} - page ${page} sur ${total}`}
       loading={page <= 2 ? "eager" : "lazy"}
       /** Le drag natif de l'image entrerait en conflit avec le geste de tourne-page. */
       draggable={false}
@@ -57,7 +57,7 @@ export const CoverPage = forwardRef<HTMLDivElement, { variant: "front" | "back";
             </h2>
             <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
             <p className="mt-4 text-xs leading-relaxed text-paper/70 sm:text-sm">
-              Matériaux de construction &amp; finitions — Souss Droguerie SARL.
+              Matériaux de construction &amp; finitions - Souss Droguerie SARL.
             </p>
           </div>
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/50">

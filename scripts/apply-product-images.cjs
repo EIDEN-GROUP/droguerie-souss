@@ -9,8 +9,8 @@
  *
  * L'appariement se fait sur nom + catégorie, insensible à la casse et aux accents. Quand un
  * même couple existe en plusieurs exemplaires (produits identiques de dimensions
- * différentes), les fichiers sont distribués dans l'ordre — produits triés par id, fichiers
- * par nom — de sorte qu'une réexécution donne exactement le même résultat.
+ * différentes), les fichiers sont distribués dans l'ordre - produits triés par id, fichiers
+ * par nom - de sorte qu'une réexécution donne exactement le même résultat.
  *
  * Lit SUPABASE_SERVICE_ROLE_KEY et VITE_SUPABASE_URL depuis .env.
  */
@@ -97,7 +97,7 @@ async function main() {
     }
     const file = path.join(dir, entry.fichier);
     if (!fs.existsSync(file)) {
-      orphans.push(`${p.name} — fichier absent : ${entry.fichier}`);
+      orphans.push(`${p.name} - fichier absent : ${entry.fichier}`);
       continue;
     }
     plan.push({ product: p, entry, file });
@@ -116,7 +116,7 @@ async function main() {
     for (const item of plan.slice(0, 5)) {
       console.log(`  ${item.product.name} [${item.product.category}] ← ${item.entry.fichier}`);
     }
-    console.log("\nEssai à blanc — relancer avec --apply pour téléverser.");
+    console.log("\nEssai à blanc - relancer avec --apply pour téléverser.");
     return;
   }
 
