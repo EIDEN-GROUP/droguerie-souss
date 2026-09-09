@@ -9,12 +9,16 @@ export function Footer() {
         <div className="min-w-0">
           <div className="flex items-center gap-3">
             <div className="h-16 w-16">
-              <img src={logo} alt="Souss Droguerie, droguerie à Agadir" className="h-full w-full object-cover" />
+              <img
+                src={logo}
+                alt="Souss Droguerie, droguerie à Agadir"
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
           <p className="mt-4 text-sm text-paper/70">
-            Votre partenaire de confiance en matériaux de construction dans la région
-            du Souss depuis plus de 20 ans.
+            Votre partenaire de confiance en matériaux de construction dans la région du Souss
+            depuis plus de 20 ans.
           </p>
           {/* <div className="mt-4 flex gap-2">
             <a href="#" className="grid h-9 w-9 place-items-center rounded-full bg-paper/10 hover:bg-brand"><Facebook className="h-4 w-4" /></a>
@@ -23,40 +27,130 @@ export function Footer() {
         </div>
 
         <div className="min-w-0">
-          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Boutique</h4>
+          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">
+            Boutique
+          </h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
-            <li><Link to="/categories" className="hover:text-sky">Tous les produits</Link></li>
-            <li><Link to="/catalogue" className="hover:text-sky">Catalogue</Link></li>
-            <li><Link to="/categories" className="hover:text-sky">Carrelage & Marbre</Link></li>
-            <li><Link to="/categories" className="hover:text-sky">Peinture</Link></li>
-            <li><Link to="/categories" className="hover:text-sky">Électricité & Plomberie</Link></li>
+            <li>
+              <Link to="/categories" className="hover:text-sky">
+                Tous les produits
+              </Link>
+            </li>
+            <li>
+              <Link to="/catalogue" className="hover:text-sky">
+                Catalogue
+              </Link>
+            </li>
+            <li>
+              <Link to="/categories" className="hover:text-sky">
+                Carrelage & Marbre
+              </Link>
+            </li>
+            <li>
+              <Link to="/categories" className="hover:text-sky">
+                Peinture
+              </Link>
+            </li>
+            <li>
+              <Link to="/categories" className="hover:text-sky">
+                Électricité & Plomberie
+              </Link>
+            </li>
           </ul>
         </div>
 
         <div className="min-w-0">
-          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Entreprise</h4>
+          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">
+            Entreprise
+          </h4>
           <ul className="mt-4 space-y-2 text-sm text-paper/70">
-            <li><Link to="/" className="hover:text-sky">Accueil</Link></li>
-            <li><Link to="/a-propos" className="hover:text-sky">À propos</Link></li>
-            <li><Link to="/commande-rapide" className="hover:text-sky">Commande rapide</Link></li>
-            <li><Link to="/contact" className="hover:text-sky">Contact</Link></li>
-            <li><Link to="/checkout" className="hover:text-sky">Devis</Link></li>
+            <li>
+              <Link to="/" className="hover:text-sky">
+                Accueil
+              </Link>
+            </li>
+            <li>
+              <Link to="/a-propos" className="hover:text-sky">
+                À propos
+              </Link>
+            </li>
+            <li>
+              <Link to="/commande-rapide" className="hover:text-sky">
+                Commande rapide
+              </Link>
+            </li>
+            <li>
+              <Link to="/contact" className="hover:text-sky">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link to="/checkout" className="hover:text-sky">
+                Devis
+              </Link>
+            </li>
+            <li>
+              <Link to="/politique-confidentialite" className="hover:text-sky">
+                Confidentialité
+              </Link>
+            </li>
+            <li>
+              <Link to="/security" className="hover:text-sky">
+                Sécurité
+              </Link>
+            </li>
           </ul>
         </div>
 
         <div className="min-w-0">
-          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">Contact</h4>
+          <h4 className="font-display text-sm font-bold uppercase tracking-wider text-white">
+            Contact
+          </h4>
           <ul className="mt-4 space-y-3 text-sm text-paper/70">
-            <li className="flex items-start gap-2"><MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="https://maps.app.goo.gl/q54qmxeEv752bJMTA" className="min-w-0 break-words hover:text-white">Bd Mohamed V, Q.I. Tassila III, N°29, Dcheira, Agadir 80360, Maroc</a></li>
-            <li className="flex items-start gap-2"><Phone className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="tel:+212528838992" className="min-w-0 break-words hover:text-white">+212 528 838 992</a></li>
-            <li className="flex items-start gap-2"><Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" /> <a href="mailto:contact@soussdroguerie.com" className="min-w-0 break-words hover:text-white">contact@soussdroguerie.com</a></li>
+            <li className="flex items-start gap-2">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cream" />{" "}
+              <a
+                href="https://maps.app.goo.gl/q54qmxeEv752bJMTA"
+                className="min-w-0 break-words hover:text-white"
+              >
+                Bd Mohamed V, Q.I. Tassila III, N°29, Dcheira, Agadir 80360, Maroc
+              </a>
+            </li>
+            <li className="flex items-start gap-2">
+              <Phone className="mt-0.5 h-4 w-4 shrink-0 text-cream" />{" "}
+              <a href="tel:+212528838992" className="min-w-0 break-words hover:text-white">
+                +212 528 838 992
+              </a>
+            </li>
+            <li className="flex items-start gap-2">
+              <Mail className="mt-0.5 h-4 w-4 shrink-0 text-cream" />{" "}
+              <a
+                href="mailto:contact@soussdroguerie.com"
+                className="min-w-0 break-words hover:text-white"
+              >
+                contact@soussdroguerie.com
+              </a>
+            </li>
           </ul>
         </div>
       </div>
       <div className="border-t border-paper/10">
         <div className="container-x flex flex-col items-center justify-between gap-2 py-5 text-xs text-paper/60 sm:flex-row">
           <span>© {new Date().getFullYear()} Souss Droguerie SARL. Tous droits réservés.</span>
-          <span>Créé par <a href="https://eiden-group.com" className="hover:text-white">• EIDEN GROUP</a></span>
+          <span className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
+            <Link to="/politique-confidentialite" className="hover:text-white">
+              Confidentialité
+            </Link>
+            <Link to="/security" className="hover:text-white">
+              Sécurité
+            </Link>
+            <span>
+              Créé par{" "}
+              <a href="https://eiden-group.com" className="hover:text-white">
+                • EIDEN GROUP
+              </a>
+            </span>
+          </span>
         </div>
       </div>
     </footer>

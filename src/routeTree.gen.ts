@@ -9,7 +9,9 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SecurityRouteImport } from './routes/security'
 import { Route as PreviewCatalogueRouteImport } from './routes/preview-catalogue'
+import { Route as PolitiqueConfidentialiteRouteImport } from './routes/politique-confidentialite'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ConfirmationRouteImport } from './routes/confirmation'
 import { Route as CompteRouteImport } from './routes/compte'
@@ -30,11 +32,22 @@ import { Route as AdminOrdersRouteImport } from './routes/admin/orders'
 import { Route as AdminContactsRouteImport } from './routes/admin/contacts'
 import { Route as AdminCategoriesRouteImport } from './routes/admin/categories'
 
+const SecurityRoute = SecurityRouteImport.update({
+  id: '/security',
+  path: '/security',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PreviewCatalogueRoute = PreviewCatalogueRouteImport.update({
   id: '/preview-catalogue',
   path: '/preview-catalogue',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PolitiqueConfidentialiteRoute =
+  PolitiqueConfidentialiteRouteImport.update({
+    id: '/politique-confidentialite',
+    path: '/politique-confidentialite',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -141,7 +154,9 @@ export interface FileRoutesByFullPath {
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
+  '/politique-confidentialite': typeof PolitiqueConfidentialiteRoute
   '/preview-catalogue': typeof PreviewCatalogueRoute
+  '/security': typeof SecurityRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -162,7 +177,9 @@ export interface FileRoutesByTo {
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
+  '/politique-confidentialite': typeof PolitiqueConfidentialiteRoute
   '/preview-catalogue': typeof PreviewCatalogueRoute
+  '/security': typeof SecurityRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -185,7 +202,9 @@ export interface FileRoutesById {
   '/compte': typeof CompteRoute
   '/confirmation': typeof ConfirmationRoute
   '/contact': typeof ContactRoute
+  '/politique-confidentialite': typeof PolitiqueConfidentialiteRoute
   '/preview-catalogue': typeof PreviewCatalogueRoute
+  '/security': typeof SecurityRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/contacts': typeof AdminContactsRoute
   '/admin/orders': typeof AdminOrdersRoute
@@ -209,7 +228,9 @@ export interface FileRouteTypes {
     | '/compte'
     | '/confirmation'
     | '/contact'
+    | '/politique-confidentialite'
     | '/preview-catalogue'
+    | '/security'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -230,7 +251,9 @@ export interface FileRouteTypes {
     | '/compte'
     | '/confirmation'
     | '/contact'
+    | '/politique-confidentialite'
     | '/preview-catalogue'
+    | '/security'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -252,7 +275,9 @@ export interface FileRouteTypes {
     | '/compte'
     | '/confirmation'
     | '/contact'
+    | '/politique-confidentialite'
     | '/preview-catalogue'
+    | '/security'
     | '/admin/categories'
     | '/admin/contacts'
     | '/admin/orders'
@@ -275,7 +300,9 @@ export interface RootRouteChildren {
   CompteRoute: typeof CompteRoute
   ConfirmationRoute: typeof ConfirmationRoute
   ContactRoute: typeof ContactRoute
+  PolitiqueConfidentialiteRoute: typeof PolitiqueConfidentialiteRoute
   PreviewCatalogueRoute: typeof PreviewCatalogueRoute
+  SecurityRoute: typeof SecurityRoute
   CatalogueSlugRoute: typeof CatalogueSlugRoute
   CatalogueInteractifRoute: typeof CatalogueInteractifRoute
   ProductIdRoute: typeof ProductIdRoute
@@ -284,11 +311,25 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/security': {
+      id: '/security'
+      path: '/security'
+      fullPath: '/security'
+      preLoaderRoute: typeof SecurityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/preview-catalogue': {
       id: '/preview-catalogue'
       path: '/preview-catalogue'
       fullPath: '/preview-catalogue'
       preLoaderRoute: typeof PreviewCatalogueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/politique-confidentialite': {
+      id: '/politique-confidentialite'
+      path: '/politique-confidentialite'
+      fullPath: '/politique-confidentialite'
+      preLoaderRoute: typeof PolitiqueConfidentialiteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -457,7 +498,9 @@ const rootRouteChildren: RootRouteChildren = {
   CompteRoute: CompteRoute,
   ConfirmationRoute: ConfirmationRoute,
   ContactRoute: ContactRoute,
+  PolitiqueConfidentialiteRoute: PolitiqueConfidentialiteRoute,
   PreviewCatalogueRoute: PreviewCatalogueRoute,
+  SecurityRoute: SecurityRoute,
   CatalogueSlugRoute: CatalogueSlugRoute,
   CatalogueInteractifRoute: CatalogueInteractifRoute,
   ProductIdRoute: ProductIdRoute,

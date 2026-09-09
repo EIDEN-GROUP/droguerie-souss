@@ -4,6 +4,7 @@ import { Footer } from "./Footer";
 import { CartSidebar } from "./CartSidebar";
 import { FavoritesSidebar } from "./FavoritesSidebar";
 import { AuthDialog } from "./AuthDialog";
+import { ConsentBanner } from "./ConsentBanner";
 import { PageLoader } from "./Loader";
 import { FloatingActions } from "./FloatingActions";
 import { useCustomerAuth } from "@/lib/customerAuth";
@@ -24,6 +25,7 @@ export function Layout({ children }: { children: ReactNode }) {
       <FavoritesSidebar />
       <AuthDialog />
       <FloatingActions />
+      <ConsentBanner />
     </>
   );
 }

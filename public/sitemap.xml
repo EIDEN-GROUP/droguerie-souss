@@ -46,6 +46,16 @@
     <priority>0.7</priority>
   </url>
   <url>
+    <loc>https://www.soussdroguerie.com/politique-confidentialite</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://www.soussdroguerie.com/security</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.4</priority>
+  </url>
+  <url>
     <loc>https://www.soussdroguerie.com/categories?cat=Carrelage</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>

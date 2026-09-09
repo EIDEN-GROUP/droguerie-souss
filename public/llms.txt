@@ -23,6 +23,8 @@
 - Commande rapide (avec FAQ) : https://www.soussdroguerie.com/commande-rapide
 - À propos : https://www.soussdroguerie.com/a-propos
 - Contact : https://www.soussdroguerie.com/contact
+- Confidentialité : https://www.soussdroguerie.com/politique-confidentialite
+- Sécurité ( failles ) : https://www.soussdroguerie.com/security
 - Sitemap : https://www.soussdroguerie.com/sitemap.xml
 
 ## Rayons

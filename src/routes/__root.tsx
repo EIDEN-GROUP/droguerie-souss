@@ -80,70 +80,80 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      // Vérification Google Search Console (métadonnée HTML). Rend le propriété
-      // de préfixe d'URL vérifiable sans toucher au DNS.
-      {
-        name: "google-site-verification",
-        content: "Z0qIkPxx8LMIeJkz0aVC6VxH8_SmG36Tf72Ge3T3yk0",
-      },
-      { title: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction" },
-      {
-        name: "description",
-        content:
-          "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
-      },
-      { name: "author", content: "Souss Droguerie SARL" },
-      {
-        property: "og:title",
-        content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
-      },
-      {
-        property: "og:description",
-        content:
-          "Votre droguerie à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
-      },
-      { property: "og:type", content: "website" },
-      { property: "og:locale", content: "fr_FR" },
-      { property: "og:site_name", content: "Souss Droguerie" },
-      { property: "og:url", content: `${SITE_URL}/` },
-      { property: "og:image", content: `${SITE_URL}${DEFAULT_OG_IMAGE}` },
-      { name: "twitter:card", content: "summary_large_image" },
-      {
-        name: "twitter:title",
-        content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
-      },
-      {
-        name: "twitter:description",
-        content: "Votre droguerie à Agadir : matériaux de construction depuis 1992.",
-      },
-    ],
-    // Google Analytics 4 : rien n'est injecté tant que VITE_GA_MEASUREMENT_ID
-    // n'est pas renseigné (voir .env.example).
-    scripts: gaHeadScripts(),
-    links: [
-      { rel: "stylesheet", href: appCss },
-      // Favicons : la PNG 96×96 (multiple de 48px, l'exigence de Google) est déclarée
-      // EN PREMIER pour que Google ne retienne jamais la 32×32 (qui échoue à la règle
-      // du multiple de 48). Le .ico est en entrées BITMAP classiques (16/32/48) — le
-      // format historique le plus compatible, celui des icônes qui s'affichent
-      // partout (l'ancien favicon.ico était un PNG 1102×1102 renommé, rejeté par
-      // Google — d'où l'icône absente des résultats).
-      { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
-      { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
-      { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
-      { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
-      },
-    ],
-  }),
+  head: () => {
+    // Vérification Bing Webmaster Tools (optionnelle, via VITE_BING_VERIFICATION).
+    const bingVerify =
+      typeof import.meta !== "undefined"
+        ? (import.meta.env?.VITE_BING_VERIFICATION as string | undefined)
+        : undefined;
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        // Vérification Google Search Console (métadonnée HTML). Rend le propriété
+        // de préfixe d'URL vérifiable sans toucher au DNS.
+        {
+          name: "google-site-verification",
+          content: "Z0qIkPxx8LMIeJkz0aVC6VxH8_SmG36Tf72Ge3T3yk0",
+        },
+        // Bing : clé « msvalidate.01 » collée dans VITE_BING_VERIFICATION.
+        ...(bingVerify ? [{ name: "msvalidate.01", content: bingVerify }] : []),
+        { title: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction" },
+        {
+          name: "description",
+          content:
+            "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
+        },
+        { name: "author", content: "Souss Droguerie SARL" },
+        {
+          property: "og:title",
+          content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+        },
+        {
+          property: "og:description",
+          content:
+            "Votre droguerie à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
+        },
+        { property: "og:type", content: "website" },
+        { property: "og:locale", content: "fr_FR" },
+        { property: "og:site_name", content: "Souss Droguerie" },
+        { property: "og:url", content: `${SITE_URL}/` },
+        { property: "og:image", content: `${SITE_URL}${DEFAULT_OG_IMAGE}` },
+        { name: "twitter:card", content: "summary_large_image" },
+        {
+          name: "twitter:title",
+          content: "Souss Droguerie SARL | Droguerie Agadir — Matériaux de construction",
+        },
+        {
+          name: "twitter:description",
+          content: "Votre droguerie à Agadir : matériaux de construction depuis 1992.",
+        },
+      ],
+      // Google Analytics 4 : le mini-script d'amorçage (consentement refusé par
+      // défaut, voir src/lib/analytics.ts) ne charge gtag que sur acceptation
+      // du bandeau « vie privée ». Sans VITE_GA_MEASUREMENT_ID, rien du tout.
+      scripts: gaHeadScripts(),
+      links: [
+        { rel: "stylesheet", href: appCss },
+        // Favicons : la PNG 96×96 (multiple de 48px, l'exigence de Google) est déclarée
+        // EN PREMIER pour que Google ne retienne jamais la 32×32 (qui échoue à la règle
+        // du multiple de 48). Le .ico est en entrées BITMAP classiques (16/32/48) — le
+        // format historique le plus compatible, celui des icônes qui s'affichent
+        // partout (l'ancien favicon.ico était un PNG 1102×1102 renommé, rejeté par
+        // Google — d'où l'icône absente des résultats).
+        { rel: "icon", type: "image/png", sizes: "96x96", href: "/favicon-96x96.png" },
+        { rel: "icon", type: "image/png", sizes: "32x32", href: "/favicon-32x32.png" },
+        { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
+        { rel: "apple-touch-icon", sizes: "180x180", href: "/apple-touch-icon.png" },
+        { rel: "preconnect", href: "https://fonts.googleapis.com" },
+        { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+        {
+          rel: "stylesheet",
+          href: "https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap",
+        },
+      ],
+    };
+  },
   // SITE-GATE:BEGIN — verrou d'accès activable par ENV.
   // Actif uniquement si VITE_SITE_GATE_ENABLED=true (voir site-gate.ts) ;
   // sinon getGateStatus() renvoie { unlocked: true } et <SiteGate> laisse passer.

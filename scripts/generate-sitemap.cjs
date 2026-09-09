@@ -80,6 +80,8 @@ const CORE_PAGES = [
   { loc: "/a-propos", lastmod: null, changefreq: "monthly", priority: "0.7" },
   { loc: "/commande-rapide", lastmod: null, changefreq: "monthly", priority: "0.7" },
   { loc: "/contact", lastmod: null, changefreq: "monthly", priority: "0.7" },
+  { loc: "/politique-confidentialite", lastmod: null, changefreq: "yearly", priority: "0.4" },
+  { loc: "/security", lastmod: null, changefreq: "yearly", priority: "0.4" },
 ];
 
 /** Pages de catégories (`/categories?cat=…`) : mêmes valeurs que les cartes du site
