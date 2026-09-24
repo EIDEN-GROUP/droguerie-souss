@@ -117,7 +117,15 @@ export function seo({
   // Si le titre contient déjà la marque (ex. « Souss Droguerie | … »), on ne la
   // ré-ajoute pas ; sinon on la suffixe. Idempotent pour toutes les pages.
   const fullTitle = title.includes(SITE_NAME) ? title : `${title} | ${SITE_NAME}`;
+  const useDefaultImage = !image;
   const ogImage = absoluteUrl(image || DEFAULT_OG_IMAGE) as string;
+  // Dimensions connues uniquement pour l'image sociale par défaut (1200×630).
+  const ogImageSize = useDefaultImage
+    ? [
+        { property: "og:image:width", content: "1200" },
+        { property: "og:image:height", content: "630" },
+      ]
+    : [];
 
   return {
     meta: [
@@ -131,10 +139,13 @@ export function seo({
       { property: "og:site_name", content: SITE_NAME },
       { property: "og:url", content: canonical(path) },
       { property: "og:image", content: ogImage },
+      ...ogImageSize,
+      { property: "og:image:alt", content: fullTitle },
       { name: "twitter:url", content: canonical(path) },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: fullTitle },
       { name: "twitter:description", content: description },
+      { name: "twitter:image", content: ogImage },
     ],
     links: [{ rel: "canonical", href: canonical(path) }, ...links],
     scripts,

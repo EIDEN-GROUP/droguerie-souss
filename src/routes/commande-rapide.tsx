@@ -73,6 +73,27 @@ export const Route = createFileRoute("/commande-rapide")({
             acceptedAnswer: { "@type": "Answer", text: f.a },
           })),
         }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "HowTo",
+          name: "Commander vos matériaux en 4 étapes",
+          description:
+            "Décrivez votre chantier, sélectionnez vos produits, laissez vos coordonnées et recevez un devis sous 48h.",
+          step: howItWorks.map((s, i) => ({
+            "@type": "HowToStep",
+            position: i + 1,
+            name: s.title,
+            text: s.text,
+          })),
+        }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: "Commande rapide | Souss Droguerie",
+          url: canonical("/commande-rapide"),
+          inLanguage: "fr-FR",
+          speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1"] },
+        }),
       ],
     }),
 });

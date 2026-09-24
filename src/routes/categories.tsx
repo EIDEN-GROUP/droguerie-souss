@@ -9,7 +9,14 @@ import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { categories, categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
 import { seo, jsonLd, canonical } from "@/lib/seo";
-import { ChevronDown, ChevronLeft, ChevronRight, Loader2, Search, SlidersHorizontal } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  Search,
+  SlidersHorizontal,
+} from "lucide-react";
 
 const searchSchema = z.object({
   cat: z.string().optional(),
@@ -60,6 +67,16 @@ export const Route = createFileRoute("/categories")({
               : []),
           ],
         }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          name: catInfo
+            ? `${catInfo.name} à Agadir | Souss Droguerie`
+            : "Boutique | Souss Droguerie",
+          url: canonical(`/categories${catPath}`),
+          inLanguage: "fr-FR",
+          speakable: { "@type": "SpeakableSpecification", cssSelector: ["h1"] },
+        }),
       ],
     });
   },
@@ -94,8 +111,7 @@ function Shop() {
   const catFiltered = useMemo(() => {
     let list = productList;
     if (activeCat) list = list.filter((p: any) => activeGroup.includes(p.category));
-    if (query.trim())
-      list = searchProducts(list, query).map((r) => r.product);
+    if (query.trim()) list = searchProducts(list, query).map((r) => r.product);
     return list;
   }, [productList, activeCat, activeGroup, query]);
 
@@ -220,7 +236,9 @@ function Shop() {
           >
             <SlidersHorizontal className="h-3.5 w-3.5" />
             Filtres
-            <ChevronDown className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`} />
+            <ChevronDown
+              className={`h-3.5 w-3.5 transition-transform ${filtersOpen ? "rotate-180" : ""}`}
+            />
           </button>
         </div>
 
@@ -293,14 +311,22 @@ function Shop() {
               <h2 className="font-display text-2xl font-bold uppercase leading-tight text-ink sm:text-3xl">
                 {catInfo.name} à Agadir : notre expertise
               </h2>
-              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">{catInfo.seoText}</p>
+              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
+                {catInfo.seoText}
+              </p>
               <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
                 Besoin d'un conseil ou d'un devis ? Appelez le{" "}
-                <a href="tel:+212528838992" className="font-semibold text-brand underline-offset-4 hover:underline">
+                <a
+                  href="tel:+212528838992"
+                  className="font-semibold text-brand underline-offset-4 hover:underline"
+                >
                   +212 528 838 992
                 </a>{" "}
                 ou{" "}
-                <Link to="/contact" className="font-semibold text-brand underline-offset-4 hover:underline">
+                <Link
+                  to="/contact"
+                  className="font-semibold text-brand underline-offset-4 hover:underline"
+                >
                   contactez-nous
                 </Link>{" "}
                 : réponse sous 48h ouvrées.
@@ -354,7 +380,6 @@ function Shop() {
   );
 }
 
-
 /** Two 40px arrow buttons plus the flex gaps around them. */
 const ARROWS_WIDTH = 96;
 
@@ -370,9 +395,7 @@ function CatTabs({ open, children }: { open: boolean; children: React.ReactNode 
     setCanLeft(el.scrollLeft > 1);
     setCanRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
     setScrollable((shown) =>
-      shown
-        ? el.scrollWidth > el.clientWidth + ARROWS_WIDTH
-        : el.scrollWidth > el.clientWidth + 1,
+      shown ? el.scrollWidth > el.clientWidth + ARROWS_WIDTH : el.scrollWidth > el.clientWidth + 1,
     );
   }, []);
 
