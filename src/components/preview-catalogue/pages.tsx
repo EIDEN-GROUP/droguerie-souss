@@ -1,5 +1,6 @@
 import { forwardRef, type CSSProperties, type ReactNode } from "react";
 import { products, type Product } from "@/data/products";
+import { stripTags } from "@/lib/richtext";
 import logo from "@/assets/logo.png";
 
 /** A4 portrait, comme le catalogue imprimé. */
@@ -603,7 +604,7 @@ export const Grid = forwardRef<
               <figcaption className="mt-1.5">
                 <p className="truncate text-[8px] font-semibold leading-tight text-ink">{p.name}</p>
                 <p className="mt-[2px] line-clamp-2 text-[6px] leading-[1.45] text-ink-soft">
-                  {p.description}
+                  {stripTags(p.description)}
                 </p>
                 <p className="mt-[3px] text-[6px] font-bold uppercase tracking-[0.14em] text-accent-red">
                   Sur devis{p.unit ? ` · ${p.unit}` : ""}

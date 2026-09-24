@@ -31,6 +31,7 @@ import {
   PAGE_W,
   PAGE_H,
 } from "./pages";
+import { stripTags } from "@/lib/richtext";
 import { useFlipSound } from "./useFlipSound";
 import { exportCataloguePdf } from "./exportPdf";
 
@@ -42,12 +43,12 @@ const PER_GRID = 9; // grille 3 × 3, calée sur la hauteur utile de la page
 
 function readFormat(d?: string | null): [number, number] | null {
   if (!d) return null;
-  const m = d.match(/format\s+(\d+)\s*[×x]\s*(\d+)/i);
+  const m = stripTags(d).match(/format\s+(\d+)\s*[×x]\s*(\d+)/i);
   return m ? [Number(m[1]), Number(m[2])] : null;
 }
 function readOrigin(d?: string | null): string | null {
   if (!d) return null;
-  const m = d.match(/-\s*([^.]+)\./);
+  const m = stripTags(d).match(/-\s*([^.]+)\./);
   return m ? m[1].trim() : null;
 }
 const fmtKey = (f: [number, number]) => `${f[0]}×${f[1]}`;
@@ -69,17 +70,26 @@ const FORMAT_PHOTO: Record<string, { photo: string; caption: string }> = {
     photo: `${PH}ambiance-cuisine.webp`,
     caption: "Grand format effet bois · cuisine ouverte",
   },
-  "25×75": { photo: `${PH}showroom-multicerame.webp`, caption: "Multicérame & Argenta · 25×75 mat" },
+  "25×75": {
+    photo: `${PH}showroom-multicerame.webp`,
+    caption: "Multicérame & Argenta · 25×75 mat",
+  },
   "25×50": { photo: `${PH}ambiance-sdb.webp`, caption: "Faïence murale · salle de bain" },
   "30×60": { photo: `${PH}ambiance-sdb-rose.webp`, caption: "Marbré rosé 30×60 · salle de bain" },
-  "30×90": { photo: `${PH}showroom-deco.webp`, caption: "Décors et listels · présentoir Gayaforés" },
+  "30×90": {
+    photo: `${PH}showroom-deco.webp`,
+    caption: "Décors et listels · présentoir Gayaforés",
+  },
   "45×45": { photo: `${PH}ambiance-salon.webp`, caption: "Effet parquet 45×45 · séjour" },
   "41×41": { photo: `${PH}showroom-cerpa.webp`, caption: "Présentoirs Cerpa · formats carrés" },
   "60×60": {
     photo: `${PH}ambiance-reception.webp`,
     caption: "Marbré poli 60×60 · réception d'hôtel",
   },
-  "120×60": { photo: `${PH}showroom-premium.webp`, caption: "Multicérame Premium · grands formats" },
+  "120×60": {
+    photo: `${PH}showroom-premium.webp`,
+    caption: "Multicérame Premium · grands formats",
+  },
   "240×120": { photo: `${PH}beton-cire.webp`, caption: "Dalle grand format · effet béton ciré" },
 };
 

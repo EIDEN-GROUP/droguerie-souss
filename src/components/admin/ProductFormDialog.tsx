@@ -1,14 +1,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check, Gift, ImagePlus, Link, Loader2, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { z } from "zod";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
   useCreateProduct,
@@ -23,6 +18,8 @@ import { categories as defaultCategories, type Product, type ProductVariant } fr
 import type { DbProductGift, ProductInput } from "@/lib/database.types";
 import { GiftPicker } from "./GiftPicker";
 import { DimensionsCombobox } from "./DimensionsCombobox";
+import { RichTextEditor } from "./RichTextEditor";
+import { sanitizeDescriptionHtml } from "@/lib/richtext";
 
 const MAX_IMAGE_BYTES = 1_500_000;
 
@@ -33,7 +30,10 @@ const schema = z.object({
   price_mode: z.enum(["fixed", "quote"]),
   price: z.coerce.number().min(0, "Le prix ne peut pas être négatif"),
   unit: z.string().min(1, "Unité requise"),
-  description: z.string().min(5, "Description trop courte"),
+  description: z
+    .string()
+    .min(5, "Description trop courte")
+    .max(8000, "Description trop longue (8000 caractères max)"),
   bestseller: z.boolean().optional(),
   seasonal: z.boolean().optional(),
   promo: z.coerce.number().min(0).max(100).optional(),
@@ -54,7 +54,9 @@ export function ProductFormDialog({
   const updateProduct = useUpdateProduct();
   const { data: dbCategories } = useCategories();
 
-  const catOptions = (dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories).map((c) => ({
+  const catOptions = (
+    dbCategories && dbCategories.length > 0 ? dbCategories : defaultCategories
+  ).map((c) => ({
     value: "category" in c ? (c as any).category : c.name,
     label: "name" in c ? c.name : (c as any).name,
   }));
@@ -75,7 +77,13 @@ export function ProductFormDialog({
 
   useEffect(() => {
     if (loadedGifts) {
-      setGifts(loadedGifts.map((g) => ({ gift_product_id: g.gift_product_id, min_qty: g.min_qty, gift_qty: g.gift_qty })));
+      setGifts(
+        loadedGifts.map((g) => ({
+          gift_product_id: g.gift_product_id,
+          min_qty: g.min_qty,
+          gift_qty: g.gift_qty,
+        })),
+      );
     }
   }, [loadedGifts]);
 
@@ -97,10 +105,19 @@ export function ProductFormDialog({
     handleSubmit,
     reset,
     watch,
+    control,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { name: "", category: catOptions[0]?.value ?? "", subcategory: "", price_mode: "fixed", price: 0, unit: "", description: "" },
+    defaultValues: {
+      name: "",
+      category: catOptions[0]?.value ?? "",
+      subcategory: "",
+      price_mode: "fixed",
+      price: 0,
+      unit: "",
+      description: "",
+    },
   });
 
   const currentPriceMode = watch("price_mode");
@@ -122,9 +139,22 @@ export function ProductFormDialog({
               seasonal: product.seasonal,
               promo: product.promo,
             }
-          : { name: "", category: catOptions[0]?.value ?? "", price_mode: "fixed", price: 0, unit: "", description: "" },
+          : {
+              name: "",
+              category: catOptions[0]?.value ?? "",
+              price_mode: "fixed",
+              price: 0,
+              unit: "",
+              description: "",
+            },
       );
-      setImageUrls(product?.images && product.images.length > 0 ? product.images : product?.image ? [product.image] : []);
+      setImageUrls(
+        product?.images && product.images.length > 0
+          ? product.images
+          : product?.image
+            ? [product.image]
+            : [],
+      );
       setImageError("");
       setVariants((product?.variants || []).map((v) => ({ dimension: v.dimension })));
       setEditor({ dimension: "" });
@@ -163,9 +193,7 @@ export function ProductFormDialog({
       return;
     }
     if (editingIndex !== null && variants[editingIndex]) {
-      setVariants((prev) =>
-        prev.map((v, i) => (i === editingIndex ? { dimension } : v)),
-      );
+      setVariants((prev) => prev.map((v, i) => (i === editingIndex ? { dimension } : v)));
     } else {
       if (variants.some((v) => v.dimension.toLowerCase() === dimension.toLowerCase())) {
         setVariantsError(`La dimension « ${dimension} » est déjà présente sur ce produit.`);
@@ -220,6 +248,9 @@ export function ProductFormDialog({
     }
     const payload: ProductInput = {
       ...values,
+      // Assainit à l'enregistrement (l'affichage ré-assainit aussi : double
+      // protection contre tout HTML collé depuis le web).
+      description: sanitizeDescriptionHtml(values.description),
       price: values.price_mode === "quote" ? 0 : values.price,
       category: values.category,
       subcategory: values.subcategory || undefined,
@@ -270,7 +301,11 @@ export function ProductFormDialog({
             <div className="flex flex-wrap gap-3">
               {imageUrls.map((url, i) => (
                 <div key={url + i} className="relative h-20 w-20 overflow-hidden rounded-lg border">
-                  <img src={url} alt="Aperçu de l'image du produit" className="h-full w-full object-cover" />
+                  <img
+                    src={url}
+                    alt="Aperçu de l'image du produit"
+                    className="h-full w-full object-cover"
+                  />
                   <button
                     type="button"
                     onClick={() => removeImage(i)}
@@ -291,10 +326,19 @@ export function ProductFormDialog({
                 ) : (
                   <ImagePlus className="h-5 w-5" />
                 )}
-                <input type="file" accept="image/*" multiple className="hidden" onChange={onFilesSelected} disabled={uploading} />
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  onChange={onFilesSelected}
+                  disabled={uploading}
+                />
               </label>
             </div>
-            {imageError && <p className="mt-1.5 text-xs font-semibold text-accent-red">{imageError}</p>}
+            {imageError && (
+              <p className="mt-1.5 text-xs font-semibold text-accent-red">{imageError}</p>
+            )}
             <div className="mt-2 flex gap-2">
               <input
                 type="url"
@@ -304,19 +348,29 @@ export function ProductFormDialog({
                 onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addUrl())}
                 className="flex-1 rounded-lg border border-border bg-white px-3 py-2 text-sm outline-none transition focus:border-brand"
               />
-              <button type="button" onClick={addUrl} className="flex items-center gap-1.5 rounded-lg bg-mint px-3 py-2 text-sm font-semibold text-ink hover:bg-mint/70">
+              <button
+                type="button"
+                onClick={addUrl}
+                className="flex items-center gap-1.5 rounded-lg bg-mint px-3 py-2 text-sm font-semibold text-ink hover:bg-mint/70"
+              >
                 <Link className="h-3.5 w-3.5" /> URL
               </button>
             </div>
           </div>
 
           <Field label="Nom du produit" error={errors.name?.message}>
-            <input {...register("name")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+            <input
+              {...register("name")}
+              className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+            />
           </Field>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <Field label="Catégorie" error={errors.category?.message}>
-              <select {...register("category")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand">
+              <select
+                {...register("category")}
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+              >
                 {catOptions.map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}
@@ -325,22 +379,42 @@ export function ProductFormDialog({
               </select>
             </Field>
             <Field label="Sous-catégorie (optionnel)" error={errors.subcategory?.message}>
-              <input {...register("subcategory")} placeholder="ex: Carreaux de sol, Faïence..." className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+              <input
+                {...register("subcategory")}
+                placeholder="ex: Carreaux de sol, Faïence..."
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+              />
             </Field>
             <Field label="Unité (m², sac, boîte...)" error={errors.unit?.message}>
-              <input {...register("unit")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+              <input
+                {...register("unit")}
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+              />
             </Field>
             <Field label="Mode de prix" error={errors.price_mode?.message}>
-              <select {...register("price_mode")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand">
+              <select
+                {...register("price_mode")}
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+              >
                 <option value="fixed">Prix fixe</option>
                 <option value="quote">Prix sur demande</option>
               </select>
             </Field>
             <Field label="Prix (MAD)" error={errors.price?.message}>
-              <input type="number" step="0.01" {...register("price")} disabled={isQuote} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand disabled:cursor-not-allowed disabled:opacity-50" />
+              <input
+                type="number"
+                step="0.01"
+                {...register("price")}
+                disabled={isQuote}
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand disabled:cursor-not-allowed disabled:opacity-50"
+              />
             </Field>
             <Field label="Promo % (optionnel)" error={errors.promo?.message}>
-              <input type="number" {...register("promo")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+              <input
+                type="number"
+                {...register("promo")}
+                className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand"
+              />
             </Field>
           </div>
 
@@ -370,7 +444,9 @@ export function ProductFormDialog({
                   onClick={saveVariantInEditor}
                   className={cn(
                     "flex shrink-0 items-center gap-1.5 rounded-full px-4 py-2.5 text-sm font-semibold",
-                    editingIndex !== null ? "bg-mint text-ink hover:bg-mint/70" : "bg-brand text-brand-foreground hover:bg-brand-dark",
+                    editingIndex !== null
+                      ? "bg-mint text-ink hover:bg-mint/70"
+                      : "bg-brand text-brand-foreground hover:bg-brand-dark",
                   )}
                 >
                   {editingIndex !== null && <Check className="h-3.5 w-3.5" />}
@@ -418,16 +494,35 @@ export function ProductFormDialog({
           <GiftPicker gifts={gifts} onChange={setGifts} />
 
           <Field label="Description" error={errors.description?.message}>
-            <textarea rows={3} {...register("description")} className="w-full rounded-lg border border-border bg-white px-3 py-2.5 text-sm outline-none transition focus:border-brand" />
+            <Controller
+              name="description"
+              control={control}
+              render={({ field }) => (
+                <RichTextEditor
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  resetKey={`${open ? "open" : "closed"}-${product?.id ?? "new"}`}
+                />
+              )}
+            />
           </Field>
 
           <div className="flex gap-6">
             <label className="flex items-center gap-2 text-sm font-semibold">
-              <input type="checkbox" {...register("bestseller")} className="h-4 w-4 accent-[#2f378d]" />
+              <input
+                type="checkbox"
+                {...register("bestseller")}
+                className="h-4 w-4 accent-[#2f378d]"
+              />
               Best-seller
             </label>
             <label className="flex items-center gap-2 text-sm font-semibold">
-              <input type="checkbox" {...register("seasonal")} className="h-4 w-4 accent-[#2f378d]" />
+              <input
+                type="checkbox"
+                {...register("seasonal")}
+                className="h-4 w-4 accent-[#2f378d]"
+              />
               Saisonnier
             </label>
           </div>
@@ -450,7 +545,6 @@ export function ProductFormDialog({
             </button>
           </div>
         </form>
-
       </DialogContent>
     </Dialog>
   );
@@ -467,11 +561,11 @@ function Field({
 }) {
   return (
     <label className="block">
-      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">{label}</span>
+      <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">
+        {label}
+      </span>
       {children}
       {error && <span className="mt-1 block text-xs font-semibold text-accent-red">{error}</span>}
     </label>
   );
 }
-
-

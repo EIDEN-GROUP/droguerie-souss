@@ -1,6 +1,18 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { ChevronRight, Gift, Heart, Minus, Plus, ShoppingBag, Truck, ShieldCheck, RotateCcw, PackageSearch, Loader2 } from "lucide-react";
+import {
+  ChevronRight,
+  Gift,
+  Heart,
+  Minus,
+  Plus,
+  ShoppingBag,
+  Truck,
+  ShieldCheck,
+  RotateCcw,
+  PackageSearch,
+  Loader2,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
@@ -11,6 +23,7 @@ import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { ProductPromoPrice } from "@/components/ProductPrice";
 import { seo, jsonLd, absoluteUrl, descriptionFrom, canonical } from "@/lib/seo";
+import { hasRichFormatting, sanitizeDescriptionHtml } from "@/lib/richtext";
 
 export const Route = createFileRoute("/product/$id")({
   loader: async ({ params }) => {
@@ -19,7 +32,8 @@ export const Route = createFileRoute("/product/$id")({
       raw = await getProduct({ data: { id: params.id } });
     } catch (error: any) {
       // PGRST116 : aucune ligne renvoyée - le produit n'existe pas (ou plus).
-      if (error?.code === "PGRST116" || /0 rows|no rows/i.test(error?.message ?? "")) throw notFound();
+      if (error?.code === "PGRST116" || /0 rows|no rows/i.test(error?.message ?? ""))
+        throw notFound();
       throw error;
     }
     const all = await getProducts();
@@ -48,9 +62,10 @@ export const Route = createFileRoute("/product/$id")({
       sku: product.id,
       // On n'annonce que des images réellement servies (URL absolue ou chemin public) :
       // les simples noms de fichiers des données d'origine n'existent pas en ligne.
-      image: (product.image && (/^https?:\/\//i.test(product.image) || product.image.startsWith("/"))
-        ? [absoluteUrl(product.image)]
-        : []),
+      image:
+        product.image && (/^https?:\/\//i.test(product.image) || product.image.startsWith("/"))
+          ? [absoluteUrl(product.image)]
+          : [],
       description: descriptionFrom(product.description, 300),
       category: product.category,
       brand: { "@type": "Brand", name: "Souss Droguerie" },
@@ -137,7 +152,9 @@ function ProductNotFound() {
       <div className="container-x py-24 text-center">
         <PackageSearch className="mx-auto h-12 w-12 text-ink-soft" />
         <p className="mt-4 font-display text-xl font-bold uppercase">Produit introuvable</p>
-        <p className="mt-1 text-sm text-ink-soft">Ce produit n'existe pas ou a été retiré du catalogue.</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          Ce produit n'existe pas ou a été retiré du catalogue.
+        </p>
         <Link
           to="/categories"
           className="mt-6 inline-flex rounded-full bg-brand px-6 py-3 text-sm font-bold uppercase tracking-wider text-brand-foreground hover:bg-brand-dark"
@@ -155,12 +172,21 @@ function ProductDetailContent({ product, products }: { product: Product; product
   const gallery = product.images && product.images.length > 0 ? product.images : [product.image];
   const [activeImage, setActiveImage] = useState(0);
   const isFav = favorites.includes(product.id);
-  const sameCategory = products.filter((p) => p.category === product.category && p.id !== product.id);
-  const otherProducts = products.filter((p) => p.category !== product.category && p.id !== product.id);
+  const sameCategory = products.filter(
+    (p) => p.category === product.category && p.id !== product.id,
+  );
+  const otherProducts = products.filter(
+    (p) => p.category !== product.category && p.id !== product.id,
+  );
   const related = [...sameCategory, ...otherProducts].slice(0, 4);
   const pct = product.promo ?? 0;
   const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
   const points = descriptionPoints(product.description);
+  // Description enrichie (gras, listes…) : HTML assaini. Texte brut classique :
+  // puces historiques, inchangées.
+  const richDescription = hasRichFormatting(product.description)
+    ? sanitizeDescriptionHtml(product.description)
+    : null;
 
   const variants = product.variants || [];
   const [selectedDimension, setSelectedDimension] = useState<string | undefined>(undefined);
@@ -177,9 +203,13 @@ function ProductDetailContent({ product, products }: { product: Product; product
     <Layout>
       <div className="border-b bg-cream">
         <div className="container-x flex items-center gap-2 py-4 text-xs text-ink-soft">
-          <Link to="/" className="hover:text-brand">Accueil</Link>
+          <Link to="/" className="hover:text-brand">
+            Accueil
+          </Link>
           <ChevronRight className="h-3 w-3" />
-          <Link to="/categories" className="hover:text-brand">Boutique</Link>
+          <Link to="/categories" className="hover:text-brand">
+            Boutique
+          </Link>
           <ChevronRight className="h-3 w-3" />
           <span className="text-ink">{product.name}</span>
         </div>
@@ -187,10 +217,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
 
       <div className="container-x py-12">
         <div className="grid gap-10 lg:grid-cols-2">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-          >
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }}>
             <div className="aspect-square overflow-hidden rounded-2xl bg-cream">
               <img
                 key={gallery[activeImage]}
@@ -211,7 +238,11 @@ function ProductDetailContent({ product, products }: { product: Product; product
                       i === activeImage ? "ring-brand" : "ring-transparent hover:ring-brand/40"
                     }`}
                   >
-                    <img src={img} alt={`${product.name} - vue ${i + 1}`} className="h-full w-full object-cover" />
+                    <img
+                      src={img}
+                      alt={`${product.name} - vue ${i + 1}`}
+                      className="h-full w-full object-cover"
+                    />
                   </button>
                 ))}
               </div>
@@ -245,7 +276,12 @@ function ProductDetailContent({ product, products }: { product: Product; product
               )}
             </div>
 
-            {points.length > 0 && (
+            {richDescription ? (
+              <div
+                className="mt-6 space-y-2 leading-relaxed text-ink-soft [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:m-0 [&_ul]:list-disc [&_ul]:pl-5"
+                dangerouslySetInnerHTML={{ __html: richDescription }}
+              />
+            ) : points.length > 0 ? (
               <ul className="mt-6 space-y-2">
                 {points.map((point, i) => (
                   <li key={i} className="flex gap-2.5 leading-relaxed text-ink-soft">
@@ -257,7 +293,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
                   </li>
                 ))}
               </ul>
-            )}
+            ) : null}
 
             {variants.length > 0 && (
               <div className="mt-6">
@@ -287,11 +323,17 @@ function ProductDetailContent({ product, products }: { product: Product; product
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <div className="flex items-center rounded-full border">
-                <button onClick={() => setQty(Math.max(1, qty - 1))} className="grid h-11 w-11 place-items-center hover:bg-mint rounded-l-full">
+                <button
+                  onClick={() => setQty(Math.max(1, qty - 1))}
+                  className="grid h-11 w-11 place-items-center hover:bg-mint rounded-l-full"
+                >
                   <Minus className="h-4 w-4" />
                 </button>
                 <span className="w-10 text-center font-bold">{qty}</span>
-                <button onClick={() => setQty(qty + 1)} className="grid h-11 w-11 place-items-center hover:bg-mint rounded-r-full">
+                <button
+                  onClick={() => setQty(qty + 1)}
+                  className="grid h-11 w-11 place-items-center hover:bg-mint rounded-r-full"
+                >
                   <Plus className="h-4 w-4" />
                 </button>
               </div>
@@ -318,10 +360,16 @@ function ProductDetailContent({ product, products }: { product: Product; product
                 </div>
                 <ul className="mt-2 space-y-1">
                   {product.gifts.map((g) => {
-                    const giftProduct = related.find((p: Product) => p.id === g.gift_product_id) || products?.find((p: Product) => p.id === g.gift_product_id);
+                    const giftProduct =
+                      related.find((p: Product) => p.id === g.gift_product_id) ||
+                      products?.find((p: Product) => p.id === g.gift_product_id);
                     return (
                       <li key={g.id} className="text-xs text-ink-soft">
-                        Dès {g.min_qty} acheté{g.min_qty > 1 ? "s" : ""} → <span className="font-semibold text-ink">{g.gift_qty} × {giftProduct?.name ?? "Cadeau"}</span> offert{g.gift_qty > 1 ? "s" : ""}
+                        Dès {g.min_qty} acheté{g.min_qty > 1 ? "s" : ""} →{" "}
+                        <span className="font-semibold text-ink">
+                          {g.gift_qty} × {giftProduct?.name ?? "Cadeau"}
+                        </span>{" "}
+                        offert{g.gift_qty > 1 ? "s" : ""}
                       </li>
                     );
                   })}
@@ -337,7 +385,9 @@ function ProductDetailContent({ product, products }: { product: Product; product
               ].map((f) => (
                 <div key={f.label} className="flex flex-col items-center gap-1 text-center">
                   <f.icon className="h-5 w-5 text-brand" />
-                  <span className="text-[11px] font-semibold uppercase tracking-wider">{f.label}</span>
+                  <span className="text-[11px] font-semibold uppercase tracking-wider">
+                    {f.label}
+                  </span>
                 </div>
               ))}
             </div>

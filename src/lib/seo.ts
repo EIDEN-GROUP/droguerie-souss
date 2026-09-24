@@ -7,6 +7,8 @@
  * éventuellement du JSON-LD via `scripts`.
  */
 
+import { stripTags } from "./richtext";
+
 /** Domaine canonique de production : tous les canoniques, og:url et URLs du
  *  sitemap doivent pointer ici - même quand la build tourne sur une
  *  prévisualisation. Sinon Google indexe l'URL de preview à la place du domaine
@@ -16,12 +18,14 @@
 const CANONICAL_HOST = "https://www.soussdroguerie.com";
 
 function resolveSiteUrl(): string {
-  const envUrl =
-    typeof import.meta !== "undefined" ? import.meta.env?.VITE_SITE_URL : undefined;
+  const envUrl = typeof import.meta !== "undefined" ? import.meta.env?.VITE_SITE_URL : undefined;
   // Une URL d'environnement de type preview (Vercel, localhost) ne doit jamais
   // devenir le canonique : on retombe sur le domaine de production.
   if (typeof envUrl === "string" && envUrl.trim()) {
-    const host = envUrl.replace(/^https?:\/\//i, "").split(/[/?#]/)[0].toLowerCase();
+    const host = envUrl
+      .replace(/^https?:\/\//i, "")
+      .split(/[/?#]/)[0]
+      .toLowerCase();
     if (
       !host.includes("vercel.app") &&
       !host.startsWith("localhost") &&
@@ -61,9 +65,11 @@ export function absoluteUrl(src?: string | null): string | undefined {
 }
 
 /** Réduit un texte libre à une meta description lisible (~155 caractères). La coupe
- *  tombe sur un espace : on ne coupe jamais un mot en deux (« …depuis » → « …dep »). */
+ *  tombe sur un espace : on ne coupe jamais un mot en deux (« …depuis » → « …dep »).
+ *  Le HTML éventuel (descriptions enrichies) est retiré d'abord : jamais de
+ *  balise dans les metas ni le JSON-LD. */
 export function descriptionFrom(text: string, max = 155): string {
-  const clean = text.replace(/\s+/g, " ").trim();
+  const clean = stripTags(text).replace(/\s+/g, " ").trim();
   if (clean.length <= max) return clean;
   const cut = clean.slice(0, max);
   const lastSpace = cut.lastIndexOf(" ");
