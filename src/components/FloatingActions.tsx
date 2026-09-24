@@ -2,12 +2,11 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "framer-motion";
 import { ShoppingBag, X, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
+import { whatsappUrl } from "@/lib/contact";
 
-const WHATSAPP_NUMBER = "212528000000";
-const PREFILLED_MESSAGE =
-  "Bonjour, je souhaite avoir plus d'informations sur vos produits.";
+const PREFILLED_MESSAGE = "Bonjour, je souhaite avoir plus d'informations sur vos produits.";
 
-const whatsappHref = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(PREFILLED_MESSAGE)}`;
+const whatsappHref = whatsappUrl(PREFILLED_MESSAGE);
 
 /** Une fois écartée, la bulle ne revient plus de la session : elle attire l'attention,
  *  elle ne harcèle pas. */
@@ -101,7 +100,9 @@ function Teaser({ leaving, onClose }: { leaving: boolean; onClose: () => void })
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <p className="mt-1 text-sm leading-snug text-ink-soft">Décrivez votre projet en quelques clics et recevez votre devis sous 48h.</p>
+              <p className="mt-1 text-sm leading-snug text-ink-soft">
+                Décrivez votre projet en quelques clics et recevez votre devis sous 48h.
+              </p>
               <Link
                 to="/commande-rapide"
                 onClick={onClose}

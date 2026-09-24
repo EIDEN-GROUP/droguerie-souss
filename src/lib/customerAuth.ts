@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { signupCustomer, loginCustomer } from "@/lib/api/customer-auth";
+import { clearCustomerSessionFn } from "@/lib/api/customer-session";
 
 export interface CustomerUser {
   id: string;
@@ -52,7 +53,10 @@ export const useCustomerAuth = create<CustomerAuthState>()((set) => ({
     try {
       const session = readSession();
       if (session) {
-        set({ user: { id: session.id, email: session.email, fullName: session.fullName }, loading: false });
+        set({
+          user: { id: session.id, email: session.email, fullName: session.fullName },
+          loading: false,
+        });
       } else {
         set({ user: null, loading: false });
       }
@@ -77,6 +81,11 @@ export const useCustomerAuth = create<CustomerAuthState>()((set) => ({
   },
 
   signOut: async () => {
+    try {
+      await clearCustomerSessionFn();
+    } catch {
+      /* cookie déjà absent/expiré : on nettoie quand même le local */
+    }
     clearSession();
     set({ user: null, loading: false });
   },

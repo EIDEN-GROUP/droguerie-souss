@@ -4,6 +4,7 @@ import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { submitContact } from "@/lib/api/contact";
+import { BUSINESS } from "@/lib/contact";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 
 /** Questions affichées telles quelles plus bas : le balisage FAQPage ci-dessous
@@ -11,7 +12,7 @@ import { seo, jsonLd, canonical } from "@/lib/seo";
 const FAQS = [
   {
     q: "Livrez-vous en dehors d'Agadir ?",
-    a: "Oui, nous livrons dans tout le Souss-Massa : Inezgane, Aït Melloul, Dcheira, Taroudant, Tiznit, Biougra et Oulad Teima.",
+    a: "Oui, nous livrons dans tout le Souss-Massa : Agadir, Inezgane, Aït Melloul, Dcheira, Taroudant, Tiznit, Biougra, Oulad Teima, Chtouka-Aït Baha et environs.",
   },
   {
     q: "En combien de temps recevrai-je une réponse ?",
@@ -33,7 +34,7 @@ export const Route = createFileRoute("/contact")({
     seo({
       title: "Contact | Souss Droguerie, droguerie à Agadir",
       description:
-        "Contactez Souss Droguerie, votre droguerie à Agadir : devis de matériaux de construction, +212 528 838 992, Zone Industrielle Agadir 80000. Réponse sous 48h ouvrées.",
+        "Contactez Souss Droguerie, votre droguerie à Agadir : devis de matériaux de construction, +212 528 838 992, Zone Industrielle, Dcheira, Agadir 80360. Réponse sous 48h ouvrées.",
       path: "/contact",
       scripts: [
         jsonLd({
@@ -141,20 +142,20 @@ function Contact() {
               {
                 icon: MapPin,
                 title: "Adresse",
-                text: "Bd MOHAMED V - Q.I TASSILA III N°29 - Agadir",
-                href: "https://maps.app.goo.gl/GWrfFsgksz9dH4Pf7",
+                text: BUSINESS.address,
+                href: BUSINESS.mapsUrl,
               },
               {
                 icon: Phone,
                 title: "Téléphone",
-                text: "+212 528 838 992",
-                href: "tel:+212528838992",
+                text: BUSINESS.phoneDisplay,
+                href: BUSINESS.phoneHref,
               },
               {
                 icon: Mail,
                 title: "Email",
-                text: "contact@soussdroguerie.com",
-                href: "mailto:contact@soussdroguerie.com",
+                text: BUSINESS.email,
+                href: `mailto:${BUSINESS.email}`,
               },
             ].map((c) => (
               <a

@@ -21,6 +21,7 @@ import { useProducts } from "@/lib/adminStore";
 import { motion } from "framer-motion";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { seo, jsonLd, descriptionFrom, canonical, SITE_URL, ALTERNATE_NAME } from "@/lib/seo";
+import { AREA_SERVED } from "@/lib/contact";
 
 /** Fiche organisation : alimente le logo, le téléphone et l'adresse dans les
  *  résultats enrichis de la recherche (complémentaire du HardwareStore sur /a-propos). */
@@ -85,7 +86,7 @@ const organizationSchema = {
     postalCode: "80360",
     addressCountry: "MA",
   },
-  areaServed: ["Agadir", "Inezgane", "Aït Melloul", "Taroudant", "Tiznit", "Souss-Massa"],
+  areaServed: [...AREA_SERVED],
 };
 
 /** Recherche sur site (la page boutique filtre par ?q=) : donne un lien

@@ -1,4 +1,5 @@
 import { SITE_URL } from "./seo";
+import { BUSINESS } from "./contact";
 
 // Matches the website palette (src/styles.css). Indigo brand + red accent.
 const BRAND = {
@@ -69,13 +70,13 @@ function baseHtml(content: string): string {
           <tr>
             <td style="padding:20px 32px 0;text-align:center;">
               <p style="margin:0;font-size:12px;line-height:1.6;color:${BRAND.inkSoft};">
-                <strong style="color:${BRAND.ink};">Souss Droguerie SARL</strong><br />
-                Zone Industrielle, Agadir 80000, Maroc
+                <strong style="color:${BRAND.ink};">${BUSINESS.name}</strong><br />
+                ${BUSINESS.address}
               </p>
               <p style="margin:8px 0 0;font-size:12px;color:${BRAND.inkSoft};">
-                <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212 528 838 992</a>
+                <a href="${BUSINESS.phoneHref}" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">${BUSINESS.phoneDisplay}</a>
                 &nbsp;&middot;&nbsp;
-                <a href="mailto:contact@soussdroguerie.com" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">contact@soussdroguerie.com</a>
+                <a href="mailto:${BUSINESS.email}" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">${BUSINESS.email}</a>
               </p>
             </td>
           </tr>
@@ -180,7 +181,7 @@ export function contactCustomerConfirmation(contact: { name: string }): string {
     </p>
     <hr style="border:none;border-top:1px solid ${BRAND.cream};margin:20px 0;" />
     <p style="margin:0;font-size:12px;color:${BRAND.inkSoft};text-align:center;">
-      Souss Droguerie SARL Zone Industrielle, Agadir 80000, Maroc
+      ${BUSINESS.name} ${BUSINESS.address}
     </p>
   `);
 }
@@ -202,7 +203,7 @@ export function orderCustomerConfirmation(order: {
     </p>
     <p style="margin:0 0 24px;font-size:14px;color:${BRAND.inkSoft};line-height:1.7;">
       Nous avons bien reçu votre demande de devis. Notre équipe la prépare et
-      vous contactera <strong style="color:${BRAND.ink};">sous 24&nbsp;heures</strong>
+      vous contactera <strong style="color:${BRAND.ink};">sous ${BUSINESS.quoteSla}</strong>
       pour confirmer les disponibilités, le prix final et organiser la livraison.
     </p>
 
@@ -237,7 +238,7 @@ export function orderCustomerConfirmation(order: {
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 8px;">
       <tr>
         <td style="border-radius:9999px;background:${BRAND.primary};">
-          <a href="${SITE_URL}/produits" style="display:inline-block;padding:13px 30px;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:${BRAND.paper};text-decoration:none;">
+          <a href="${SITE_URL}/categories" style="display:inline-block;padding:13px 30px;font-size:13px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:${BRAND.paper};text-decoration:none;">
             Continuer vos achats
           </a>
         </td>
@@ -246,7 +247,7 @@ export function orderCustomerConfirmation(order: {
 
     <p style="margin:20px 0 0;font-size:13px;color:${BRAND.inkSoft};line-height:1.6;">
       Une question ? Répondez simplement à cet email ou appelez-nous au
-      <a href="tel:+212528838992" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">+212&nbsp;528&nbsp;000&nbsp;000</a>.
+      <a href="${BUSINESS.phoneHref}" style="color:${BRAND.primary};text-decoration:none;font-weight:600;">${BUSINESS.phoneDisplay}</a>.
     </p>
   `);
 }

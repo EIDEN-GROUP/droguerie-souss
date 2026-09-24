@@ -18,7 +18,7 @@ export function Footer() {
           </div>
           <p className="mt-4 text-sm text-paper/70">
             Votre partenaire de confiance en matériaux de construction dans la région du Souss
-            depuis plus de 20 ans.
+            depuis 1992.
           </p>
           {/* <div className="mt-4 flex gap-2">
             <a href="#" className="grid h-9 w-9 place-items-center rounded-full bg-paper/10 hover:bg-brand"><Facebook className="h-4 w-4" /></a>

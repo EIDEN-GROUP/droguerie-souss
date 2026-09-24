@@ -662,7 +662,7 @@ export const BackCover = forwardRef<HTMLDivElement, { page: number }>(function B
 
           <div className="mt-auto pb-9">
             <span className="inline-block bg-accent-red px-5 py-2 text-[8px] font-bold uppercase tracking-[0.18em]">
-              Devis sous 24 h
+              Devis sous 48h
             </span>
             <p className="mt-4 text-[7px] uppercase tracking-[0.24em] text-paper/55">
               www.soussdroguerie.com · {products.length} références

@@ -1,9 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  ArrowLeft, ArrowRight, Check, CheckCircle2, Clock, FileText,
-  Headphones, Info, Loader2, Package, PackageSearch, Phone, Search, Send,
-  ShieldCheck, ShoppingBag, Trash2, Truck, UserRound, Wallet, XCircle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Clock,
+  FileText,
+  Headphones,
+  Info,
+  Loader2,
+  Package,
+  PackageSearch,
+  Phone,
+  Search,
+  Send,
+  ShieldCheck,
+  ShoppingBag,
+  Trash2,
+  Truck,
+  UserRound,
+  Wallet,
+  XCircle,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
@@ -38,7 +56,12 @@ export const Route = createFileRoute("/commande-rapide")({
           "@type": "BreadcrumbList",
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
-            { "@type": "ListItem", position: 2, name: "Commande rapide", item: canonical("/commande-rapide") },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Commande rapide",
+              item: canonical("/commande-rapide"),
+            },
           ],
         }),
         jsonLd({
@@ -71,7 +94,7 @@ const benefits = [
   {
     icon: Clock,
     title: "Devis sous 48h",
-    text: "Notre équipe chiffre votre demande sous 24 heures ouvrées, chantier par chantier.",
+    text: "Notre équipe chiffre votre demande sous 48h ouvrées, chantier par chantier.",
   },
   {
     icon: PackageSearch,
@@ -120,7 +143,7 @@ const faqs = [
   },
   {
     q: "Sous quel délai vais-je recevoir mon devis ?",
-    a: "Sous 24 heures ouvrées. Les demandes déposées le samedi après-midi ou le dimanche sont traitées le lundi matin.",
+    a: "Sous 48h ouvrées. Les demandes déposées le samedi après-midi ou le dimanche sont traitées le lundi matin.",
   },
   {
     q: "Puis-je demander un produit absent du catalogue ?",
@@ -174,8 +197,9 @@ function CommandeRapide() {
     }));
   }, [user]);
 
-  const updateForm = (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setForm((p) => ({ ...p, [f]: e.target.value }));
+  const updateForm =
+    (f: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm((p) => ({ ...p, [f]: e.target.value }));
 
   /** Step 2 filters the catalogue with what was typed in step 1 (via the prefill in
    *  goToStep) plus anything extra typed in the step-2 search box. The category is
@@ -201,7 +225,8 @@ function CommandeRapide() {
     return variants[0];
   };
 
-  const pendingDimension = (p: any) => dimensions[p.id] ?? defaultVariant(p)?.dimension ?? undefined;
+  const pendingDimension = (p: any) =>
+    dimensions[p.id] ?? defaultVariant(p)?.dimension ?? undefined;
 
   const addProduct = (p: any) => {
     const dimension = pendingDimension(p);
@@ -209,7 +234,9 @@ function CommandeRapide() {
       const key = cartLineKey(p.id, dimension);
       const existing = prev.find((c) => cartLineKey(c.productId, c.dimension) === key);
       if (existing) {
-        return prev.map((c) => (cartLineKey(c.productId, c.dimension) === key ? { ...c, qty: c.qty + 1 } : c));
+        return prev.map((c) =>
+          cartLineKey(c.productId, c.dimension) === key ? { ...c, qty: c.qty + 1 } : c,
+        );
       }
       return [...prev, { productId: p.id, name: p.name, image: p.image || "", qty: 1, dimension }];
     });
@@ -219,7 +246,9 @@ function CommandeRapide() {
     if (qty <= 0) {
       setCart((prev) => prev.filter((c) => cartLineKey(c.productId, c.dimension) !== key));
     } else {
-      setCart((prev) => prev.map((c) => (cartLineKey(c.productId, c.dimension) === key ? { ...c, qty } : c)));
+      setCart((prev) =>
+        prev.map((c) => (cartLineKey(c.productId, c.dimension) === key ? { ...c, qty } : c)),
+      );
     }
   };
 
@@ -295,13 +324,16 @@ function CommandeRapide() {
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis
-                chiffré par notre équipe sous 48h ouvrées. Gratuit et sans engagement.
+                Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré par
+                notre équipe sous 48h ouvrées. Gratuit et sans engagement.
               </p>
 
               <ul className="mt-6 flex flex-wrap gap-x-7 gap-y-3">
                 {heroPoints.map((p) => (
-                  <li key={p.label} className="inline-flex items-center gap-2 text-sm font-semibold text-paper/90">
+                  <li
+                    key={p.label}
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-paper/90"
+                  >
                     <p.icon className="h-4 w-4 shrink-0 text-sky" />
                     {p.label}
                   </li>
@@ -589,7 +621,11 @@ function CommandeRapide() {
                           {visibleProducts.map((p: any) => {
                             const variants = p.variants || [];
                             const dimension = pendingDimension(p);
-                            const inCart = cart.find((c) => cartLineKey(c.productId, c.dimension) === cartLineKey(p.id, dimension));
+                            const inCart = cart.find(
+                              (c) =>
+                                cartLineKey(c.productId, c.dimension) ===
+                                cartLineKey(p.id, dimension),
+                            );
                             return (
                               <div
                                 key={p.id}
@@ -619,7 +655,9 @@ function CommandeRapide() {
                                         <button
                                           key={v.dimension}
                                           type="button"
-                                          onClick={() => setDimensions((d) => ({ ...d, [p.id]: v.dimension }))}
+                                          onClick={() =>
+                                            setDimensions((d) => ({ ...d, [p.id]: v.dimension }))
+                                          }
                                           className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-semibold transition ${
                                             dimension === v.dimension
                                               ? "border-brand bg-mint text-brand"
@@ -637,7 +675,9 @@ function CommandeRapide() {
                                       <div className="flex items-center gap-1">
                                         <button
                                           type="button"
-                                          onClick={() => updateQty(cartLineKey(p.id, dimension), inCart.qty - 1)}
+                                          onClick={() =>
+                                            updateQty(cartLineKey(p.id, dimension), inCart.qty - 1)
+                                          }
                                           className="grid h-7 w-7 place-items-center rounded-full border text-xs font-bold transition hover:bg-mint"
                                           aria-label="Diminuer la quantité"
                                         >
@@ -648,7 +688,9 @@ function CommandeRapide() {
                                         </span>
                                         <button
                                           type="button"
-                                          onClick={() => updateQty(cartLineKey(p.id, dimension), inCart.qty + 1)}
+                                          onClick={() =>
+                                            updateQty(cartLineKey(p.id, dimension), inCart.qty + 1)
+                                          }
                                           className="grid h-7 w-7 place-items-center rounded-full border text-xs font-bold transition hover:bg-mint"
                                           aria-label="Augmenter la quantité"
                                         >
@@ -686,13 +728,17 @@ function CommandeRapide() {
                             >
                               <span className="line-clamp-1">
                                 {c.name}
-                                {c.dimension && <span className="text-ink-soft"> · {c.dimension}</span>}
+                                {c.dimension && (
+                                  <span className="text-ink-soft"> · {c.dimension}</span>
+                                )}
                               </span>
                               <span className="flex shrink-0 items-center gap-3">
                                 <span className="font-semibold">×{c.qty}</span>
                                 <button
                                   type="button"
-                                  onClick={() => updateQty(cartLineKey(c.productId, c.dimension), 0)}
+                                  onClick={() =>
+                                    updateQty(cartLineKey(c.productId, c.dimension), 0)
+                                  }
                                   className="grid h-7 w-7 place-items-center rounded-full text-ink-soft transition hover:bg-accent-red/10 hover:text-accent-red"
                                   aria-label={`Retirer ${c.name}`}
                                 >
@@ -772,7 +818,7 @@ function CommandeRapide() {
                       </p>
                       <p className="mt-2 text-sm text-ink-soft">
                         {cart.length} référence{cart.length > 1 ? "s" : ""} · {totalQty} article
-                        {totalQty > 1 ? "s" : ""}   devis chiffré sous 48h ouvrées.
+                        {totalQty > 1 ? "s" : ""} devis chiffré sous 48h ouvrées.
                       </p>
                     </div>
 
@@ -810,8 +856,8 @@ function CommandeRapide() {
                       Demande envoyée !
                     </h3>
                     <p className="mt-3 leading-relaxed text-ink-soft">
-                      Notre équipe étudie votre demande et vous contactera sous 48h pour
-                      confirmer les disponibilités et le prix final.
+                      Notre équipe étudie votre demande et vous contactera sous 48h pour confirmer
+                      les disponibilités et le prix final.
                     </p>
                     <div className="mt-8 flex flex-wrap justify-center gap-3">
                       <Link
@@ -872,9 +918,13 @@ function CommandeRapide() {
                       className="flex items-center gap-2 rounded-full bg-accent-red px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90 disabled:opacity-50"
                     >
                       {submitting ? (
-                        <><Loader2 className="h-4 w-4 animate-spin" /> Envoi...</>
+                        <>
+                          <Loader2 className="h-4 w-4 animate-spin" /> Envoi...
+                        </>
                       ) : (
-                        <><Send className="h-4 w-4" /> Envoyer la demande</>
+                        <>
+                          <Send className="h-4 w-4" /> Envoyer la demande
+                        </>
                       )}
                     </button>
                   )}
@@ -895,7 +945,11 @@ function CommandeRapide() {
           <SectionHeader kicker="Questions fréquentes" title="Bon à savoir" />
 
           <div className="mx-auto mt-12 max-w-3xl">
-            <Accordion type="single" collapsible className="block rounded-2xl border bg-paper px-5 sm:px-7">
+            <Accordion
+              type="single"
+              collapsible
+              className="block rounded-2xl border bg-paper px-5 sm:px-7"
+            >
               {faqs.map((f) => (
                 <AccordionItem key={f.q} value={f.q} className="last:border-b-0">
                   <AccordionTrigger className="py-5 text-left font-display text-sm font-bold uppercase tracking-wide text-ink hover:no-underline sm:text-base">
@@ -910,7 +964,10 @@ function CommandeRapide() {
 
             <p className="mt-8 text-center text-sm text-ink-soft">
               Une autre question ?{" "}
-              <Link to="/contact" className="font-semibold text-brand underline-offset-2 hover:underline">
+              <Link
+                to="/contact"
+                className="font-semibold text-brand underline-offset-2 hover:underline"
+              >
                 Contactez notre équipe
               </Link>
             </p>
@@ -921,7 +978,15 @@ function CommandeRapide() {
   );
 }
 
-function Field({ label, required, children }: { label: string; required?: boolean; children: React.ReactNode }) {
+function Field({
+  label,
+  required,
+  children,
+}: {
+  label: string;
+  required?: boolean;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-ink">

@@ -12,7 +12,7 @@ export const Route = createFileRoute("/preview-catalogue")({
     seo({
       title: "Catalogue Général 2026",
       description:
-        "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 24 h.",
+        "Feuilletez le catalogue général 2026 de Souss Droguerie : céramique, sanitaire, ciments, métallurgie, peinture et électricité. Prix sur demande, devis sous 48h.",
       // Version plein écran de /catalogue/interactif : le canonical consolide les deux.
       path: "/catalogue/interactif",
     }),

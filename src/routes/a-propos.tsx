@@ -21,6 +21,7 @@ import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { categories } from "@/lib/products";
 import { seo, jsonLd, canonical, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
+import { AREA_SERVED } from "@/lib/contact";
 import storyImg from "@/assets/1.jpg";
 import zoneImg from "@/assets/22.jpg";
 
@@ -62,18 +63,8 @@ const structuredData = {
     postalCode: "80360",
     addressCountry: "MA",
   },
-  areaServed: [
-    "Agadir",
-    "Inezgane",
-    "Aït Melloul",
-    "Dcheira El Jihadia",
-    "Taroudant",
-    "Tiznit",
-    "Biougra",
-    "Oulad Teima",
-    "Chtouka-Aït Baha",
-    "Souss-Massa",
-  ],
+  // Zones desservies : source unique (@/lib/contact) partagée avec l'accueil.
+  areaServed: [...AREA_SERVED],
   // Horaires synchronisés avec la page /contact (coupure méridienne) : Google
   // sanctionne les divergences NAP/horaires entre page visible et balisage.
   openingHoursSpecification: [
@@ -161,7 +152,7 @@ const engagements = [
   {
     icon: Clock,
     title: "Une réponse sous 48h",
-    text: "Toute demande de devis reçoit une réponse chiffrée sous 24 heures ouvrées, quelle que soit la taille du lot.",
+    text: "Toute demande de devis reçoit une réponse chiffrée sous 48h ouvrées, quelle que soit la taille du lot.",
   },
 ];
 
