@@ -79,7 +79,9 @@ function CategoryCarousel({
   );
 }
 
-export function Navbar({ overlay = false }: { overlay?: boolean }) {
+/** `hidden` : barre tenue au-dessus de l'ecran pendant l'intro video de l'accueil ; elle
+ *  descend a sa place quand l'intro se termine. */
+export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean; hidden?: boolean }) {
   const { cart, favorites, setCartOpen, setFavOpen } = useApp();
   const { user, setAuthOpen } = useCustomerAuth();
   const [open, setOpen] = useState(false);
@@ -154,9 +156,9 @@ export function Navbar({ overlay = false }: { overlay?: boolean }) {
       </div>
 
       <motion.header
-        initial={{ y: -80 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        initial={{ y: "-100%" }}
+        animate={{ y: hidden ? "-100%" : 0 }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
         // `-mb-20` (hauteur de la barre) fait remonter la page sous l'en-tete.
         className={`sticky top-0 z-40 w-full transition-colors duration-300 ${
           overlay ? "-mb-20" : ""

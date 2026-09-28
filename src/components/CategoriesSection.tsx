@@ -82,68 +82,11 @@ export function CategoriesSection({
     }));
   }, [dbCategories, isShop]);
 
-  return (
-    <section className={isShop ? "border-b bg-cream py-8" : "py-20 px-3"}>
-      {!isShop && <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />}
-      <Carousel opts={isShop ? { align: "start", loop: true } : { align: "start" }} className={isShop ? "mx-12 md:mx-16" : "mt-10"}>
-        {!isShop && (
-          <div className="mb-4 flex justify-end gap-1">
-            <CarouselPrevious variant="ghost" className="static h-9 w-9 translate-y-0" />
-            <CarouselNext variant="ghost" className="static h-9 w-9 translate-y-0" />
-          </div>
-        )}
-        <CarouselContent className={isShop ? "-ml-3 items-center" : "-ml-5"}>
-          {items.map((c, i) => (
-            <CarouselItem
-              key={c.category}
-              className={
-                isShop
-                  ? `pl-3 transition-[flex-basis] duration-300 ${
-                      selectedCategory === c.category
-                        ? "basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-[28%]"
-                        : "basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
-                    }`
-                  : "basis-[80%] pl-5 sm:basis-[45%] md:basis-[31%] lg:basis-[23.5%]"
-              }
-            >
-              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} >
-                {isShop && onCategorySelect ? (
-                  <button type="button" onClick={() => onCategorySelect(c.category)} className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]">
-                    <CategoryCardBody
-                      name={c.name}
-                      image={c.image}
-                      compact={selectedCategory !== c.category}
-                      active={selectedCategory === c.category}
-                    />
-                  </button>
-                ) : (
-                  <Link to="/categories" search={{ cat: c.category }} className="group relative block aspect-[7/10] overflow-hidden rounded-xl">
-                    <img
-                      src={c.image}
-                      alt={c.name}
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    {/* Voile leger au pied de la photo, juste de quoi lire le nom sur les
-                        visuels clairs (sacs de platre, marbre). */}
-                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
-                    <h3 className="text-shadow-overlay absolute inset-x-0 bottom-0 p-4 font-display text-2xl font-medium leading-tight text-white md:p-5 md:text-[1.7rem]">
-                      {c.name}
-                    </h3>
-                  </Link>
-                )}
-              </motion.div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {isShop && (
-          <>
-            <CarouselPrevious className="-left-12 h-9 w-9 md:-left-14" />
-            <CarouselNext className="-right-12 h-9 w-9 md:-right-14" />
-          </>
-        )}
-      </Carousel>
-      {variant === "home" && (
+  if (!isShop) {
+    return (
+      <section className="py-20 px-3">
+        <SectionHeader kicker="Nos rayons" title="Toutes les catégories" animated />
+        <CategoryCardsCarousel items={items} />
         <div className="mt-10 text-center">
           <Link
             to="/categories"
@@ -152,7 +95,74 @@ export function CategoriesSection({
             Découvrir tous les produits <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-      )}
+      </section>
+    );
+  }
+
+  return (
+    <section className="border-b bg-cream py-8">
+      <Carousel opts={{ align: "start", loop: true }} className="mx-12 md:mx-16">
+        <CarouselContent className="-ml-3 items-center">
+          {items.map((c, i) => (
+            <CarouselItem
+              key={c.category}
+              className={`pl-3 transition-[flex-basis] duration-300 ${
+                selectedCategory === c.category
+                  ? "basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-[28%]"
+                  : "basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
+              }`}
+            >
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} >
+                <button type="button" onClick={() => onCategorySelect?.(c.category)} className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]">
+                  <CategoryCardBody
+                    name={c.name}
+                    image={c.image}
+                    compact={selectedCategory !== c.category}
+                    active={selectedCategory === c.category}
+                  />
+                </button>
+              </motion.div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="-left-12 h-9 w-9 md:-left-14" />
+        <CarouselNext className="-right-12 h-9 w-9 md:-right-14" />
+      </Carousel>
     </section>
+  );
+}
+
+/** Carrousel de cartes portrait des rayons (accueil, page A propos) : photo pleine carte,
+ *  nom en surimpression, fleches en haut a droite. */
+export function CategoryCardsCarousel({ items }: { items: CategoryInfo[] }) {
+  return (
+    <Carousel opts={{ align: "start" }} className="mt-10">
+      <div className="mb-4 flex justify-end gap-1">
+        <CarouselPrevious variant="ghost" className="static h-9 w-9 translate-y-0" />
+        <CarouselNext variant="ghost" className="static h-9 w-9 translate-y-0" />
+      </div>
+      <CarouselContent className="-ml-5">
+        {items.map((c, i) => (
+          <CarouselItem key={c.category} className="basis-[80%] pl-5 sm:basis-[45%] md:basis-[31%] lg:basis-[23.5%]">
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} >
+              <Link to="/categories" search={{ cat: c.category }} className="group relative block aspect-[7/10] overflow-hidden rounded-xl">
+                <img
+                  src={c.image}
+                  alt={c.name}
+                  loading="lazy"
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                {/* Voile leger au pied de la photo, juste de quoi lire le nom sur les
+                    visuels clairs (sacs de platre, marbre). */}
+                <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
+                <h3 className="text-shadow-overlay absolute inset-x-0 bottom-0 p-4 font-display text-2xl font-medium leading-tight text-white md:p-5 md:text-[1.7rem]">
+                  {c.name}
+                </h3>
+              </Link>
+            </motion.div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   );
 }

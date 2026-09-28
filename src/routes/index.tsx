@@ -3,14 +3,17 @@ import { Layout } from "@/components/Layout";
 import { Hero } from "@/components/Hero";
 import { ServiceBar } from "@/components/ServiceBar";
 import { SectionHeader } from "@/components/SectionHeader";
-import { ProductGrid } from "@/components/ProductGrid";
+import { BestSellersShowcase } from "@/components/BestSellersShowcase";
+import { CatalogueCarousel } from "@/components/CatalogueCarousel";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { PromoCards } from "@/components/PromoCards";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
 import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
-import { motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
+import { SmoothScroll } from "@/components/motion/SmoothScroll";
+import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { ArrowRight, Loader2 } from "lucide-react";
 import { seo, jsonLd, descriptionFrom, canonical, SITE_URL, ALTERNATE_NAME } from "@/lib/seo";
 import { AREA_SERVED } from "@/lib/contact";
@@ -104,9 +107,15 @@ export const Route = createFileRoute("/")({
 /** Lien vers la boutique, cale a droite au-dessus des cartes - la place qu'occupent les
  *  fleches dans la section des categories. `#produits` fait atterrir directement sur la
  *  grille ; `bestsellers` la filtre sur les best-sellers. */
-function SeeAllLink({ bestsellers = false }: { bestsellers?: boolean }) {
+function SeeAllLink({
+  bestsellers = false,
+  className = "mb-4 mt-10 flex justify-end",
+}: {
+  bestsellers?: boolean;
+  className?: string;
+}) {
   return (
-    <div className="mb-4 mt-10 flex justify-end">
+    <div className={className}>
       <Link
         to="/categories"
         search={bestsellers ? { bestseller: true } : {}}
@@ -129,64 +138,65 @@ function Home() {
   const bestSellers = productList.filter((p: any) => p.bestseller);
 
   return (
-    <Layout overlayNav>
-      <Hero />
-      {/* <ServiceBar /> */}
+    <MotionConfig reducedMotion="user">
+      <Layout overlayNav videoIntro>
+        <SmoothScroll />
+        <Hero />
+        {/* <ServiceBar /> */}
 
-      <CategoriesSection />
+        <CategoriesSection />
 
-      <section className="container-x py-20">
-        <SectionHeader kicker="Best-sellers" title="Nos produits populaires" />
-        <SeeAllLink bestsellers />
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-brand" />
+        <section className="container-x py-20">
+          <SectionHeader kicker="Best-sellers" title="Nos produits populaires" animated />
+          <SeeAllLink bestsellers />
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            </div>
+          ) : (
+            <BestSellersShowcase products={bestSellers} />
+          )}
+        </section>
+
+        <SuppliersCarousel />
+
+        {/* <PromoCards /> */}
+
+        <CatalogueCarousel
+          header={<SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" align="left" animated />}
+          seeAll={<SeeAllLink className="mt-8 flex" />}
+          products={productList.slice(0, 8)}
+          loading={isLoading}
+        />
+
+        {/* <section  className="container-x py-20">
+          <div className="grid gap-8 lg:grid-cols-2 items-center bg-mint/50 rounded-3xl overflow-hidden">
+            <motion.img
+              initial={{ scale: 1.1, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+              src={promoImg} alt="Collection saison" loading="lazy"
+              className="h-full w-full object-cover aspect-[4/3] lg:aspect-auto"
+            />
+            <div className="p-10 lg:p-16">
+              <span className="text-xs font-semibold uppercase tracking-widest text-accent-red">Collection de saison</span>
+              <h2 className="mt-3 font-display text-4xl md:text-5xl uppercase text-brand-navy leading-tight">
+                L'élégance marocaine, du sol au plafond
+              </h2>
+              <p className="mt-4 text-brand-ink/80">
+                Zellige émaillé, marbre poli et carrelage grand format   sélectionnés pour vos projets résidentiels et hôteliers.
+              </p>
+              <Link to="/categories" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
+                Explorer la collection <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
-        ) : (
-          <ProductGrid items={bestSellers.slice(0, 4)} showcase />
-        )}
-      </section>
+        </section> */}
 
-      <SuppliersCarousel />
-
-      {/* <PromoCards /> */}
-
-      <section className="container-x py-16">
-        <SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" />
-        <SeeAllLink />
-        {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-brand" />
-          </div>
-        ) : (
-          <ProductGrid items={productList.slice(0, 8)} showcase />
-        )}
-      </section>
-
-      {/* <section  className="container-x py-20">
-        <div className="grid gap-8 lg:grid-cols-2 items-center bg-mint/50 rounded-3xl overflow-hidden">
-          <motion.img
-            initial={{ scale: 1.1, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            src={promoImg} alt="Collection saison" loading="lazy"
-            className="h-full w-full object-cover aspect-[4/3] lg:aspect-auto"
-          />
-          <div className="p-10 lg:p-16">
-            <span className="text-xs font-semibold uppercase tracking-widest text-accent-red">Collection de saison</span>
-            <h2 className="mt-3 font-display text-4xl md:text-5xl uppercase text-brand-navy leading-tight">
-              L'élégance marocaine, du sol au plafond
-            </h2>
-            <p className="mt-4 text-brand-ink/80">
-              Zellige émaillé, marbre poli et carrelage grand format   sélectionnés pour vos projets résidentiels et hôteliers.
-            </p>
-            <Link to="/categories" className="group mt-10 inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
-              Explorer la collection <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-            </Link>
-          </div>
-        </div>
-      </section> */}
-
-      <CtaBanner />
-    </Layout>
+        <CtaBanner />
+        {/* Barre fixe : placee apres le contenu, pour que le hero reste le premier enfant
+            de <main> (l'en-tete s'y repere pour savoir quand passer au blanc). */}
+        <ScrollProgress />
+      </Layout>
+    </MotionConfig>
   );
 }

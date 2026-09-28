@@ -1,3 +1,14 @@
+import {
+  motion,
+  useAnimationFrame,
+  useMotionValue,
+  useReducedMotion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useVelocity,
+} from "framer-motion";
+import { useRef } from "react";
 import { SectionHeader } from "./SectionHeader";
 import LAFARGE from "@/assets/Lafarge.webp";
 import HOLCIM from "@/assets/Holcim.png";
@@ -27,8 +38,32 @@ const suppliers = [
   { name: "KNAUF", logo: KNAUF },
 ];
 
+/** Ramene `v` dans [min, max[ en bouclant (defilement sans fin). */
+const wrap = (min: number, max: number, v: number) => {
+  const range = max - min;
+  return ((((v - min) % range) + range) % range) + min;
+};
+
+const BASE_VELOCITY = 2.5;
+
 export function SuppliersCarousel() {
   const doubled = [...suppliers, ...suppliers];
+  const reduce = useReducedMotion();
+  const offset = useMotionValue(0);
+  const { scrollY } = useScroll();
+  const velocity = useSpring(useVelocity(scrollY), { damping: 50, stiffness: 400 });
+  const boost = useTransform(velocity, [0, 1000], [0, 4], { clamp: false });
+  const direction = useRef(1);
+  const x = useTransform(offset, (v) => `${v}%`);
+
+  useAnimationFrame((_, delta) => {
+    if (reduce) return;
+    const b = boost.get();
+    if (b < 0) direction.current = -1;
+    else if (b > 0) direction.current = 1;
+    const moveBy = direction.current * BASE_VELOCITY * (delta / 1000) * (1 + Math.abs(b));
+    offset.set(wrap(-50, 0, offset.get() - moveBy));
+  });
 
   return (
     <section className="overflow-hidden border-b py-5 container-xs">
@@ -40,7 +75,7 @@ export function SuppliersCarousel() {
       </div>
 
       <div className="relative mt-5">
-        <div className="flex w-max animate-[marquee_20s_linear_infinite] lg:animate-[marquee_20s_linear_infinite]">
+        <motion.div style={{ x }} className="flex w-max">
           {doubled.map((supplier, i) => (
             <div key={i} className="group mr-4 grid h-10 min-w-[90px] shrink-0 place-items-center px-4 transition-shadow duration-300 md:h-24 md:min-w-[200px] md:px-8">
               <img
@@ -50,7 +85,7 @@ export function SuppliersCarousel() {
               />
             </div>
           ))}
-        </div>
+        </motion.div>
 
         {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
         <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-cream to-transparent" /> */}
