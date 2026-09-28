@@ -4,18 +4,10 @@ import { Hero } from "@/components/Hero";
 import { ServiceBar } from "@/components/ServiceBar";
 import { SectionHeader } from "@/components/SectionHeader";
 import { ProductGrid } from "@/components/ProductGrid";
-import { ProductCard } from "@/components/ProductCard";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { PromoCards } from "@/components/PromoCards";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
 import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
 import { motion } from "framer-motion";
@@ -23,14 +15,10 @@ import { ArrowRight, Loader2 } from "lucide-react";
 import { seo, jsonLd, descriptionFrom, canonical, SITE_URL, ALTERNATE_NAME } from "@/lib/seo";
 import { AREA_SERVED } from "@/lib/contact";
 
-/** Fiche organisation : alimente le logo, le téléphone et l'adresse dans les
- *  résultats enrichis de la recherche (complémentaire du HardwareStore sur /a-propos). */
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Souss Droguerie SARL",
-  // Les deux orthographes désignent la même entreprise : Google les associe
-  // pour couvrir « Souss Droguerie » ET « Droguerie Souss ».
   alternateName: ALTERNATE_NAME,
   foundingDate: "1992",
   slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1992",
@@ -43,7 +31,6 @@ const organizationSchema = {
   email: "contact@soussdroguerie.com",
   hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
   sameAs: ["https://maps.app.goo.gl/q54qmxeEv752bJMTA"],
-  // Coordonnées GPS réelles du dépôt (mêmes valeurs que la fiche HardwareStore).
   geo: {
     "@type": "GeoCoordinates",
     latitude: 30.3830705,
@@ -51,7 +38,6 @@ const organizationSchema = {
   },
   priceRange: "$$",
   currenciesAccepted: "MAD",
-  // Mêmes horaires coupés que /contact et /a-propos (balisage uniquement).
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -89,8 +75,6 @@ const organizationSchema = {
   areaServed: [...AREA_SERVED],
 };
 
-/** Recherche sur site (la page boutique filtre par ?q=) : donne un lien
- *  d'action de recherche dans les résultats Google. */
 const webSiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -107,21 +91,37 @@ export const Route = createFileRoute("/")({
   component: Home,
   head: () =>
     seo({
-      // Marque en tête (conserve le #1 « Souss Droguerie » / « Droguerie Souss ») et
-      // la requête clé « droguerie agadir » juste après - les deux mots-clés cibles
-      // sont dans les 60 premiers caractères affichés par Google.
       title: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction",
       description: descriptionFrom(
         "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992. Devis gratuit sous 48h, livraison dans tout le Souss.",
       ),
       path: "/",
       scripts: [jsonLd(organizationSchema), jsonLd(webSiteSchema)],
-      // LCP : le poster du hero est l'image la plus grande au-dessus de la ligne de
-      // flottaison - on la précharge sur la page d'accueil uniquement (là où le hero
-      // est rendu), pas sur les autres routes.
       links: [{ rel: "preload", as: "image", href: canonical("/hero-poster.jpg") }],
     }),
 });
+
+/** Lien vers la boutique, cale a droite au-dessus des cartes - la place qu'occupent les
+ *  fleches dans la section des categories. `#produits` fait atterrir directement sur la
+ *  grille ; `bestsellers` la filtre sur les best-sellers. */
+function SeeAllLink({ bestsellers = false }: { bestsellers?: boolean }) {
+  return (
+    <div className="mb-4 mt-10 flex justify-end">
+      <Link
+        to="/categories"
+        search={bestsellers ? { bestseller: true } : {}}
+        hash="produits"
+        // Saut immediat : en defilement doux (scroll-behavior: smooth), la boutique
+        // s'ouvrirait a la hauteur de l'accueil puis glisserait jusqu'a la grille.
+        hashScrollIntoView={{ behavior: "instant", block: "start" }}
+        className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+      >
+        Voir tous
+        <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+      </Link>
+    </div>
+  );
+}
 
 function Home() {
   const { data: products, isLoading } = useProducts();
@@ -129,7 +129,7 @@ function Home() {
   const bestSellers = productList.filter((p: any) => p.bestseller);
 
   return (
-    <Layout>
+    <Layout overlayNav>
       <Hero />
       {/* <ServiceBar /> */}
 
@@ -137,27 +137,13 @@ function Home() {
 
       <section className="container-x py-20">
         <SectionHeader kicker="Best-sellers" title="Nos produits populaires" />
+        <SeeAllLink bestsellers />
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-brand" />
           </div>
         ) : (
-          <Carousel opts={{ align: "start", loop: true }} className="mt-12 mx-10 md:mx-14">
-            <CarouselContent>
-              {bestSellers.map((p: any, i: number) => (
-                <CarouselItem
-                  key={p.id}
-                  className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
-                >
-                  <div className="mx-auto h-full max-w-xs md:max-w-none">
-                    <ProductCard product={p} index={i} />
-                  </div>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="-left-10 md:-left-14 h-10 w-10" />
-            <CarouselNext className="-right-10 md:-right-14 h-10 w-10" />
-          </Carousel>
+          <ProductGrid items={bestSellers.slice(0, 4)} showcase />
         )}
       </section>
 
@@ -167,14 +153,13 @@ function Home() {
 
       <section className="container-x py-16">
         <SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" />
+        <SeeAllLink />
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-8 w-8 animate-spin text-brand" />
           </div>
         ) : (
-          <div className="mt-12">
-            <ProductGrid items={productList.slice(0, 8)} />
-          </div>
+          <ProductGrid items={productList.slice(0, 8)} showcase />
         )}
       </section>
 

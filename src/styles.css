@@ -105,7 +105,16 @@
   width: 100%;
   margin-inline: auto;
   padding-inline: 1rem;
-  max-width: 1280px;
+  max-width: 1500px;
+  @media (min-width: 640px) { padding-inline: 1.5rem; }
+  @media (min-width: 1024px) { padding-inline: 2rem; }
+}
+
+@utility container-xs {
+  width: 100%;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  max-width: 1250px;
   @media (min-width: 640px) { padding-inline: 1.5rem; }
   @media (min-width: 1024px) { padding-inline: 2rem; }
 }

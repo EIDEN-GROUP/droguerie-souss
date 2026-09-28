@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ChevronRight, Heart, Menu, Phone, ShoppingBag, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/store";
@@ -79,18 +79,36 @@ function CategoryCarousel({
   );
 }
 
-export function Navbar() {
+export function Navbar({ overlay = false }: { overlay?: boolean }) {
   const { cart, favorites, setCartOpen, setFavOpen } = useApp();
   const { user, setAuthOpen } = useCustomerAuth();
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [overHero, setOverHero] = useState(true);
   const [mega, setMega] = useState(false);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 20));
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
+  /** L'en-tete survole le bandeau sombre (premier enfant de `<main>`) tant que le bas de
+   *  celui-ci depasse sous la barre : la marge haute negative de l'observateur retire la
+   *  hauteur de la barre (h-20). Couvre aussi le rechargement d'une page deja defilee. */
+  useEffect(() => {
+    const hero = overlay ? document.querySelector("main")?.firstElementChild : null;
+    if (!hero) return;
+    const observer = new IntersectionObserver(([entry]) => setOverHero(entry.isIntersecting), {
+      rootMargin: "-80px 0px 0px 0px",
+    });
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [overlay, pathname]);
+
   const cartCount = cart.reduce((s, i) => s + i.qty, 0);
+
+  /** Transparent (texte blanc) tant que l'en-tete survole le bandeau sombre de la page,
+   *  panneau des categories ouvert ou non ; blanc des qu'il passe sur le corps de la page. */
+  const transparent = overlay && overHero;
+  const iconBtn = `grid h-10 w-10 place-items-center rounded-full transition ${
+    transparent ? "text-paper hover:bg-paper/10" : "text-ink hover:bg-mint"
+  }`;
 
   const openMega = () => {
     if (closeTimer.current) clearTimeout(closeTimer.current);
@@ -122,7 +140,7 @@ export function Navbar() {
       {/* Top strip. `z-40`, comme l'en-tete : le voile des categories passe dessous, sinon
           la barre se retrouverait assombrie au-dessus d'un en-tete reste clair. */}
       <div className="relative z-40 hidden bg-ink text-paper md:block">
-        <div className="container-x flex h-9 items-center justify-between text-xs">
+        {/* <div className="container-x flex h-9 items-center justify-between text-xs">
           <span>Livraison rapide dans tout le Souss • Devis gratuit sous 48h</span>
           <div className="flex items-center gap-4">
             <a href="tel:+212528838992" className="flex items-center gap-1.5 hover:text-sky">
@@ -132,24 +150,35 @@ export function Navbar() {
               contact@soussdroguerie.com
             </a>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <motion.header
         initial={{ y: -80 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`sticky top-0 z-40 w-full border-b transition-all ${
-          scrolled ? "bg-paper/95 shadow-sm backdrop-blur" : "bg-paper"
-        }`}
+        // `-mb-20` (hauteur de la barre) fait remonter la page sous l'en-tete.
+        className={`sticky top-0 z-40 w-full transition-colors duration-300 ${
+          overlay ? "-mb-20" : ""
+        } ${transparent ? "bg-transparent" : "bg-paper"}`}
       >
+        {/* Filet bas limite a 80 % de la largeur et centre, a la place d'une bordure pleine. */}
+        <span
+          aria-hidden="true"
+          className={`pointer-events-none absolute bottom-0 left-1/2 h-px w-4/5 -translate-x-1/2 transition-colors duration-300 ${
+            transparent ? "bg-paper/20" : "bg-border"
+          }`}
+        />
         <div className="container-x flex h-20 items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-3 shrink-0">
             <div className="h-16 w-auto">
+              {/* Logo monochrome sur fond transparent : le filtre le passe en blanc. */}
               <img
                 src={logo}
                 alt="Souss Droguerie, droguerie à Agadir"
-                className="max-h-16 w-auto object-contain"
+                className={`max-h-16 w-auto object-contain transition duration-300 ${
+                  transparent ? "brightness-0 invert" : ""
+                }`}
               />
             </div>
           </Link>
@@ -169,7 +198,9 @@ export function Navbar() {
                     to={l.to}
                     onFocus={hasMega ? openMega : undefined}
                     aria-expanded={hasMega ? mega : undefined}
-                    className="relative block px-4 py-2 text-xs font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+                    className={`relative block px-4 py-2 text-xs font-semibold uppercase tracking-wider transition ${
+                      transparent ? "text-paper hover:text-paper/70" : "text-ink hover:text-brand"
+                    }`}
                   >
                     {l.label}
                     {active && (
@@ -187,26 +218,22 @@ export function Navbar() {
           <div className="flex items-center gap-1">
             <a
               href="tel:+212528838992"
-              className="hidden md:inline-flex items-center gap-2 rounded-full border border-brand/20 bg-brand/5 px-3.5 py-2 text-sm font-semibold text-brand transition hover:bg-brand hover:text-brand-foreground"
+              className={`hidden md:inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+                transparent
+                  ? "border-paper/30 bg-paper/10 text-paper hover:bg-paper hover:text-ink"
+                  : "border-brand/20 bg-brand/5 text-brand hover:bg-brand hover:text-brand-foreground"
+              }`}
             >
               <Phone className="h-4 w-4" /> +212 528 838 992
             </a>
 
             {user ? (
-              <Link
-                to="/compte"
-                aria-label="Mon compte"
-                className="relative grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
-              >
+              <Link to="/compte" aria-label="Mon compte" className={`relative ${iconBtn}`}>
                 <UserRound className="h-5 w-5" />
                 <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-green-500" />
               </Link>
             ) : (
-              <button
-                onClick={() => setAuthOpen(true)}
-                aria-label="Se connecter"
-                className="grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
-              >
+              <button onClick={() => setAuthOpen(true)} aria-label="Se connecter" className={iconBtn}>
                 <UserRound className="h-5 w-5" />
               </button>
             )}
@@ -214,7 +241,7 @@ export function Navbar() {
             <button
               onClick={() => setFavOpen(true)}
               aria-label="Favoris"
-              className="relative grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
+              className={`relative ${iconBtn}`}
             >
               <Heart className="h-5 w-5" />
               {favorites.length > 0 && (
@@ -227,7 +254,7 @@ export function Navbar() {
             <button
               onClick={() => setCartOpen(true)}
               aria-label="Panier"
-              className="relative grid h-10 w-10 place-items-center rounded-full text-ink transition hover:bg-mint"
+              className={`relative ${iconBtn}`}
             >
               <ShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (
@@ -239,7 +266,7 @@ export function Navbar() {
 
             <button
               onClick={() => setOpen(!open)}
-              className="grid h-10 w-10 place-items-center rounded-full text-ink lg:hidden"
+              className={`${iconBtn} lg:hidden`}
               aria-label="Menu"
             >
               <Menu className="h-5 w-5" />

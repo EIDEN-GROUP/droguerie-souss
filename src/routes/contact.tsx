@@ -100,9 +100,9 @@ function Contact() {
   };
 
   return (
-    <Layout>
+    <Layout overlayNav>
       <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative py-10 md:py-14">
+        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

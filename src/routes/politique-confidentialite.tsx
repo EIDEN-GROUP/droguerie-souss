@@ -84,9 +84,9 @@ const SECTIONS: { title: string; body: string[] }[] = [
 
 function Privacy() {
   return (
-    <Layout>
+    <Layout overlayNav>
       <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative py-10 md:py-14">
+        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
               <Link to="/" className="transition hover:text-paper">

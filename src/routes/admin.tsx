@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
@@ -23,21 +23,23 @@ function AdminLayout() {
   const { isAuthed, loading, role, checkSession } = useAdminAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   useEffect(() => {
     setMounted(true);
     checkSession();
   }, []);
 
+  /* Mirrors requireFullAdmin (lib/api/admin-guard.ts): sales cannot reach the catalogue
+     pages. Re-checked on every navigation, not only on load. */
   useEffect(() => {
     if (!loading && isAuthed && role === "sales") {
       const restricted = ["/admin/products", "/admin/categories", "/admin/subcategories"];
-      const path = window.location.pathname;
-      if (restricted.some((p) => path.startsWith(p))) {
+      if (restricted.some((p) => pathname.startsWith(p))) {
         navigate({ to: "/admin" });
       }
     }
-  }, [loading, isAuthed, role]);
+  }, [loading, isAuthed, role, pathname]);
 
   if (!mounted || loading) {
     return (

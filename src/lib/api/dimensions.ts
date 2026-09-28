@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { requireAdminUser } from "./admin-guard";
+import { requireFullAdmin } from "./admin-guard";
 import { createAdminClient } from "./db";
 
 export interface DbDimension {
@@ -9,7 +9,7 @@ export interface DbDimension {
 }
 
 export const getDimensions = createServerFn({ method: "GET" })
-  .middleware([requireAdminUser])
+  .middleware([requireFullAdmin])
   .handler(async () => {
     const supabase = createAdminClient();
     const { data, error } = await supabase.from("dimensions").select("*").order("value");
@@ -18,7 +18,7 @@ export const getDimensions = createServerFn({ method: "GET" })
   });
 
 export const createDimension = createServerFn({ method: "POST" })
-  .middleware([requireAdminUser])
+  .middleware([requireFullAdmin])
   .validator((data: { value: string }) => data)
   .handler(async (ctx) => {
     const value = ctx.data.value.trim();
@@ -31,7 +31,7 @@ export const createDimension = createServerFn({ method: "POST" })
 
 /** Renomme le preset et propage la nouvelle valeur sur les produits et variantes. */
 export const updateDimension = createServerFn({ method: "POST" })
-  .middleware([requireAdminUser])
+  .middleware([requireFullAdmin])
   .validator((data: { id: string; value: string }) => data)
   .handler(async (ctx) => {
     const value = ctx.data.value.trim();
@@ -85,7 +85,7 @@ export const updateDimension = createServerFn({ method: "POST" })
 
 /** Supprime le preset, retire les variantes correspondantes et les dimension des produits. */
 export const deleteDimension = createServerFn({ method: "POST" })
-  .middleware([requireAdminUser])
+  .middleware([requireFullAdmin])
   .validator((data: { id: string }) => data)
   .handler(async (ctx) => {
     const supabase = createAdminClient();

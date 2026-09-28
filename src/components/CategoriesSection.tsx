@@ -5,16 +5,8 @@ import { useMemo } from "react";
 import { categories as bundledCategories, categoryImage, type CategoryInfo } from "@/lib/products";
 import { useCategories } from "@/lib/adminStore";
 import { SectionHeader } from "./SectionHeader";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselPrevious,
-  CarouselNext,
-} from "@/components/ui/carousel";
+import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext,} from "@/components/ui/carousel";
 
-/** Le visuel d'une carte categorie, partage par la page A propos, la boutique et le menu
- *  deroulant de la barre de navigation. */
 export function CategoryCardBody({
   name,
   image,
@@ -32,21 +24,12 @@ export function CategoryCardBody({
         src={image}
         alt={name}
         loading="lazy"
-        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      {/* Voile cantonné au bas : la photo reste lisible au repos et couvre un peu
-          plus l'image au survol, le temps de dégager le libellé. */}
-      <div
-        className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent transition-all duration-300 group-hover:h-full group-hover:via-black/60 ${
-          compact ? "h-1/2" : "h-2/3"
-        }`}
-      />
+        className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"/>
+      <div className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent transition-all duration-300 group-hover:h-full group-hover:via-black/60 ${ compact ? "h-1/2" : "h-2/3"}`} />
       <div className={`absolute inset-x-0 bottom-0 text-white ${compact ? "p-3" : "p-4"}`}>
-        <div
-          className={`text-shadow-overlay font-display font-bold uppercase leading-tight tracking-wide ${
+        <div className={`text-shadow-overlay font-display font-bold uppercase leading-tight tracking-wide ${
             active
-              ? /* Le bloc est ancré en bas : un nom long grandirait vers le haut et se
-                   ferait rogner par la carte. D'où la taille progressive et le garde-fou. */
+              ?
                 "line-clamp-3 text-lg leading-tight sm:text-xl"
               : compact
                 ? "text-xs leading-tight sm:text-sm"
@@ -55,14 +38,11 @@ export function CategoryCardBody({
         >
           {name}
         </div>
-        {/* Le filet rouge de la marque : court au repos, il s'étire au survol. */}
         <span
           className={`mt-2 block h-1 rounded-full bg-accent-red transition-all duration-300 group-hover:w-16 ${
             active ? "w-16" : "w-8"
           }`}
         />
-        {/* max-h plutôt qu'un simple opacity : le libellé pousse le titre vers le haut
-            en s'ouvrant, glissement identique aux fiches À propos. */}
         <span
           className={`text-shadow-overlay flex items-center gap-1 overflow-hidden text-[11px] font-semibold uppercase tracking-wider text-white/90 transition-all duration-300 ${
             active
@@ -90,16 +70,6 @@ export function CategoriesSection({
 }) {
   const isShop = variant === "shop";
   const { data: dbCategories } = useCategories();
-
-  /**
-   * La boutique presente les grandes familles de produits : la liste groupee de
-   * `lib/products`, la meme que la page A propos. Les categories de l'admin sont bien
-   * plus fines (une vingtaine) et feraient un carrousel illisible en tete de page.
-   *
-   * Ailleurs, ce sont les categories de l'admin qui pilotent le carrousel ; la liste
-   * groupee ne couvre que le premier rendu et les erreurs de chargement, pour que la
-   * section ne soit jamais vide.
-   */
   const items: CategoryInfo[] = useMemo(() => {
     if (isShop) return bundledCategories;
     if (!dbCategories || dbCategories.length === 0) return bundledCategories;
@@ -113,13 +83,16 @@ export function CategoriesSection({
   }, [dbCategories, isShop]);
 
   return (
-    <section className={isShop ? "border-b bg-cream py-8" : "container-x py-20"}>
+    <section className={isShop ? "border-b bg-cream py-8" : "py-20 px-3"}>
       {!isShop && <SectionHeader kicker="Nos rayons" title="Toutes les catégories" />}
-      <Carousel
-        opts={{ align: "start", loop: true }}
-        className={isShop ? "mx-12 md:mx-16" : "mt-10 mx-10 md:mx-14"}
-      >
-        <CarouselContent className={isShop ? "-ml-3 items-center" : undefined}>
+      <Carousel opts={isShop ? { align: "start", loop: true } : { align: "start" }} className={isShop ? "mx-12 md:mx-16" : "mt-10"}>
+        {!isShop && (
+          <div className="mb-4 flex justify-end gap-1">
+            <CarouselPrevious variant="ghost" className="static h-9 w-9 translate-y-0" />
+            <CarouselNext variant="ghost" className="static h-9 w-9 translate-y-0" />
+          </div>
+        )}
+        <CarouselContent className={isShop ? "-ml-3 items-center" : "-ml-5"}>
           {items.map((c, i) => (
             <CarouselItem
               key={c.category}
@@ -130,49 +103,45 @@ export function CategoriesSection({
                         ? "basis-2/3 sm:basis-1/2 md:basis-1/3 lg:basis-[28%]"
                         : "basis-1/2 sm:basis-1/3 md:basis-1/4 lg:basis-1/5"
                     }`
-                  : "basis-full md:basis-1/3 lg:basis-1/4"
+                  : "basis-[80%] pl-5 sm:basis-[45%] md:basis-[31%] lg:basis-[23.5%]"
               }
             >
-              <div className={isShop ? "" : "mx-auto max-w-sm md:max-w-none"}>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.04 }}
-                >
-                  {isShop && onCategorySelect ? (
-                    <button
-                      type="button"
-                      onClick={() => onCategorySelect(c.category)}
-                      className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
-                    >
-                      <CategoryCardBody
-                        name={c.name}
-                        image={c.image}
-                        compact={selectedCategory !== c.category}
-                        active={selectedCategory === c.category}
-                      />
-                    </button>
-                  ) : (
-                    <Link
-                      to="/categories"
-                      search={{ cat: c.category }}
-                      className="group block relative aspect-[4/3] overflow-hidden rounded-xl shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]"
-                    >
-                      <CategoryCardBody name={c.name} image={c.image} />
-                    </Link>
-                  )}
-                </motion.div>
-              </div>
+              <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }} >
+                {isShop && onCategorySelect ? (
+                  <button type="button" onClick={() => onCategorySelect(c.category)} className="group relative block aspect-[4/3] w-full overflow-hidden rounded-xl text-left shadow-sm transition-shadow duration-300 hover:shadow-[var(--shadow-elevated)]">
+                    <CategoryCardBody
+                      name={c.name}
+                      image={c.image}
+                      compact={selectedCategory !== c.category}
+                      active={selectedCategory === c.category}
+                    />
+                  </button>
+                ) : (
+                  <Link to="/categories" search={{ cat: c.category }} className="group relative block aspect-[7/10] overflow-hidden rounded-xl">
+                    <img
+                      src={c.image}
+                      alt={c.name}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    {/* Voile leger au pied de la photo, juste de quoi lire le nom sur les
+                        visuels clairs (sacs de platre, marbre). */}
+                    <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
+                    <h3 className="text-shadow-overlay absolute inset-x-0 bottom-0 p-4 font-display text-2xl font-medium leading-tight text-white md:p-5 md:text-[1.7rem]">
+                      {c.name}
+                    </h3>
+                  </Link>
+                )}
+              </motion.div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious
-          className={isShop ? "-left-12 h-9 w-9 md:-left-14" : "-left-10 md:-left-14 h-10 w-10"}
-        />
-        <CarouselNext
-          className={isShop ? "-right-12 h-9 w-9 md:-right-14" : "-right-10 md:-right-14 h-10 w-10"}
-        />
+        {isShop && (
+          <>
+            <CarouselPrevious className="-left-12 h-9 w-9 md:-left-14" />
+            <CarouselNext className="-right-12 h-9 w-9 md:-right-14" />
+          </>
+        )}
       </Carousel>
       {variant === "home" && (
         <div className="mt-10 text-center">

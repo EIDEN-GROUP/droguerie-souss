@@ -188,7 +188,7 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
 
 function APropos() {
   return (
-    <Layout>
+    <Layout overlayNav>
       <script
         type="application/ld+json"
         // Données de balisage : la chaîne est construite ici, aucune entrée utilisateur.
@@ -197,7 +197,7 @@ function APropos() {
 
       {/* Bandeau de tête, calé sur celui des autres pages intérieures */}
       <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative py-10 md:py-14">
+        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

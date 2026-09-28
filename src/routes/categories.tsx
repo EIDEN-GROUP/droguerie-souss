@@ -22,6 +22,8 @@ const searchSchema = z.object({
   cat: z.string().optional(),
   subcat: z.string().optional(),
   q: z.string().optional(),
+  /** `?bestseller=true` : lien « Voir tous » des best-sellers de l'accueil. */
+  bestseller: z.boolean().optional(),
 });
 
 type Search = z.infer<typeof searchSchema>;
@@ -31,10 +33,11 @@ export const Route = createFileRoute("/categories")({
   component: Shop,
   head: ({ match }) => {
     // Le contexte head n'expose pas `search` directement : il est porté par le match.
-    const search = (match.search ?? {}) as { cat?: string; subcat?: string; q?: string };
+    const search = (match.search ?? {}) as Search;
     const cat = search.cat;
     const q = search.q;
     const catInfo = categories.find((c) => c.category === cat);
+    const bestTitle = search.bestseller && !catInfo ? "Best-sellers | " : "";
     // Facettes : le canonical ne garde que la catégorie (les sous-catégories et la
     // recherche sont des variantes du même contenu, elles ne doivent pas être
     // indexées séparément). La recherche (?q=) est en plus marquée noindex.
@@ -42,7 +45,7 @@ export const Route = createFileRoute("/categories")({
     return seo({
       title: catInfo
         ? `${catInfo.name} à Agadir chez Souss Droguerie`
-        : "Droguerie & Matériaux de construction à Agadir | Souss Droguerie",
+        : `${bestTitle}Droguerie & Matériaux de construction à Agadir | Souss Droguerie`,
       description: catInfo
         ? `Achetez ${catInfo.name.toLowerCase()} à Agadir chez Souss Droguerie : ${catInfo.description}. Devis gratuit sous 48h, livraison dans tout le Souss.`
         : "Souss Droguerie (Droguerie Souss) : droguerie et catalogue complet de matériaux de construction à Agadir. Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie. Devis gratuit sous 48h.",
@@ -85,7 +88,7 @@ export const Route = createFileRoute("/categories")({
 type SubcatTab = { label: string; value: string | undefined; count: number };
 
 function Shop() {
-  const { cat: urlCat, subcat: urlSubcat, q: urlQ } = Route.useSearch();
+  const { cat: urlCat, subcat: urlSubcat, q: urlQ, bestseller } = Route.useSearch();
   // Fiche de la catégorie sélectionnée : alimente le H1, le texte SEO et les liens
   // internes vers les autres rayons (undefined si ?cat= est absent ou inconnu).
   const catInfo = urlCat ? categories.find((c) => c.category === urlCat) : undefined;
@@ -110,10 +113,11 @@ function Shop() {
 
   const catFiltered = useMemo(() => {
     let list = productList;
+    if (bestseller) list = list.filter((p: any) => p.bestseller);
     if (activeCat) list = list.filter((p: any) => activeGroup.includes(p.category));
     if (query.trim()) list = searchProducts(list, query).map((r) => r.product);
     return list;
-  }, [productList, activeCat, activeGroup, query]);
+  }, [productList, bestseller, activeCat, activeGroup, query]);
 
   /** Admin-managed subcategories come first, in the order the admin sees them, and only when
    *  they actually hold products. Anything a product carries outside that list still gets a chip
@@ -187,10 +191,18 @@ function Shop() {
     [navigate],
   );
 
+  const toggleBestseller = useCallback(() => {
+    navigate({
+      to: "/categories",
+      search: (prev: Search) => ({ ...prev, bestseller: prev.bestseller ? undefined : true }),
+      resetScroll: false,
+    });
+  }, [navigate]);
+
   return (
-    <Layout>
+    <Layout overlayNav>
       <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative py-10 md:py-14">
+        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -206,13 +218,15 @@ function Shop() {
               </nav>
 
               <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-                {catInfo ? `${catInfo.name} à Agadir` : "Boutique"}
+                {catInfo ? `${catInfo.name} à Agadir` : bestseller ? "Best-sellers" : "Boutique"}
               </h1>
               <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
               <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
                 {catInfo
                   ? `${catInfo.description}. Achetez en ligne ou demandez un devis gratuit : livraison dans tout le Souss sous 48h.`
-                  : "Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."}
+                  : bestseller
+                    ? "Les produits les plus demandés par nos clients, disponibles à la droguerie et livrés dans tout le Souss."
+                    : "Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."}
               </p>
             </div>
           </motion.div>
@@ -254,15 +268,21 @@ function Shop() {
               className="w-full rounded-full border border-border bg-paper py-3 pl-10 pr-4 text-sm outline-none transition focus:border-brand"
             />
           </div>
-          <select
-            value={sort}
-            onChange={(e) => setSort(e.target.value as typeof sort)}
-            className="rounded-full border border-border bg-paper px-4 py-3 text-sm outline-none focus:border-brand"
-          >
-            <option value="default">Trier par défaut</option>
-            <option value="asc">Prix croissant</option>
-            <option value="desc">Prix décroissant</option>
-          </select>
+          <div className="flex items-center gap-2">
+            {/* Le filtre d'arrivee depuis l'accueil reste visible, et se retire d'un clic. */}
+            <CatChip active={!!bestseller} onClick={toggleBestseller}>
+              Best-sellers
+            </CatChip>
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as typeof sort)}
+              className="flex-1 rounded-full border border-border bg-paper px-4 py-3 text-sm outline-none focus:border-brand md:flex-none"
+            >
+              <option value="default">Trier par défaut</option>
+              <option value="asc">Prix croissant</option>
+              <option value="desc">Prix décroissant</option>
+            </select>
+          </div>
         </div>
 
         {tabs.length > 0 && (
@@ -281,8 +301,9 @@ function Shop() {
         )}
       </div>
 
-      {/* scroll-mt clears the sticky header + filter bar when we jump here on category select. */}
-      <div ref={resultsRef} className="container-x scroll-mt-[14rem] py-10">
+      {/* scroll-mt clears the sticky header + filter bar when we jump here on category select,
+          or arrive through `#produits` (the home page "Voir tous" links). */}
+      <div id="produits" ref={resultsRef} className="container-x scroll-mt-[14rem] py-10">
         {isError && (
           <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
             Erreur de chargement. Veuillez réessayer.
@@ -464,7 +485,7 @@ function CatChip({
   children,
 }: {
   active: boolean;
-  count: number;
+  count?: number;
   onClick: () => void;
   children: React.ReactNode;
 }) {
@@ -479,7 +500,7 @@ function CatChip({
     >
       {children}
       {/* The count rides the active chip only, so the bar stays quiet until you pick something. */}
-      {active && <span className="ml-1.5 font-bold">({count})</span>}
+      {active && count !== undefined && <span className="ml-1.5 font-bold">({count})</span>}
     </button>
   );
 }

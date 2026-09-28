@@ -31,41 +31,29 @@ export function SuppliersCarousel() {
   const doubled = [...suppliers, ...suppliers];
 
   return (
-    <section className="overflow-hidden border-y bg-cream py-14">
+    <section className="overflow-hidden border-b py-5 container-xs">
       <div className="container-x">
         <SectionHeader
           kicker="Ils nous font confiance"
-          title="Nos fournisseurs partenaires"
+          // title="Nos fournisseurs partenaires"
         />
       </div>
 
-      <div className="relative mt-10">
-        {/*
-          Deux conditions pour que la boucle soit invisible, l'animation decalant la piste
-          de la moitie de SA PROPRE largeur :
-
-          - `w-max` : sans lui la piste est un bloc large comme son parent (~1265 px), et
-            -50 % ne valait que ~633 px. Le defilement repartait donc a zero bien avant
-            d'atteindre la seconde copie, d'ou le saut. Avec `w-max` la largeur est celle
-            du contenu, et la moitie vaut une copie entiere.
-          - `mr-4` sur les cartes plutot qu'un `gap` sur la piste : un `gap` pose un espace
-            de moins qu'il n'y a de cartes, la moitie de la piste tomberait un demi-espace
-            trop tot. Avec la marge, la piste vaut exactement 24 x (carte + espace).
-        */}
-        <div className="flex w-max animate-[marquee_20s_linear_infinite] hover:[animation-play-state:paused] lg:animate-[marquee_20s_linear_infinite]">
+      <div className="relative mt-5">
+        <div className="flex w-max animate-[marquee_20s_linear_infinite] lg:animate-[marquee_20s_linear_infinite]">
           {doubled.map((supplier, i) => (
-            <div key={i} className="group mr-4 grid h-16 min-w-[140px] shrink-0 place-items-center rounded-xl border bg-paper px-4 shadow-sm transition-shadow duration-300 hover:shadow-md md:h-24 md:min-w-[200px] md:px-8">
+            <div key={i} className="group mr-4 grid h-10 min-w-[90px] shrink-0 place-items-center px-4 transition-shadow duration-300 md:h-24 md:min-w-[200px] md:px-8">
               <img
                 src={supplier.logo}
                 alt={supplier.name}
-                className="max-h-8 w-auto object-contain opacity-60 grayscale transition duration-300 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0 md:max-h-12"
+                className="max-h-10 w-auto object-contain opacity-60 grayscale transition duration-300 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0"
               />
             </div>
           ))}
         </div>
 
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-cream to-transparent" />
+        {/* <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream to-transparent" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-cream to-transparent" /> */}
       </div>
     </section>
   );
