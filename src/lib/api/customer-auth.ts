@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import bcrypt from "bcryptjs";
 import { createAdminClient } from "./db";
-import { setCustomerSession, requireCustomerEmail } from "./customer-session";
+import { setCustomerSession, clearCustomerSession, requireCustomerEmail } from "./customer-session";
 
 /** Anti-bruteforce / anti-spam (en mémoire, par instance — même motif qu'ailleurs). */
 const MAX_AUTH_PER_WINDOW = 8;
@@ -108,3 +108,9 @@ export const getCustomerByEmail = createServerFn({ method: "GET" })
     if (error) return null;
     return { id: data.id, email: data.email, fullName: data.full_name };
   });
+
+/** Détruit la session serveur (déconnexion client). */
+export const clearCustomerSessionFn = createServerFn({ method: "POST" }).handler(async () => {
+  clearCustomerSession();
+  return { success: true };
+});

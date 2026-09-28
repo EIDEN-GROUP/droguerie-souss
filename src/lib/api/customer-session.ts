@@ -1,10 +1,15 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
-import { createServerFn } from "@tanstack/react-start";
 import { getCookies, setCookie } from "@tanstack/react-start/server";
 import { getEnv } from "./env";
 
 /**
  * Session client vérifiable côté serveur (cookie signé, httpOnly).
+ *
+ * IMPORTANT bundler : ce module importe du code serveur pur
+ * (@tanstack/react-start/server, node:crypto). Il ne doit être importé QUE
+ * par des modules server-function (découpés au build) — jamais par du code
+ * client direct (sinon le build Vercel échoue : "Import denied in client
+ * environment"). La déconnexion exposée au client vit dans customer-auth.ts.
  *
  * Le store zustand (localStorage) se falsifie en deux clics : toute lecture
  * de données personnelles exige donc ce cookie, posé à la connexion
@@ -89,9 +94,3 @@ export function requireCustomerEmail(requestedEmail: unknown): { id: string; ema
   }
   return session;
 }
-
-/** Détruit la session serveur (appelé par la déconnexion client). */
-export const clearCustomerSessionFn = createServerFn({ method: "POST" }).handler(async () => {
-  clearCustomerSession();
-  return { success: true };
-});

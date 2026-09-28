@@ -1,6 +1,5 @@
 import { create } from "zustand";
-import { signupCustomer, loginCustomer } from "@/lib/api/customer-auth";
-import { clearCustomerSessionFn } from "@/lib/api/customer-session";
+import { signupCustomer, loginCustomer, clearCustomerSessionFn } from "@/lib/api/customer-auth";
 
 export interface CustomerUser {
   id: string;
