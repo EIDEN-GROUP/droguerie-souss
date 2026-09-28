@@ -24,7 +24,7 @@ export function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
       </motion.div>
 
-      <div className="container-x relative z-10 flex h-full items-center pt-20">
+      <div className="container-x relative z-10 flex h-full items-center justify-center pt-20">
         <div className="max-w-6xl text-paper">
           <motion.div className="flex flex-col items-center" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }}>
             <h1 className="font-display text-center text-5xl font-bold uppercase leading-[0.95] tracking-tight sm:text-6xl md:text-7xl">
