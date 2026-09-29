@@ -4,7 +4,7 @@ import { ArrowUpRight, Clock, Loader2, Mail, MapPin, Navigation, Phone, Send } f
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
-import { NumberedList } from "@/components/NumberedList";
+import { FaqAccordion } from "@/components/FaqAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import heroImg from "@/assets/collection-bath.jpg";
@@ -17,7 +17,7 @@ import { seo, jsonLd, canonical } from "@/lib/seo";
 const FAQS = [
   {
     q: "Livrez-vous en dehors d'Agadir ?",
-    a: "Oui, nous livrons dans tout le Souss-Massa : Agadir, Inezgane, Aït Melloul, Dcheira, Taroudant, Tiznit, Biougra, Oulad Teima, Chtouka-Aït Baha et environs.",
+    a: "Livraison dans le Souss-Massa selon la quantité, la destination et les conditions de la commande. Livraison assurée par nos soins ou à la charge du client selon le cas. À confirmer avec notre commercial.",
   },
   {
     q: "En combien de temps recevrai-je une réponse ?",
@@ -360,15 +360,15 @@ function Contact() {
         </motion.div>
       </section>
 
-      {/* Questions fréquentes : texte repris tel quel dans le balisage FAQPage. Meme liste
-          numerotee que les engagements d'A propos. */}
+      {/* Questions fréquentes : texte repris tel quel dans le balisage FAQPage, en accordéon
+          (les réponses fermées restent dans la page). */}
       {/* `#faq` : lien « FAQ » du pied de page ; `scroll-mt` degage l'en-tete fixe. */}
       <section id="faq" className="container-x scroll-mt-28 pb-20 md:pb-28">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <SectionHeader title="Questions fréquentes" align="left" animated />
           </div>
-          <NumberedList items={FAQS.map((f) => ({ title: f.q, text: f.a }))} />
+          <FaqAccordion items={FAQS} />
         </div>
       </section>
     </Layout>

@@ -22,7 +22,7 @@ import { CtaBanner } from "@/components/CtaBanner";
 import { CategoryCardsCarousel } from "@/components/CategoriesSection";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { PageHero } from "@/components/PageHero";
-import { NumberedList } from "@/components/NumberedList";
+import { StackedCards } from "@/components/StackedCards";
 import { categories } from "@/lib/products";
 import { seo, jsonLd, canonical, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
 import { AREA_SERVED } from "@/lib/contact";
@@ -110,12 +110,69 @@ export const Route = createFileRoute("/a-propos")({
     }),
 });
 
+/** Chiffres cles : un surtitre, le chiffre, puis une phrase qui le raconte (reprise de
+ *  l'histoire et des engagements de la page) plutot qu'un libelle sec. */
 const stats = [
-  { value: 30, suffix: "+", label: "Années d'expérience", icon: Building2 },
-  { value: 48, suffix: "h", label: "Pour recevoir votre devis", icon: Clock },
-  { value: 8, suffix: "", label: "Familles de matériaux", icon: Package },
-  { value: 12, suffix: "", label: "Marques partenaires", icon: Handshake },
+  {
+    value: 30,
+    suffix: "+",
+    tag: "Depuis 1992",
+    text: "ans à fournir les chantiers du Souss-Massa",
+    icon: Building2,
+  },
+  {
+    value: 48,
+    suffix: "h",
+    tag: "Réactivité",
+    text: "pour recevoir un devis chiffré, quelle que soit la taille du lot",
+    icon: Clock,
+  },
+  {
+    value: 8,
+    suffix: "",
+    tag: "Choix",
+    text: "familles de matériaux, du gros œuvre aux finitions",
+    icon: Package,
+  },
+  {
+    value: 12,
+    suffix: "",
+    tag: "Confiance",
+    text: "marques partenaires, retenues pour leur régularité sur le terrain",
+    icon: Handshake,
+  },
 ];
+
+/** Traits de soulignement « a la main », un par fiche pour qu'aucun ne soit identique. */
+const UNDERLINES = [
+  "M3 8 C 22 4, 42 10, 62 6 S 90 5, 97 7",
+  "M2 6 C 18 10, 40 3, 58 7 S 86 9, 98 5",
+  "M3 7 C 25 5, 45 9, 65 5 S 88 8, 97 6",
+  "M2 8 C 20 5, 38 8, 56 6 S 84 4, 98 7",
+];
+
+/** Trait rouge sous un chiffre, qui se dessine a l'entree dans l'ecran. */
+function HandUnderline({ path, delay }: { path: string; delay: number }) {
+  return (
+    <svg
+      viewBox="0 0 100 12"
+      fill="none"
+      aria-hidden="true"
+      className="mt-3 h-3 w-20 text-accent-red"
+    >
+      <motion.path
+        d={path}
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        initial={{ pathLength: 0 }}
+        whileInView={{ pathLength: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay, ease: "easeInOut" }}
+      />
+    </svg>
+  );
+}
 
 const engagements = [
   {
@@ -313,34 +370,60 @@ function APropos() {
         </div>
       </section>
 
-       {/* Chiffres clés : centres, pastille ronde sombre, chiffre en serif, libelle discret. */}
-      <section className="bg-brand-foreground">
-        <div className="container-x py-10">
-          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
-            {stats.map((s, i) => (
-              <motion.div
-                key={s.label}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.7, delay: i * 0.12, ease: EASE }}
-                className="group flex flex-col items-center text-center"
+      {/* Chiffres clés : sur fond creme, un titre a gauche et quatre fiches blanches a ombre
+          simple. Chaque chiffre compte a l'entree et se souligne d'un trait rouge trace comme
+          a la main ; au survol, la fiche se souleve. Deux colonnes sur telephone. */}
+      <section className="bg-cream">
+        <div className="container-x py-16 md:py-24">
+          <div className="grid gap-10 lg:grid-cols-[minmax(0,18rem)_minmax(0,1fr)] lg:items-center lg:gap-14 xl:grid-cols-[minmax(0,20rem)_minmax(0,1fr)] xl:gap-20">
+            <motion.div
+              variants={stagger}
+              initial="hidden"
+              whileInView="shown"
+              viewport={{ once: true, margin: "-80px" }}
+            >
+              <Kicker>En chiffres</Kicker>
+              <SplitReveal
+                as="h2"
+                className="mt-4 font-display text-3xl uppercase leading-tight text-ink sm:text-4xl"
               >
-                <motion.span
-                  initial={{ scale: 0.5, opacity: 0 }}
-                  whileInView={{ scale: 1, opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.7, delay: 0.1 + i * 0.12, ease: EASE }}
-                  className="grid h-16 w-16 place-items-center rounded-full bg-brand-secondary text-paper transition duration-500 group-hover:-translate-y-1 sm:h-[4.5rem] sm:w-[4.5rem]"
+                Plus de trente ans au comptoir
+              </SplitReveal>
+              <motion.p
+                variants={rise}
+                className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base"
+              >
+                Depuis 1992 à Dcheira : du stock, des conseils de métier et des réponses rapides.
+              </motion.p>
+            </motion.div>
+
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+              {stats.map((s, i) => (
+                <motion.div
+                  key={s.tag}
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }}
+                  transition={{ duration: 0.7, delay: i * 0.1, ease: EASE }}
+                  className="group flex flex-col rounded-2xl border border-border bg-paper p-5 shadow-[var(--shadow-card)] transition duration-300 hover:-translate-y-1 hover:shadow-[var(--shadow-elevated)] sm:p-6"
                 >
-                  <s.icon className="h-6 w-6" strokeWidth={1.5} />
-                </motion.span>
-                <p className="mt-4 font-display text-3xl font-semibold tabular-nums text-ink sm:text-4xl">
-                  <Counter to={s.value} suffix={s.suffix} />
-                </p>
-                <p className="mt-1.5 text-sm text-ink-soft">{s.label}</p>
-              </motion.div>
-            ))}
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-soft sm:text-[11px]">
+                      {s.tag}
+                    </span>
+                    <s.icon
+                      className="h-4 w-4 shrink-0 text-ink-soft transition-colors duration-300 group-hover:text-accent-red"
+                      strokeWidth={1.75}
+                    />
+                  </div>
+                  <p className="mt-6 font-display text-4xl leading-none tabular-nums text-brand-secondary sm:text-5xl">
+                    <Counter to={s.value} suffix={s.suffix} />
+                  </p>
+                  <HandUnderline path={UNDERLINES[i % UNDERLINES.length]} delay={0.35 + i * 0.1} />
+                  <p className="mt-3 text-sm leading-snug text-ink">{s.text}</p>
+                </motion.div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -403,8 +486,8 @@ function APropos() {
         <CategoryCardsCarousel items={categories} />
       </section>
 
-      {/* Engagements : liste editoriale numerotee, titre fixe a gauche en `lg`. Filets fins
-          qui se tracent a l'entree ; au survol, un filet rouge parcourt le haut du bloc. */}
+      {/* Engagements : titre fixe a gauche en `lg`, cartes qui s'empilent au defilement a
+          droite (en dessous du titre sur telephone). */}
       <section className="container-x py-20 md:py-28">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
           <div className="lg:sticky lg:top-32 lg:self-start">
@@ -415,7 +498,7 @@ function APropos() {
               animated
             />
           </div>
-          <NumberedList items={engagements} />
+          <StackedCards items={engagements} />
         </div>
       </section>
 

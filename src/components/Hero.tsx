@@ -81,7 +81,7 @@ export function Hero() {
         <motion.div style={{ y: videoY, scale: videoScale }} className="absolute inset-0">
           <video
             ref={videoRef}
-            src="/hero.mp4"
+            src="/sous.mp4"
             poster="/hero-poster.jpg"
             autoPlay
             loop

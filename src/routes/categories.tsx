@@ -1,21 +1,26 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { ProductGrid } from "@/components/ProductGrid";
+import { CategorySpotlight } from "@/components/CategorySpotlight";
 import { CategoriesSection } from "@/components/CategoriesSection";
+import { SectionHeader } from "@/components/SectionHeader";
 import { ShopSidebar } from "@/components/ShopSidebar";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
+import { BUSINESS } from "@/lib/contact";
 import { categories, categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 import {
+  ArrowRight,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Loader2,
+  Phone,
   Search,
   SlidersHorizontal,
 } from "lucide-react";
@@ -26,11 +31,13 @@ const searchSchema = z.object({
   subcat: z.string().optional(),
   q: z.string().optional(),
   bestseller: z.boolean().optional(),
+  page: z.number().int().min(2).optional().catch(undefined),
 });
+
+const PAGE_SIZE = 12;
 
 type Search = z.infer<typeof searchSchema>;
 
-/** Hauteur de l'en-tete du site (`h-20`), sous lequel colle la barre de filtres. */
 const HEADER_HEIGHT = 80;
 
 export const Route = createFileRoute("/categories")({
@@ -89,7 +96,7 @@ export const Route = createFileRoute("/categories")({
 type SubcatTab = { label: string; value: string | undefined; count: number };
 
 function Shop() {
-  const { cat: urlCat, subcat: urlSubcat, q: urlQ, bestseller } = Route.useSearch();
+  const { cat: urlCat, subcat: urlSubcat, q: urlQ, bestseller, page: urlPage } = Route.useSearch();
   const catInfo = urlCat ? categories.find((c) => c.category === urlCat) : undefined;
   const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
@@ -107,8 +114,6 @@ function Shop() {
   const productList = useMemo(() => (products || []) as unknown as any[], [products]);
   const activeGroup = useMemo(() => (activeCat ? categoryGroup(activeCat) : []), [activeCat]);
 
-  /** Hauteur de la barre de filtres collante : elle varie (sous-categories, panneau mobile)
-   *  et fixe a la fois le seuil ou le carrousel est depasse et le haut de la colonne. */
   useEffect(() => {
     const el = barRef.current;
     if (!el) return;
@@ -117,9 +122,6 @@ function Shop() {
     return () => observer.disconnect();
   }, []);
 
-  /** Le carrousel des rayons est depasse quand son bas passe sous l'en-tete et la barre de
-   *  filtres : la colonne laterale (bureau) et la rangee de rayons (mobile) prennent le relais,
-   *  et s'effacent quand on remonte jusqu'a lui. */
   useEffect(() => {
     const el = cardsRef.current;
     if (!el) return;
@@ -134,8 +136,6 @@ function Shop() {
     return () => observer.disconnect();
   }, [barHeight]);
 
-  /** Produits par rayon avec la recherche et le filtre best-sellers en cours, hors rayon :
-   *  ce que chaque entree de la colonne donnerait si on la choisissait. */
   const categoryCounts = useMemo(() => {
     let list = productList;
     if (bestseller) list = list.filter((p: any) => p.bestseller);
@@ -192,21 +192,46 @@ function Shop() {
     return list;
   }, [catFiltered, activeSubcat, sort]);
 
+  const pageCount = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(urlPage ?? 1, pageCount);
+  const pageItems = useMemo(
+    () => filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE),
+    [filtered, currentPage],
+  );
+
+  const resetPage = useCallback(() => {
+    if (!urlPage) return;
+    navigate({
+      to: "/categories",
+      search: (prev: Search) => ({ ...prev, page: undefined }),
+      replace: true,
+      resetScroll: false,
+    });
+  }, [urlPage, navigate]);
+
   const handleCategorySelect = useCallback(
     (category: string) => {
       if (category === activeCat) {
         navigate({
           to: "/categories",
-          search: (prev: Search) => ({ ...prev, cat: undefined, subcat: undefined }),
+          search: (prev: Search) => ({
+            ...prev,
+            cat: undefined,
+            subcat: undefined,
+            page: undefined,
+          }),
         });
       } else {
-        /** resetScroll: false - the router's scroll reset would otherwise cancel the jump below. */
         navigate({
           to: "/categories",
-          search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
+          search: (prev: Search) => ({
+            ...prev,
+            cat: category,
+            subcat: undefined,
+            page: undefined,
+          }),
           resetScroll: false,
         });
-        /** Next frame, so the filtered grid has laid out before we scroll to it. */
         requestAnimationFrame(() => {
           resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
         });
@@ -215,9 +240,6 @@ function Shop() {
     [activeCat, navigate],
   );
 
-  /** Apres un filtre choisi en cours de defilement : si la grille est deja entamee, on
-   *  ramene son debut sous la barre ; sinon la page ne bouge pas. Image suivante, pour que
-   *  la grille filtree soit en place. */
   const backToResults = useCallback(() => {
     requestAnimationFrame(() => {
       const el = resultsRef.current;
@@ -228,13 +250,11 @@ function Shop() {
     });
   }, []);
 
-  /** Choix d'un rayon depuis la colonne ou la rangee de rayons : sans remise en haut de
-   *  page (le routeur la ferait par defaut), la grille filtree reste sous les yeux. */
   const selectCategory = useCallback(
     (category?: string) => {
       navigate({
         to: "/categories",
-        search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
+        search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined, page: undefined }),
         resetScroll: false,
       });
       backToResults();
@@ -247,7 +267,7 @@ function Shop() {
     (value: string | undefined) => {
       navigate({
         to: "/categories",
-        search: (prev: Search) => ({ ...prev, subcat: value }),
+        search: (prev: Search) => ({ ...prev, subcat: value, page: undefined }),
         resetScroll: false,
       });
       backToResults();
@@ -258,7 +278,11 @@ function Shop() {
   const toggleBestseller = useCallback(() => {
     navigate({
       to: "/categories",
-      search: (prev: Search) => ({ ...prev, bestseller: prev.bestseller ? undefined : true }),
+      search: (prev: Search) => ({
+        ...prev,
+        bestseller: prev.bestseller ? undefined : true,
+        page: undefined,
+      }),
       resetScroll: false,
     });
   }, [navigate]);
@@ -313,7 +337,10 @@ function Shop() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-soft" />
             <input
               value={query}
-              onChange={(e) => setQuery(e.target.value)}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                resetPage();
+              }}
               placeholder="Rechercher un produit..."
               className="w-full rounded-full border border-border bg-paper py-3 pl-10 pr-4 text-sm outline-none transition focus:border-brand"
             />
@@ -325,7 +352,10 @@ function Shop() {
             </CatChip>
             <select
               value={sort}
-              onChange={(e) => setSort(e.target.value as typeof sort)}
+              onChange={(e) => {
+                setSort(e.target.value as typeof sort);
+                resetPage();
+              }}
               className="flex-1 rounded-full border border-border bg-paper px-4 py-3 text-sm outline-none focus:border-brand md:flex-none"
             >
               <option value="default">Trier par défaut</option>
@@ -335,8 +365,6 @@ function Shop() {
           </div>
         </div>
 
-        {/* Sous `lg`, pas de colonne laterale : une fois le carrousel depasse, les rayons
-            passent en rangee dans la barre (dans le panneau « Filtres » sur telephone). */}
         {pastCards && (
           <div className={`${filtersOpen ? "block" : "hidden md:block"} lg:hidden`}>
             <CatTabs open>
@@ -377,11 +405,6 @@ function Shop() {
         )}
       </div>
 
-      {/* scroll-mt clears the sticky header + filter bar when we jump here on category select,
-          or arrive through `#produits` (the home page "Voir tous" links). */}
-      {/* La marge de defilement suit la barre collante : un saut ici (rayon choisi, lien
-          `#produits` de l'accueil) pose la grille juste dessous. En `lg`, la colonne des
-          rayons est toujours reservee : son apparition ne fait pas sauter la grille. */}
       <div
         id="produits"
         ref={resultsRef}
@@ -421,7 +444,17 @@ function Shop() {
               <Loader2 className="h-8 w-8 animate-spin text-brand" />
             </div>
           ) : filtered.length > 0 ? (
-            <ProductGrid items={filtered as any} />
+            <>
+              <ProductGrid items={pageItems as any} />
+              {pageCount > 1 && (
+                <Pagination
+                  page={currentPage}
+                  pageCount={pageCount}
+                  total={filtered.length}
+                  onNavigate={backToResults}
+                />
+              )}
+            </>
           ) : (
             <div className="rounded-2xl border-2 border-dashed py-20 text-center text-ink-soft">
               Aucun produit ne correspond à votre recherche.
@@ -430,56 +463,66 @@ function Shop() {
         </div>
       </div>
 
-      {/* Texte SEO + maillage interne : visible uniquement sur une catégorie précise.
-          Rédigé pour les visiteurs (contexte, conseil, NAP), jamais pour bourrer des
-          mots-clés. L'ItemList est rendu côté client une fois les produits chargés. */}
       {catInfo && (
-        <section className="border-t border-border/60 bg-cream/50">
-          <div className="container-x py-14">
-            <div className="max-w-3xl">
-              <h2 className="font-display text-2xl font-bold uppercase leading-tight text-ink sm:text-3xl">
-                {catInfo.name} à Agadir : notre expertise
-              </h2>
-              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
-                {catInfo.seoText}
-              </p>
-              <p className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base">
-                Besoin d'un conseil ou d'un devis ? Appelez le{" "}
-                <a
-                  href="tel:+212528838992"
-                  className="font-semibold text-brand underline-offset-4 hover:underline"
+        <section className="border-t border-border/60 bg-cream">
+          <div className="container-x py-16 md:py-24">
+            <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)] lg:items-center lg:gap-16 xl:grid-cols-[minmax(0,1fr)_minmax(0,26rem)] xl:gap-24">
+              <div>
+                <SectionHeader
+                  key={catInfo.category}
+                  kicker="Notre expertise"
+                  title={`${catInfo.name} à Agadir`}
+                  align="left"
+                  animated
+                />
+                {catInfo.seoText && (
+                  <motion.p
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.7, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+                    className="mt-6 max-w-2xl text-sm leading-relaxed text-ink-soft sm:text-base"
+                  >
+                    {catInfo.seoText}
+                  </motion.p>
+                )}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  +212 528 838 992
-                </a>{" "}
-                ou{" "}
-                <Link
-                  to="/contact"
-                  className="font-semibold text-brand underline-offset-4 hover:underline"
-                >
-                  contactez-nous
-                </Link>{" "}
-                : réponse sous 48h ouvrées.
-              </p>
-            </div>
-
-            <div className="mt-10">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
-                Autres rayons de la droguerie
-              </p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {categories
-                  .filter((c) => c.category !== catInfo.category)
-                  .map((c) => (
+                  <div className="mt-8 flex flex-wrap gap-3">
                     <Link
-                      key={c.category}
-                      to="/categories"
-                      search={{ cat: c.category }}
-                      className="rounded-full border border-border bg-paper px-4 py-2 text-xs font-bold uppercase tracking-wider text-ink transition hover:border-brand hover:text-brand"
+                      to="/commande-rapide"
+                      className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
                     >
-                      {c.name}
+                      Demander un devis
+                      <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                     </Link>
-                  ))}
+                    <a
+                      href={BUSINESS.phoneHref}
+                      className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-ink transition hover:bg-ink hover:text-paper"
+                    >
+                      <Phone className="h-4 w-4" /> {BUSINESS.phoneDisplay}
+                    </a>
+                  </div>
+                  <p className="mt-5 text-sm text-ink-soft">
+                    Conseil et devis gratuits, réponse sous {BUSINESS.quoteSla} ·{" "}
+                    <Link
+                      to="/contact"
+                      className="font-semibold text-brand underline-offset-4 hover:underline"
+                    >
+                      Nous écrire
+                    </Link>
+                  </p>
+                </motion.div>
               </div>
+              <CategorySpotlight
+                key={catInfo.category}
+                items={categories.filter((c) => c.category !== catInfo.category)}
+                title="Autres rayons de la droguerie"
+              />
             </div>
 
             {filtered.length > 0 && (
@@ -610,5 +653,131 @@ function CatChip({
       {/* The count rides the active chip only, so the bar stays quiet until you pick something. */}
       {active && count !== undefined && <span className="ml-1.5 font-bold">({count})</span>}
     </button>
+  );
+}
+
+/** Numeros affiches : tous jusqu'a sept pages ; au-dela, toujours sept cases (premiere,
+ *  derniere, la page courante et ses voisines, des points pour le reste), pour que la barre
+ *  ne change pas de largeur d'une page a l'autre. */
+function pageNumbers(page: number, count: number): (number | "gap")[] {
+  if (count <= 7) return Array.from({ length: count }, (_, i) => i + 1);
+  if (page <= 4) return [1, 2, 3, 4, 5, "gap", count];
+  if (page >= count - 3) return [1, "gap", count - 4, count - 3, count - 2, count - 1, count];
+  return [1, "gap", page - 1, page, page + 1, "gap", count];
+}
+
+/**
+ * Pagination de la grille : de vrais liens (`?page=`), ouvrables dans un onglet et que le
+ * bouton retour du navigateur sait defaire. Sans remise en haut de page : `onNavigate`
+ * ramene la grille sous la barre de filtres. Sur telephone, les numeros laissent la place
+ * a « Page x / n » entre les deux fleches.
+ *
+ * `activeOptions.exact` : par defaut le routeur compare la recherche en partie et
+ * marquerait « 1 » et « Precedent » comme page courante (`aria-current`) sur toute page.
+ */
+function Pagination({
+  page,
+  pageCount,
+  total,
+  onNavigate,
+}: {
+  page: number;
+  pageCount: number;
+  total: number;
+  onNavigate: () => void;
+}) {
+  const first = (page - 1) * PAGE_SIZE + 1;
+  const last = Math.min(page * PAGE_SIZE, total);
+  const search = (p: number) => (prev: Search) => ({ ...prev, page: p > 1 ? p : undefined });
+  const arrow =
+    "inline-flex h-11 min-w-11 items-center justify-center gap-1.5 rounded-full border border-border px-3 text-xs font-bold uppercase tracking-wider text-ink transition md:px-5";
+
+  return (
+    <nav aria-label="Pagination" className="mt-12 flex flex-col items-center gap-4">
+      <p className="text-sm text-ink-soft">
+        Produits{" "}
+        <span className="font-semibold tabular-nums text-ink">
+          {first}–{last}
+        </span>{" "}
+        sur <span className="font-semibold tabular-nums text-ink">{total}</span>
+      </p>
+
+      <div className="flex items-center gap-1.5 sm:gap-2">
+        {page > 1 ? (
+          <Link
+            to="/categories"
+            search={search(page - 1)}
+            resetScroll={false}
+            activeOptions={{ exact: true }}
+            onClick={onNavigate}
+            rel="prev"
+            aria-label="Page précédente"
+            className={`${arrow} hover:border-ink hover:bg-ink hover:text-paper`}
+          >
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden md:inline">Précédent</span>
+          </Link>
+        ) : (
+          <span aria-hidden="true" className={`${arrow} opacity-30`}>
+            <ChevronLeft className="h-4 w-4" />
+            <span className="hidden md:inline">Précédent</span>
+          </span>
+        )}
+
+        <span className="px-3 text-sm font-semibold tabular-nums text-ink sm:hidden">
+          Page {page} / {pageCount}
+        </span>
+
+        <ol className="hidden items-center gap-1.5 sm:flex">
+          {pageNumbers(page, pageCount).map((n, i) =>
+            n === "gap" ? (
+              <li key={`gap-${i}`} aria-hidden="true" className="w-6 text-center text-ink-soft">
+                …
+              </li>
+            ) : (
+              <li key={n}>
+                <Link
+                  to="/categories"
+                  search={search(n)}
+                  resetScroll={false}
+                  activeOptions={{ exact: true }}
+                  onClick={onNavigate}
+                  aria-label={`Page ${n}`}
+                  aria-current={n === page ? "page" : undefined}
+                  className={`grid h-11 min-w-11 place-items-center rounded-full px-2 text-sm font-bold tabular-nums transition ${
+                    n === page
+                      ? "bg-brand-secondary text-paper shadow-[var(--shadow-card)]"
+                      : "text-ink hover:bg-cream"
+                  }`}
+                >
+                  {n}
+                </Link>
+              </li>
+            ),
+          )}
+        </ol>
+
+        {page < pageCount ? (
+          <Link
+            to="/categories"
+            search={search(page + 1)}
+            resetScroll={false}
+            activeOptions={{ exact: true }}
+            onClick={onNavigate}
+            rel="next"
+            aria-label="Page suivante"
+            className={`${arrow} hover:border-ink hover:bg-ink hover:text-paper`}
+          >
+            <span className="hidden md:inline">Suivant</span>
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        ) : (
+          <span aria-hidden="true" className={`${arrow} opacity-30`}>
+            <span className="hidden md:inline">Suivant</span>
+            <ChevronRight className="h-4 w-4" />
+          </span>
+        )}
+      </div>
+    </nav>
   );
 }
