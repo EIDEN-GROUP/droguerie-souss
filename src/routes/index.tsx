@@ -114,15 +114,7 @@ function SeeAllLink({
 }) {
   return (
     <div className={className}>
-      <Link
-        to="/categories"
-        search={bestsellers ? { bestseller: true } : {}}
-        hash="produits"
-        // Saut immediat : en defilement doux (scroll-behavior: smooth), la boutique
-        // s'ouvrirait a la hauteur de l'accueil puis glisserait jusqu'a la grille.
-        hashScrollIntoView={{ behavior: "instant", block: "start" }}
-        className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
-      >
+      <Link to="/categories" search={bestsellers ? { bestseller: true } : {}} hash="produits" hashScrollIntoView={{ behavior: "instant", block: "start" }} className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand">
         Voir tous
         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
       </Link>
@@ -130,8 +122,6 @@ function SeeAllLink({
   );
 }
 
-/** Nombre de cartes qui remplissent des rangees entieres de `cols` colonnes (au plus `max`).
- *  Moins d'une rangee : tout est affiche. */
 function fullRows(count: number, cols: number, max: number) {
   return count < cols ? count : Math.min(max, count - (count % cols));
 }

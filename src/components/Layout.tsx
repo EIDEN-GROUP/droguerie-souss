@@ -12,13 +12,18 @@ import { useCustomerAuth } from "@/lib/customerAuth";
 
 const SCROLL_KEYS = new Set([" ", "PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End"]);
 
+/** Passe a `true` des qu'une premiere page est affichee. Modifie seulement dans un effet
+ *  (cote client) : le serveur et le premier rendu client restent donc d'accord. */
+let siteEntered = false;
+
 /** `overlayNav` : la page s'ouvre sur un bandeau sombre (premier enfant de `<main>`) qui
  *  passe sous l'en-tete ; celui-ci reste transparent tant qu'il le survole. Le bandeau doit
  *  reserver la hauteur de l'en-tete (h-20) dans son padding haut.
  *
- *  `videoIntro` (accueil) : pas d'ecran de chargement blanc - la video du hero en tient
- *  lieu. En-tete, boutons flottants et bandeau cookies attendent la fin de l'intro, et la
- *  page ne defile pas avant. */
+ *  `videoIntro` (accueil) : a l'arrivee sur le site, pas d'ecran de chargement blanc - la
+ *  video du hero en tient lieu. En-tete, boutons flottants et bandeau cookies attendent la
+ *  fin de l'intro, et la page ne defile pas avant. En revenant a l'accueil depuis une autre
+ *  page, l'ecran de chargement habituel s'affiche a la place. */
 export function Layout({
   children,
   overlayNav = false,
@@ -33,11 +38,16 @@ export function Layout({
     useCustomerAuth.getState().checkSession();
   }, []);
 
-  const [introDone, setIntroDone] = useState(!videoIntro);
+  const [playIntro] = useState(() => videoIntro && !siteEntered);
+  useEffect(() => {
+    siteEntered = true;
+  }, []);
+
+  const [introDone, setIntroDone] = useState(!playIntro);
   const finish = useCallback(() => setIntroDone(true), []);
   const intro = useMemo(
-    () => ({ active: videoIntro, done: introDone, finish }),
-    [videoIntro, introDone, finish],
+    () => ({ active: playIntro, done: introDone, finish }),
+    [playIntro, introDone, finish],
   );
 
   // Bloque le defilement pendant l'intro sans toucher a `overflow` : la barre de
@@ -63,7 +73,7 @@ export function Layout({
 
   return (
     <IntroContext.Provider value={intro}>
-      {!videoIntro && <PageLoader />}
+      {!playIntro && <PageLoader />}
       <Navbar overlay={overlayNav} hidden={!introDone} />
       <main className="min-h-screen">{children}</main>
       <Footer />

@@ -4,7 +4,7 @@ import { createContext, useContext } from "react";
  * Intro video de l'accueil : la video du hero sert d'ecran de chargement, puis l'en-tete,
  * le texte du hero et le reste de la page apparaissent.
  *
- * - `active` : la page joue l'intro (seul l'accueil) ;
+ * - `active` : la page joue l'intro (l'accueil, seulement a l'arrivee sur le site) ;
  * - `done`   : l'intro est terminee, tout peut s'afficher ;
  * - `finish` : appele par le hero quand la video est prete.
  *

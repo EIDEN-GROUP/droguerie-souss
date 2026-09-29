@@ -8,12 +8,10 @@ import { useIntro } from "./IntroContext";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 
-/** Duree minimale de l'intro : assez pour etre vue a la premiere visite, plus courte
- *  ensuite (video en cache). Au-dela de `INTRO_MAX_MS`, la page s'ouvre quoi qu'il arrive. */
+/** Duree minimale de l'intro, pour qu'elle soit vue. Au-dela de `INTRO_MAX_MS`, la page
+ *  s'ouvre quoi qu'il arrive. */
 const INTRO_MIN_MS = 1800;
-const INTRO_MIN_REPEAT_MS = 900;
 const INTRO_MAX_MS = 4500;
-let introPlayed = false;
 
 export function Hero() {
   const ref = useRef<HTMLElement>(null);
@@ -37,16 +35,15 @@ export function Hero() {
     if (!active || done) return;
     const video = videoRef.current;
     const start = performance.now();
-    const minMs = introPlayed ? INTRO_MIN_REPEAT_MS : INTRO_MIN_MS;
     let timer: number | undefined;
     let settled = false;
     const markReady = () => {
       if (settled) return;
       settled = true;
-      timer = window.setTimeout(() => {
-        introPlayed = true;
-        setReady(true);
-      }, Math.max(0, minMs - (performance.now() - start)));
+      timer = window.setTimeout(
+        () => setReady(true),
+        Math.max(0, INTRO_MIN_MS - (performance.now() - start)),
+      );
     };
     if (!video || video.readyState >= 3) markReady();
     else {
