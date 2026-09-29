@@ -112,7 +112,7 @@ ${extra ? extra + "\n" : ""}      <g:price>${price.toFixed(2)} MAD</g:price>
     `  <channel>\n` +
     `    <title>Souss Droguerie — Catalogue produits</title>\n` +
     `    <link>${esc(SITE_URL)}/</link>\n` +
-    `    <description>Matériaux de construction à Agadir depuis 1992.</description>\n` +
+    `    <description>Matériaux de construction à Agadir depuis 1993.</description>\n` +
     entries.join("\n") +
     `\n  </channel>\n</rss>\n`;
 

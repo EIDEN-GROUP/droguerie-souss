@@ -40,3 +40,6 @@ supabase/.temp/
 
 # Large media files
 src/assets/*.mp4
+
+.commandcode
+brag-output

@@ -4,7 +4,7 @@ import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { CatalogueViewer } from "@/components/catalogue/CatalogueViewer";
 import { findEdition } from "@/lib/catalogue";
-import { seo } from "@/lib/seo";
+import { seo, jsonLd, canonical } from "@/lib/seo";
 import heroImg from "@/assets/promo-collection.jpg";
 
 export const Route = createFileRoute("/catalogue/$slug")({
@@ -25,6 +25,22 @@ export const Route = createFileRoute("/catalogue/$slug")({
         edition?.description ??
         "Consultez les catalogues Souss Droguerie : carrelage, marbre, zellige, peinture, ciment et électricité.",
       path: `/catalogue/${params.slug}`,
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+            { "@type": "ListItem", position: 2, name: "Catalogue", item: canonical("/catalogue") },
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: edition?.title ?? "Catalogue",
+              item: canonical(`/catalogue/${params.slug}`),
+            },
+          ],
+        }),
+      ],
     });
   },
 });

@@ -14,8 +14,8 @@ export const BUSINESS = {
   phoneDisplay: "+212 528 838 992",
   /** Lien tel: (chiffres uniquement). */
   phoneHref: "tel:+212528838992",
-  /** WhatsApp : numéro canonique en attendant le mobile dédié. */
-  whatsappNumber: "212528838992",
+  /** WhatsApp : ligne mobile officielle (confirmée annuaire + catalogue). */
+  whatsappNumber: "212661847759",
   email: "contact@soussdroguerie.com",
   address: "Bd Mohamed V, Q.I. Tassila III, N°29, Dcheira, Agadir 80360, Maroc",
   mapsUrl: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
@@ -24,7 +24,7 @@ export const BUSINESS = {
   /** Délai de réponse/devis officiel, partout le même. */
   quoteSla: "48h ouvrées",
   quoteSlaShort: "48h",
-  sinceYear: 1992,
+  sinceYear: 1993,
 } as const;
 
 /** Zones desservies (10, partout les mêmes). */

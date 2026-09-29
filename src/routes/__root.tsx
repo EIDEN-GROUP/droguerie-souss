@@ -114,7 +114,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           name: "description",
           content:
-            "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
+            "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1993.",
         },
         { name: "author", content: "Souss Droguerie SARL" },
         {
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         {
           property: "og:description",
           content:
-            "Votre droguerie à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992.",
+            "Votre droguerie à Agadir : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1993.",
         },
         { property: "og:type", content: "website" },
         { property: "og:locale", content: "fr_FR" },
@@ -138,7 +138,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           name: "twitter:description",
-          content: "Votre droguerie à Agadir : matériaux de construction depuis 1992.",
+          content: "Votre droguerie à Agadir : matériaux de construction depuis 1993.",
         },
       ],
       // Google Analytics 4 : le mini-script d'amorçage (consentement refusé par

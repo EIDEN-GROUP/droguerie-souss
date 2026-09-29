@@ -24,8 +24,8 @@ const organizationSchema = {
   "@type": "Organization",
   name: "Souss Droguerie SARL",
   alternateName: ALTERNATE_NAME,
-  foundingDate: "1992",
-  slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1992",
+  foundingDate: "1993",
+  slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1993",
   description:
     "Souss Droguerie SARL (Droguerie Souss) : droguerie et fournisseur de matériaux de construction à Agadir. Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie.",
   url: `${SITE_URL}/`,
@@ -97,7 +97,7 @@ export const Route = createFileRoute("/")({
     seo({
       title: "Souss Droguerie SARL | Droguerie Agadir - Matériaux de construction",
       description: descriptionFrom(
-        "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1992. Devis gratuit sous 48h, livraison dans tout le Souss.",
+        "Votre droguerie à Agadir : Souss Droguerie (Droguerie Souss) vend carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie depuis 1993. Devis gratuit sous 48h, livraison dans tout le Souss.",
       ),
       path: "/",
       scripts: [jsonLd(organizationSchema), jsonLd(webSiteSchema)],
@@ -114,7 +114,13 @@ function SeeAllLink({
 }) {
   return (
     <div className={className}>
-      <Link to="/categories" search={bestsellers ? { bestseller: true } : {}} hash="produits" hashScrollIntoView={{ behavior: "instant", block: "start" }} className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand">
+      <Link
+        to="/categories"
+        search={bestsellers ? { bestseller: true } : {}}
+        hash="produits"
+        hashScrollIntoView={{ behavior: "instant", block: "start" }}
+        className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
+      >
         Voir tous
         <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
       </Link>
@@ -168,7 +174,14 @@ function Home() {
         {/* <PromoCards /> */}
 
         <CatalogueCarousel
-          header={<SectionHeader kicker="Notre catalogue" title="Découvrez nos produits" align="left" animated />}
+          header={
+            <SectionHeader
+              kicker="Notre catalogue"
+              title="Découvrez nos produits"
+              align="left"
+              animated
+            />
+          }
           seeAll={<SeeAllLink className="mt-8 flex" />}
           products={productList.slice(0, 8)}
           loading={isLoading}

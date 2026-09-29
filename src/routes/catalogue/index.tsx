@@ -5,7 +5,7 @@ import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { CatalogueCard } from "@/components/catalogue/CatalogueCard";
 import { catalogueEditions } from "@/lib/catalogue";
-import { seo } from "@/lib/seo";
+import { seo, jsonLd, canonical } from "@/lib/seo";
 import heroImg from "@/assets/catalogue-hero.png";
 
 export const Route = createFileRoute("/catalogue/")({
@@ -16,6 +16,28 @@ export const Route = createFileRoute("/catalogue/")({
       description:
         "Consultez les catalogues Souss Droguerie 2026 : carrelage, marbre, zellige, peinture, ciment, plomberie et électricité.",
       path: "/catalogue",
+      scripts: [
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Accueil", item: canonical("/") },
+            { "@type": "ListItem", position: 2, name: "Catalogue", item: canonical("/catalogue") },
+          ],
+        }),
+        jsonLd({
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: "Catalogues Souss Droguerie",
+          numberOfItems: catalogueEditions.length,
+          itemListElement: catalogueEditions.map((e, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            name: e.title,
+            url: canonical(`/catalogue/${e.slug}`),
+          })),
+        }),
+      ],
     }),
 });
 

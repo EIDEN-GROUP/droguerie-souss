@@ -119,7 +119,9 @@ export function Hero() {
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: ready ? 1 : 0.85 }}
                 transition={
-                  ready ? { duration: 0.35, ease: "easeOut" } : { duration: INTRO_MIN_MS / 1000, ease: [0.3, 0, 0.2, 1] }
+                  ready
+                    ? { duration: 0.35, ease: "easeOut" }
+                    : { duration: INTRO_MIN_MS / 1000, ease: [0.3, 0, 0.2, 1] }
                 }
               />
             </div>
@@ -150,7 +152,8 @@ export function Hero() {
               transition={{ duration: 0.8, delay: 1.2, ease: EASE }}
               className="mt-5 text-center max-w-xl text-base text-paper/80 sm:text-lg"
             >
-              Votre droguerie de référence dans le Souss depuis 1992 : ciment, carrelage, peinture, plomberie, électricité et quincaillerie, livrés sur votre chantier.
+              Votre droguerie de référence dans le Souss depuis 1993 : ciment, carrelage, peinture,
+              plomberie, électricité et quincaillerie, livrés sur votre chantier.
             </motion.p>
             <motion.div
               initial="hidden"
@@ -159,19 +162,31 @@ export function Hero() {
               className="mt-8 flex flex-wrap items-center gap-3 justify-center"
             >
               <motion.div
-                variants={{ hidden: { opacity: 0, y: 20, scale: 0.95 }, shown: { opacity: 1, y: 0, scale: 1 } }}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.95 },
+                  shown: { opacity: 1, y: 0, scale: 1 },
+                }}
                 transition={{ duration: 0.6, ease: EASE }}
               >
-                <Link to="/categories" className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90">
+                <Link
+                  to="/categories"
+                  className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
+                >
                   Explorer la boutique
                   <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
                 </Link>
               </motion.div>
               <motion.div
-                variants={{ hidden: { opacity: 0, y: 20, scale: 0.95 }, shown: { opacity: 1, y: 0, scale: 1 } }}
+                variants={{
+                  hidden: { opacity: 0, y: 20, scale: 0.95 },
+                  shown: { opacity: 1, y: 0, scale: 1 },
+                }}
                 transition={{ duration: 0.6, ease: EASE }}
               >
-                <Link to="/contact" className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper backdrop-blur transition hover:bg-paper hover:text-ink">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-2 rounded-full border border-paper/30 px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper backdrop-blur transition hover:bg-paper hover:text-ink"
+                >
                   Demander un devis
                 </Link>
               </motion.div>

@@ -8,7 +8,10 @@ import { SplitReveal } from "./motion/SplitReveal";
 export function CtaBanner() {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
-  const { scrollYProgress: enter } = useScroll({ target: ref, offset: ["start end", "center center"] });
+  const { scrollYProgress: enter } = useScroll({
+    target: ref,
+    offset: ["start end", "center center"],
+  });
   const { scrollYProgress: pass } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const scale = useTransform(enter, [0, 1], [reduce ? 1 : 0.9, 1]);
   const imageY = useTransform(pass, [0, 1], reduce ? ["0%", "0%"] : ["-8%", "8%"]);
@@ -19,6 +22,7 @@ export function CtaBanner() {
         <motion.img
           src={banner}
           alt=""
+          aria-hidden="true"
           loading="lazy"
           style={{ y: imageY }}
           className="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover"
@@ -42,8 +46,8 @@ export function CtaBanner() {
               Recevez votre devis gratuit en 48h
             </SplitReveal>
             <p className="mt-4 max-w-md text-paper/80">
-              Notre équipe technique étudie votre chantier et vous propose la meilleure
-              combinaison prix / délais / qualité.
+              Notre équipe technique étudie votre chantier et vous propose la meilleure combinaison
+              prix / délais / qualité.
             </p>
           </motion.div>
           <motion.div

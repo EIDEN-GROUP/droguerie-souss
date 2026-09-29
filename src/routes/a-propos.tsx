@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { animate, motion, useInView, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import {
+  animate,
+  motion,
+  useInView,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
@@ -30,14 +37,15 @@ import storyImg from "@/assets/1.jpg";
 import zoneImg from "@/assets/22.jpg";
 import heroImg from "@/assets/about-hero.png";
 
-const DESCRIPTION = "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1992 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
+const DESCRIPTION =
+  "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1993 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "HardwareStore",
   name: "Souss Droguerie SARL",
   alternateName: ALTERNATE_NAME,
-  foundingDate: "1992",
-  slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1992",
+  foundingDate: "1993",
+  slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1993",
   url: `${SITE_URL}/`,
   image: `${SITE_URL}/logo.png`,
   hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
@@ -94,7 +102,7 @@ export const Route = createFileRoute("/a-propos")({
   component: APropos,
   head: () =>
     seo({
-      title: "À propos | Souss Droguerie, droguerie à Agadir depuis 1992",
+      title: "À propos | Souss Droguerie, droguerie à Agadir depuis 1993",
       description: descriptionFrom(DESCRIPTION),
       path: "/a-propos",
       scripts: [
@@ -116,7 +124,7 @@ const stats = [
   {
     value: 30,
     suffix: "+",
-    tag: "Depuis 1992",
+    tag: "Depuis 1993",
     text: "ans à fournir les chantiers du Souss-Massa",
     icon: Building2,
   },
@@ -238,7 +246,8 @@ function RevealImage({ src, alt, from }: { src: string; alt: string; from: "left
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], reduce ? ["0%", "0%"] : ["-6%", "6%"]);
-  const hidden = from === "left" ? "inset(0% 100% 0% 0% round 24px)" : "inset(0% 0% 0% 100% round 24px)";
+  const hidden =
+    from === "left" ? "inset(0% 100% 0% 0% round 24px)" : "inset(0% 0% 0% 100% round 24px)";
 
   return (
     <motion.div
@@ -303,11 +312,14 @@ function APropos() {
       <PageHero image={heroImg} crumb="À propos" title="Qui sommes-nous ?">
         Depuis plus de 30 ans, Souss Droguerie accompagne les professionnels du BTP et les
         particuliers avec une offre complète de matériaux de construction. De la structure aux
-        finitions, nous mettons à votre disposition des produits certifiés, des marques
-        reconnues et un accompagnement technique à chaque étape de votre projet.
+        finitions, nous mettons à votre disposition des produits certifiés, des marques reconnues et
+        un accompagnement technique à chaque étape de votre projet.
       </PageHero>
 
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
 
       {/* Notre histoire */}
       <section className="container-x py-16 md:py-24">
@@ -334,7 +346,7 @@ function APropos() {
             </SplitReveal>
             <div className="mt-6 space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base">
               <motion.p variants={rise}>
-                Depuis 1992, Souss Droguerie développe son expertise dans la distribution de
+                Depuis 1993, Souss Droguerie développe son expertise dans la distribution de
                 matériaux de construction destinés aux professionnels et aux particuliers. Notre
                 objectif est resté le même : proposer des produits fiables, disponibles et adaptés
                 aux exigences des chantiers modernes.
@@ -393,7 +405,7 @@ function APropos() {
                 variants={rise}
                 className="mt-4 text-sm leading-relaxed text-ink-soft sm:text-base"
               >
-                Depuis 1992 à Dcheira : du stock, des conseils de métier et des réponses rapides.
+                Depuis 1993 à Dcheira : du stock, des conseils de métier et des réponses rapides.
               </motion.p>
             </motion.div>
 
@@ -445,7 +457,10 @@ function APropos() {
             >
               Au service des chantiers dans toute la région Souss-Massa
             </SplitReveal>
-            <motion.p variants={rise} className="mt-5 text-sm leading-relaxed text-ink-soft sm:text-base">
+            <motion.p
+              variants={rise}
+              className="mt-5 text-sm leading-relaxed text-ink-soft sm:text-base"
+            >
               Implantée à Agadir, Souss Droguerie accompagne quotidiennement les entreprises du
               bâtiment, les artisans et les particuliers dans toute la région Souss-Massa. Nos
               équipes assurent un accompagnement commercial et technique afin de répondre rapidement
