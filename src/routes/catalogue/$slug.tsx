@@ -1,10 +1,11 @@
 import { createFileRoute, Link, notFound, redirect } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { ArrowLeft, Hand, Maximize2, ZoomIn } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { PageHero } from "@/components/PageHero";
 import { CatalogueViewer } from "@/components/catalogue/CatalogueViewer";
 import { findEdition } from "@/lib/catalogue";
 import { seo } from "@/lib/seo";
+import heroImg from "@/assets/promo-collection.jpg";
 
 export const Route = createFileRoute("/catalogue/$slug")({
   /** Une édition PDF n'a pas de visionneuse maison : on renvoie sur le fichier, que le
@@ -40,45 +41,23 @@ function CatalogueEdition() {
   if (!edition || edition.format !== "flipbook") return null;
 
   return (
-    <Layout overlayNav>
-      <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
+    <Layout>
+      <PageHero
+        image={heroImg}
+        parent={{ label: "Catalogue", to: "/catalogue" }}
+        crumb={`${edition.year}`}
+        title={edition.title}
+        actions={
+          <Link
+            to="/catalogue"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-paper/40 px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-paper hover:text-ink"
           >
-            <div>
-              <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
-                <Link to="/" className="transition hover:text-paper">
-                  Accueil
-                </Link>
-                <span>/</span>
-                <Link to="/catalogue" className="transition hover:text-paper">
-                  Catalogue
-                </Link>
-                <span>/</span>
-                <span className="text-sky">{edition.year}</span>
-              </nav>
-
-              <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-                {edition.title}
-              </h1>
-              <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
-              <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                {edition.description}
-              </p>
-            </div>
-
-            <Link
-              to="/catalogue"
-              className="inline-flex shrink-0 items-center gap-2 self-start rounded-full border-2 border-paper/40 px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-paper hover:text-ink md:self-auto"
-            >
-              <ArrowLeft className="h-4 w-4" /> Tous les catalogues
-            </Link>
-          </motion.div>
-        </div>
-      </section>
+            <ArrowLeft className="h-4 w-4" /> Tous les catalogues
+          </Link>
+        }
+      >
+        {edition.description}
+      </PageHero>
 
       <section className="border-y bg-cream py-12 md:py-16">
         <div className="container-x">

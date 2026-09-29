@@ -139,10 +139,8 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
 
   return (
     <>
-      {/* Top strip. `z-40`, comme l'en-tete : le voile des categories passe dessous, sinon
-          la barre se retrouverait assombrie au-dessus d'un en-tete reste clair. */}
-      <div className="relative z-40 hidden bg-ink text-paper md:block">
-        {/* <div className="container-x flex h-9 items-center justify-between text-xs">
+      {/* <div className="relative z-40 hidden bg-ink text-paper md:block">
+        <div className="container-x flex h-9 items-center justify-between text-xs">
           <span>Livraison rapide dans tout le Souss • Devis gratuit sous 48h</span>
           <div className="flex items-center gap-4">
             <a href="tel:+212528838992" className="flex items-center gap-1.5 hover:text-sky">
@@ -152,8 +150,8 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
               contact@soussdroguerie.com
             </a>
           </div>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
 
       <motion.header
         initial={{ y: "-100%" }}
@@ -162,13 +160,12 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
         // `-mb-20` (hauteur de la barre) fait remonter la page sous l'en-tete.
         className={`sticky top-0 z-40 w-full transition-colors duration-300 ${
           overlay ? "-mb-20" : ""
-        } ${transparent ? "bg-transparent" : "bg-paper"}`}
+        } ${transparent ? "bg-transparent" : "bg-background"}`}
       >
-        {/* Filet bas limite a 80 % de la largeur et centre, a la place d'une bordure pleine. */}
         <span
           aria-hidden="true"
           className={`pointer-events-none absolute bottom-0 left-1/2 h-px w-4/5 -translate-x-1/2 transition-colors duration-300 ${
-            transparent ? "bg-paper/20" : "bg-border"
+            transparent ? "bg-paper/20" : "bg-border w-full"
           }`}
         />
         <div className="container-x flex h-20 items-center justify-between gap-4">
@@ -200,7 +197,7 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
                     to={l.to}
                     onFocus={hasMega ? openMega : undefined}
                     aria-expanded={hasMega ? mega : undefined}
-                    className={`relative block px-4 py-2 text-xs font-semibold uppercase tracking-wider transition ${
+                    className={`relative block whitespace-nowrap px-3 py-2 text-xs font-semibold uppercase tracking-wider transition xl:px-4 ${
                       transparent ? "text-paper hover:text-paper/70" : "text-ink hover:text-brand"
                     }`}
                   >
@@ -218,15 +215,19 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
           </nav>
 
           <div className="flex items-center gap-1">
+            {/* Entre `lg` et `xl`, les liens occupent la barre : le numero se replie sur
+                son pictogramme. */}
             <a
               href="tel:+212528838992"
-              className={`hidden md:inline-flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+              aria-label="Appeler le +212 528 838 992"
+              className={`hidden md:inline-flex items-center gap-2 whitespace-nowrap rounded-full border px-3.5 py-2 text-sm font-semibold transition lg:px-2.5 xl:px-3.5 ${
                 transparent
                   ? "border-paper/30 bg-paper/10 text-paper hover:bg-paper hover:text-ink"
                   : "border-brand/20 bg-brand/5 text-brand hover:bg-brand hover:text-brand-foreground"
               }`}
             >
-              <Phone className="h-4 w-4" /> +212 528 838 992
+              <Phone className="h-4 w-4" />
+              <span className="lg:hidden xl:inline">+212 528 838 992</span>
             </a>
 
             {user ? (

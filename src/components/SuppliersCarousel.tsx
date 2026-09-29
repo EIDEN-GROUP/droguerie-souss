@@ -1,13 +1,4 @@
-import {
-  motion,
-  useAnimationFrame,
-  useMotionValue,
-  useReducedMotion,
-  useScroll,
-  useSpring,
-  useTransform,
-  useVelocity,
-} from "framer-motion";
+import { motion, useAnimationFrame, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform, useVelocity, } from "framer-motion";
 import { useRef } from "react";
 import { SectionHeader } from "./SectionHeader";
 import LAFARGE from "@/assets/Lafarge.webp";
@@ -38,7 +29,6 @@ const suppliers = [
   { name: "KNAUF", logo: KNAUF },
 ];
 
-/** Ramene `v` dans [min, max[ en bouclant (defilement sans fin). */
 const wrap = (min: number, max: number, v: number) => {
   const range = max - min;
   return ((((v - min) % range) + range) % range) + min;
@@ -68,21 +58,14 @@ export function SuppliersCarousel() {
   return (
     <section className="overflow-hidden border-b py-5 container-xs">
       <div className="container-x">
-        <SectionHeader
-          kicker="Ils nous font confiance"
-          // title="Nos fournisseurs partenaires"
-        />
+        <SectionHeader kicker="Ils nous font confiance" />
       </div>
 
       <div className="relative mt-5">
         <motion.div style={{ x }} className="flex w-max">
           {doubled.map((supplier, i) => (
             <div key={i} className="group mr-4 grid h-10 min-w-[90px] shrink-0 place-items-center px-4 transition-shadow duration-300 md:h-24 md:min-w-[200px] md:px-8">
-              <img
-                src={supplier.logo}
-                alt={supplier.name}
-                className="max-h-10 w-auto object-contain opacity-60 grayscale transition duration-300 group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0"
-              />
+              <img src={supplier.logo} alt={supplier.name} className="max-h-10 w-auto object-contain transition duration-300 group-hover:scale-105" />
             </div>
           ))}
         </motion.div>

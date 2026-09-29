@@ -84,10 +84,10 @@ export function CategoriesSection({
 
   if (!isShop) {
     return (
-      <section className="py-20 px-3">
+      <section className="py-10 px-3 bg-paper">
         <SectionHeader kicker="Nos rayons" title="Toutes les catégories" animated />
         <CategoryCardsCarousel items={items} />
-        <div className="mt-10 text-center">
+        <div className="mt-8 text-center">
           <Link
             to="/categories"
             className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
@@ -132,11 +132,9 @@ export function CategoriesSection({
   );
 }
 
-/** Carrousel de cartes portrait des rayons (accueil, page A propos) : photo pleine carte,
- *  nom en surimpression, fleches en haut a droite. */
 export function CategoryCardsCarousel({ items }: { items: CategoryInfo[] }) {
   return (
-    <Carousel opts={{ align: "start" }} className="mt-10">
+    <Carousel opts={{ align: "start" }}>
       <div className="mb-4 flex justify-end gap-1">
         <CarouselPrevious variant="ghost" className="static h-9 w-9 translate-y-0" />
         <CarouselNext variant="ghost" className="static h-9 w-9 translate-y-0" />
@@ -152,8 +150,6 @@ export function CategoryCardsCarousel({ items }: { items: CategoryInfo[] }) {
                   loading="lazy"
                   className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
-                {/* Voile leger au pied de la photo, juste de quoi lire le nom sur les
-                    visuels clairs (sacs de platre, marbre). */}
                 <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent" />
                 <h3 className="text-shadow-overlay absolute inset-x-0 bottom-0 p-4 font-display text-2xl font-medium leading-tight text-white md:p-5 md:text-[1.7rem]">
                   {c.name}

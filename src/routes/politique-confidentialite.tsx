@@ -1,8 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { ShieldCheck } from "lucide-react";
 import { Layout } from "@/components/Layout";
+import { PageHero } from "@/components/PageHero";
 import { seo, jsonLd, canonical, descriptionFrom } from "@/lib/seo";
+import heroImg from "@/assets/22.jpg";
 
 const DESCRIPTION =
   "Politique de confidentialité de Souss Droguerie (Agadir) : quelles données nous collectons (contact, commandes, mesure d'audience), pourquoi, combien de temps, et vos droits (Loi 09-08).";
@@ -84,29 +85,12 @@ const SECTIONS: { title: string; body: string[] }[] = [
 
 function Privacy() {
   return (
-    <Layout overlayNav>
-      <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
-              <Link to="/" className="transition hover:text-paper">
-                Accueil
-              </Link>
-              <span>/</span>
-              <span className="text-sky">Confidentialité</span>
-            </nav>
-            <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-              Politique de confidentialité
-            </h1>
-            <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
-            <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-              Nous respectons votre vie privée. Dernière mise à jour : septembre 2026.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+    <Layout>
+      <PageHero image={heroImg} crumb="Confidentialité" title="Politique de confidentialité">
+        Nous respectons votre vie privée. Dernière mise à jour : septembre 2026.
+      </PageHero>
 
-      <div className="container-x py-14 md:py-20">
+      <div className="container-x py-14 md:py-20 flex justify-center">
         <div className="max-w-3xl">
           <div className="flex items-start gap-4 rounded-2xl bg-mint p-5 sm:p-6">
             <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-paper text-brand">

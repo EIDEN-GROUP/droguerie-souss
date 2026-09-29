@@ -60,7 +60,7 @@ export const CoverPage = forwardRef<HTMLDivElement, { variant: "front" | "back";
               Matériaux de construction &amp; finitions - Souss Droguerie SARL.
             </p>
           </div>
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-paper/50">
+          <p className="text-[10px] uppercase tracking-[0.2em] text-paper/50">
             Agadir · Maroc
           </p>
         </div>
@@ -100,7 +100,7 @@ export const PlaceholderPage = forwardRef<HTMLDivElement, { page: number; total:
         <p className="max-w-[80%] text-xs leading-relaxed text-ink-soft">
           Les pages de cette édition seront ajoutées prochainement.
         </p>
-        <p className="mt-2 font-mono text-[10px] tracking-widest text-ink-soft/70">
+        <p className="mt-2 text-[10px] tabular-nums tracking-widest text-ink-soft/70">
           {String(page).padStart(2, "0")} / {String(total).padStart(2, "0")}
         </p>
       </div>

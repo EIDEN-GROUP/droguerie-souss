@@ -3,12 +3,13 @@ import { Layout } from "@/components/Layout";
 import { Hero } from "@/components/Hero";
 import { ServiceBar } from "@/components/ServiceBar";
 import { SectionHeader } from "@/components/SectionHeader";
-import { BestSellersShowcase } from "@/components/BestSellersShowcase";
+import { ProductCard } from "@/components/ProductCard";
 import { CatalogueCarousel } from "@/components/CatalogueCarousel";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { PromoCards } from "@/components/PromoCards";
 import { CategoriesSection } from "@/components/CategoriesSection";
 import { CtaBanner } from "@/components/CtaBanner";
+import { VisitAndCatalogue } from "@/components/VisitAndCatalogue";
 import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
 import { MotionConfig, motion } from "framer-motion";
@@ -104,9 +105,6 @@ export const Route = createFileRoute("/")({
     }),
 });
 
-/** Lien vers la boutique, cale a droite au-dessus des cartes - la place qu'occupent les
- *  fleches dans la section des categories. `#produits` fait atterrir directement sur la
- *  grille ; `bestsellers` la filtre sur les best-sellers. */
 function SeeAllLink({
   bestsellers = false,
   className = "mb-4 mt-10 flex justify-end",
@@ -132,6 +130,12 @@ function SeeAllLink({
   );
 }
 
+/** Nombre de cartes qui remplissent des rangees entieres de `cols` colonnes (au plus `max`).
+ *  Moins d'une rangee : tout est affiche. */
+function fullRows(count: number, cols: number, max: number) {
+  return count < cols ? count : Math.min(max, count - (count % cols));
+}
+
 function Home() {
   const { data: products, isLoading } = useProducts();
   const productList = products || [];
@@ -154,7 +158,18 @@ function Home() {
               <Loader2 className="h-8 w-8 animate-spin text-brand" />
             </div>
           ) : (
-            <BestSellersShowcase products={bestSellers} />
+            <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
+              {bestSellers.slice(0, 8).map((p, i) => (
+                <div
+                  key={p.id}
+                  className={`w-[72%] shrink-0 snap-start sm:w-[45%] md:w-auto ${
+                    i < fullRows(bestSellers.length, 3, 6) ? "md:block" : "md:hidden"
+                  } ${i < fullRows(bestSellers.length, 4, 8) ? "xl:block" : "xl:hidden"}`}
+                >
+                  <ProductCard product={p} index={i} />
+                </div>
+              ))}
+            </div>
           )}
         </section>
 
@@ -193,8 +208,9 @@ function Home() {
         </section> */}
 
         <CtaBanner />
-        {/* Barre fixe : placee apres le contenu, pour que le hero reste le premier enfant
-            de <main> (l'en-tete s'y repere pour savoir quand passer au blanc). */}
+        <div className="bg-paper">
+          <VisitAndCatalogue />
+        </div>
         <ScrollProgress />
       </Layout>
     </MotionConfig>

@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
+import { PageHero } from "@/components/PageHero";
+import { ProgressSteps } from "@/components/ProgressSteps";
 import { ProductPrice } from "@/components/ProductPrice";
 import { SectionHeader } from "@/components/SectionHeader";
 import {
@@ -39,6 +41,7 @@ import { useCustomerAuth } from "@/lib/customerAuth";
 import { searchProducts } from "@/lib/search";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 import { cartLineKey } from "@/lib/store";
+import heroImg from "@/assets/banner-cta.jpg";
 
 export const Route = createFileRoute("/commande-rapide")({
   component: CommandeRapide,
@@ -322,71 +325,47 @@ function CommandeRapide() {
   };
 
   return (
-    <Layout overlayNav>
+    <Layout>
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
-          >
-            <div>
-              <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
-                <Link to="/" className="transition hover:text-paper">
-                  Accueil
-                </Link>
-                <span>/</span>
-                <span className="text-sky">Commande rapide</span>
-              </nav>
-
-              <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-                Commande rapide
-              </h1>
-              <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
-              <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré par
-                notre équipe sous 48h ouvrées. Gratuit et sans engagement.
-              </p>
-
-              <ul className="mt-6 flex flex-wrap gap-x-7 gap-y-3">
-                {heroPoints.map((p) => (
-                  <li
-                    key={p.label}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-paper/90"
-                  >
-                    <p.icon className="h-4 w-4 shrink-0 text-sky" />
-                    {p.label}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-8 flex flex-wrap items-center gap-3">
-                <a
-                  href="#formulaire"
-                  className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
+      <PageHero
+        image={heroImg}
+        crumb="Commande rapide"
+        title="Commande rapide"
+        actions={
+          <>
+            <ul className="flex flex-wrap gap-x-7 gap-y-3">
+              {heroPoints.map((p) => (
+                <li
+                  key={p.label}
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-paper/90"
                 >
-                  Commencer ma demande
-                  <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
-                </a>
-                <a
-                  href="tel:+212528838992"
-                  className="inline-flex items-center gap-2 rounded-full border-2 border-paper/40 px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-paper hover:text-ink"
-                >
-                  <Phone className="h-4 w-4" /> Nous appeler
-                </a>
-              </div>
-            </div>
+                  <p.icon className="h-4 w-4 shrink-0 text-sky" />
+                  {p.label}
+                </li>
+              ))}
+            </ul>
 
-            <div className="inline-flex items-center gap-2 md:pb-2">
-              <span className="h-px w-8 bg-accent-red" />
-              <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-sky">
-                Devis en 48h
-              </span>
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="#formulaire"
+                className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
+              >
+                Commencer ma demande
+                <ArrowRight className="h-4 w-4 transition group-hover:translate-x-1" />
+              </a>
+              <a
+                href="tel:+212528838992"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-paper/40 px-6 py-3 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-paper hover:text-ink"
+              >
+                <Phone className="h-4 w-4" /> Nous appeler
+              </a>
             </div>
-          </motion.div>
-        </div>
-      </section>
+          </>
+        }
+      >
+        Décrivez votre chantier, sélectionnez vos matériaux et recevez un devis chiffré par notre
+        équipe sous 48h ouvrées. Gratuit et sans engagement.
+      </PageHero>
 
       {/* ── Pourquoi choisir ── */}
       <section className="border-y bg-cream">
@@ -421,36 +400,11 @@ function CommandeRapide() {
         <div className="container-x py-20">
           <SectionHeader kicker="Le déroulé" title="Comment ça marche ?" />
 
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {howItWorks.map((s, i) => (
-              <motion.div
-                key={s.title}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="relative h-full rounded-2xl border bg-paper p-6"
-              >
-                {i < howItWorks.length - 1 && (
-                  <span className="absolute -right-3 top-12 hidden h-px w-6 bg-border lg:block" />
-                )}
-                <div className="flex items-start justify-between gap-4">
-                  <div className="grid h-11 w-11 place-items-center rounded-xl bg-mint text-brand">
-                    <s.icon className="h-5 w-5" />
-                  </div>
-                  <span className="font-mono text-2xl font-medium leading-none text-mint">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                </div>
-                <p className="mt-5 font-display text-base font-bold uppercase tracking-wide">
-                  {s.title}
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">{s.text}</p>
-              </motion.div>
-            ))}
+          <div className="mt-14">
+            <ProgressSteps steps={howItWorks} />
           </div>
 
-          <div className="mt-10 flex justify-center">
+          <div className="mt-14 flex justify-center">
             <a
               href="#formulaire"
               className="group inline-flex items-center gap-2 rounded-full bg-accent-red px-7 py-3.5 text-sm font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"

@@ -739,7 +739,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
                 style={{ width: `${Math.round((pdf.done / Math.max(1, pdf.total)) * 100)}%` }}
               />
             </div>
-            <p className="mt-2 font-mono text-[10px] tabular-nums text-ink-soft">
+            <p className="mt-2 text-[10px] tabular-nums text-ink-soft">
               {pdf.done} / {pdf.total} pages
             </p>
           </div>

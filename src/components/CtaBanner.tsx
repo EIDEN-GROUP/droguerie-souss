@@ -14,10 +14,8 @@ export function CtaBanner() {
   const imageY = useTransform(pass, [0, 1], reduce ? ["0%", "0%"] : ["-8%", "8%"]);
 
   return (
-    <section className="container-x pb-20 pt-10 md:pb-24">
-      <motion.div ref={ref} style={{ scale }} className="relative overflow-hidden rounded-xl">
-        {/* Plus haute que l'encart (-10 % en haut et en bas) pour que le glissement ne
-            decouvre jamais de bord. */}
+    <section>
+      <motion.div ref={ref} style={{ scale }} className="relative overflow-hidden">
         <motion.img
           src={banner}
           alt=""
@@ -25,21 +23,21 @@ export function CtaBanner() {
           style={{ y: imageY }}
           className="absolute inset-x-0 -top-[10%] h-[120%] w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-black/80 to-black/50" />
-        <div className="relative grid gap-8 px-6 py-10 sm:px-12 sm:py-12 md:grid-cols-2 md:items-center md:px-20 md:py-16">
+        <div className="absolute inset-0 bg-gradient-to-r from-black/100 via-ink/85 to-ink/50" />
+        <div className="container-x relative grid gap-8 py-12 sm:py-14  md:items-center md:py-20">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="text-paper"
+            className="text-paper w-full md:w-[35%]"
           >
-            <span className="text-[11px] font-semibold uppercase tracking-[0.3em] text-sky">
+            <span className="text-[12px] font-semibold uppercase tracking-[0.3em] text-sky">
               Vous avez un projet ?
             </span>
             <SplitReveal
               as="h3"
               delay={0.15}
-              className="mt-3 font-display text-md font-bold uppercase leading-tight sm:text-lg md:text-4xl"
+              className="mt-3 font-display text-3xl font-bold uppercase leading-tight sm:text-lg md:text-5xl"
             >
               Recevez votre devis gratuit en 48h
             </SplitReveal>
@@ -52,7 +50,7 @@ export function CtaBanner() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="flex flex-col flex-wrap gap-3 sm:flex-row md:justify-end"
+            className="flex flex-col flex-wrap gap-3 sm:flex-row md:justify-start"
           >
             <Link
               to="/contact"

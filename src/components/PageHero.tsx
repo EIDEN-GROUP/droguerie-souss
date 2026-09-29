@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, type LinkProps } from "@tanstack/react-router";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef, type ReactNode } from "react";
 import { SplitReveal } from "./motion/SplitReveal";
@@ -6,24 +6,33 @@ import { SplitReveal } from "./motion/SplitReveal";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 /**
- * Bandeau des pages interieures (A propos, Contact) : carte arrondie dans la page, photo
+ * Bandeau des pages interieures (toutes sauf l'accueil) : carte arrondie dans la page, photo
  * sous voile noir, fil d'Ariane, titre, filet rouge et texte a gauche.
  *
  * A l'ouverture, la carte grandit legerement pendant que la photo recule, puis le titre
  * arrive lettre a lettre. Au defilement, la photo descend moins vite que la page et le texte
  * s'efface. La page doit utiliser l'en-tete blanc (pas `overlayNav`) : la carte commence
  * sous la barre.
+ *
+ * Le titre et la photo peuvent changer sans quitter la page (rayon choisi dans la boutique) :
+ * ils sont alors remontes et rejouent leur entree, SplitText ayant remplace le texte d'origine.
  */
 export function PageHero({
   image,
   crumb,
+  parent,
   title,
   children,
+  actions,
 }: {
   image: string;
   crumb: string;
+  /** Niveau intermediaire du fil d'Ariane, entre l'accueil et la page. */
+  parent?: { label: string; to: LinkProps["to"] };
   title: string;
   children: ReactNode;
+  /** Boutons ou points forts poses sous le texte. */
+  actions?: ReactNode;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -31,6 +40,9 @@ export function PageHero({
   const imageY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "25%"]);
   const textY = useTransform(scrollYProgress, [0, 1], ["0%", reduce ? "0%" : "35%"]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.7], [1, reduce ? 1 : 0]);
+  /** Un mot de plus de 13 lettres (« confidentialite ») deborde de la carte en `text-4xl` sur
+   *  telephone, et SplitText ne le coupe pas : sa taille suit alors la largeur de l'ecran. */
+  const longWord = title.split(/\s+/).some((word) => word.length > 13);
 
   return (
     <section className="px-3 pt-4 sm:px-5 lg:px-8">
@@ -43,6 +55,7 @@ export function PageHero({
       >
         <motion.div style={{ y: imageY }} className="absolute inset-x-0 -top-[10%] h-[120%]">
           <motion.img
+            key={image}
             src={image}
             alt=""
             initial={{ scale: 1.15 }}
@@ -68,15 +81,26 @@ export function PageHero({
               Accueil
             </Link>
             <span>/</span>
+            {parent && (
+              <>
+                <Link to={parent.to} className="transition hover:text-paper">
+                  {parent.label}
+                </Link>
+                <span>/</span>
+              </>
+            )}
             <span className="text-sky">{crumb}</span>
           </motion.nav>
 
           <SplitReveal
+            key={title}
             as="h1"
             trigger="load"
             by="chars"
             delay={0.35}
-            className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl lg:text-6xl"
+            className={`mt-4 font-display font-bold uppercase leading-[0.95] sm:text-5xl lg:text-6xl ${
+              longWord ? "text-[length:clamp(1.5rem,7.6vw,2.25rem)]" : "text-4xl"
+            }`}
           >
             {title}
           </SplitReveal>
@@ -94,6 +118,16 @@ export function PageHero({
           >
             {children}
           </motion.p>
+          {actions && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 1, ease: EASE }}
+              className="mt-7"
+            >
+              {actions}
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </section>

@@ -21,10 +21,10 @@ const BRAND = {
 // src/lib/seo.ts (see the SITE_URL resolution there).
 const LOGO_URL = `${SITE_URL}/logo.png`;
 
-// Font stacks that echo the site: Fraunces (serif display) falls back to
-// Georgia in email clients; Inter (body) falls back to Arial/Helvetica.
-const DISPLAY_FONT = "'Fraunces', Georgia, 'Times New Roman', serif";
-const BODY_FONT = "'Inter', Helvetica, Arial, sans-serif";
+// Font stacks that echo the site: DM Serif Display (serif display) falls back to
+// Georgia in email clients; Manrope (body) falls back to Arial/Helvetica.
+const DISPLAY_FONT = "'DM Serif Display', Georgia, 'Times New Roman', serif";
+const BODY_FONT = "'Manrope', Helvetica, Arial, sans-serif";
 
 function baseHtml(content: string): string {
   return `<!DOCTYPE html>

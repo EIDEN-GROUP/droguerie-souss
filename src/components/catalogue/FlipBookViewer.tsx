@@ -238,7 +238,7 @@ export default function FlipBookViewer({
         </button>
 
         <span
-          className={`min-w-24 text-center font-mono text-xs tracking-widest ${
+          className={`min-w-24 text-center text-xs tabular-nums tracking-widest ${
             fullscreen ? "text-paper/80" : "text-ink-soft"
           }`}
         >
@@ -278,7 +278,7 @@ export default function FlipBookViewer({
           >
             <Minus className="h-4 w-4" />
           </button>
-          <span className="w-12 text-center font-mono text-[11px] tracking-wider">
+          <span className="w-12 text-center text-[11px] tabular-nums tracking-wider">
             {Math.round(zoom * 100)}%
           </span>
           <button

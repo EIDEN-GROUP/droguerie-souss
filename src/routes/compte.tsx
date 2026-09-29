@@ -181,7 +181,7 @@ function MyOrders({ email }: { email: string }) {
           >
             <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4">
               <div>
-                <p className="font-mono text-xs text-ink-soft">
+                <p className="text-xs text-ink-soft">
                   Commande #{o.id.slice(0, 8).toUpperCase()}
                 </p>
                 <p className="mt-0.5 text-xs text-ink-soft">

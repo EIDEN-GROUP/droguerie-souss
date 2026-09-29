@@ -1,13 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Clock, Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
+import { ArrowUpRight, Clock, Loader2, Mail, MapPin, Navigation, Phone, Send } from "lucide-react";
 import { useRef, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { NumberedList } from "@/components/NumberedList";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SplitReveal } from "@/components/motion/SplitReveal";
-import heroImg from "@/assets/hero-2.jpg";
+import heroImg from "@/assets/collection-bath.jpg";
 import { submitContact } from "@/lib/api/contact";
 import { BUSINESS } from "@/lib/contact";
 import { seo, jsonLd, canonical } from "@/lib/seo";
@@ -34,6 +34,18 @@ const FAQS = [
 ];
 
 const EASE = [0.22, 1, 0.36, 1] as const;
+
+const DIRECT_CONTACTS = [
+  { icon: Phone, label: "Téléphone", value: BUSINESS.phoneDisplay, href: BUSINESS.phoneHref },
+  { icon: Mail, label: "Email", value: BUSINESS.email, href: `mailto:${BUSINESS.email}` },
+];
+
+const { latitude, longitude } = BUSINESS.geo;
+/** Carte integree sans cle d'API (epingle sur les coordonnees du depot). Le domaine doit
+ *  rester autorise par `frame-src` dans la CSP de `vercel.json`. */
+const MAP_EMBED_URL = `https://www.google.com/maps?q=${latitude},${longitude}&z=16&hl=fr&output=embed`;
+/** Itineraire depuis la position du visiteur, dans Google Maps (appli sur telephone). */
+const DIRECTIONS_URL = `https://www.google.com/maps/dir/?api=1&destination=${latitude},${longitude}`;
 /** Champs blancs sur la carte claire du formulaire. */
 const INPUT =
   "w-full rounded-xl border border-border bg-paper px-4 py-3 text-sm text-ink outline-none transition focus:border-brand";
@@ -116,60 +128,9 @@ function Contact() {
         Souss.
       </PageHero>
 
-      {/* Coordonnees : meme gabarit que les chiffres cles d'A propos (pastille ronde sombre,
-          valeur en serif, libelle discret). */}
+      {/* Formulaire : titre, coordonnees directes et horaires a gauche (fixes en `lg`),
+          formulaire a droite sur une carte claire. L'adresse est avec la carte, plus bas. */}
       <section className="container-x py-16 md:py-24">
-        <div className="grid gap-12 sm:grid-cols-3 sm:gap-6">
-          {[
-            {
-              icon: MapPin,
-              title: "Adresse",
-              text: BUSINESS.address,
-              href: BUSINESS.mapsUrl,
-            },
-            {
-              icon: Phone,
-              title: "Téléphone",
-              text: BUSINESS.phoneDisplay,
-              href: BUSINESS.phoneHref,
-            },
-            {
-              icon: Mail,
-              title: "Email",
-              text: BUSINESS.email,
-              href: `mailto:${BUSINESS.email}`,
-            },
-          ].map((c, i) => (
-            <motion.a
-              key={c.title}
-              href={c.href}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.7, delay: i * 0.12, ease: EASE }}
-              className="group flex flex-col items-center text-center"
-            >
-              <motion.span
-                initial={{ scale: 0.5, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.1 + i * 0.12, ease: EASE }}
-                className="grid h-16 w-16 place-items-center rounded-full bg-brand-secondary text-paper transition duration-500 group-hover:-translate-y-1 group-hover:bg-accent-red sm:h-[4.5rem] sm:w-[4.5rem]"
-              >
-                <c.icon className="h-6 w-6" strokeWidth={1.5} />
-              </motion.span>
-              <span className="mt-4 max-w-xs font-display text-lg font-semibold leading-snug text-ink [overflow-wrap:anywhere] transition-colors group-hover:text-brand sm:text-xl">
-                {c.text}
-              </span>
-              <span className="mt-1.5 text-sm text-ink-soft">{c.title}</span>
-            </motion.a>
-          ))}
-        </div>
-      </section>
-
-      {/* Formulaire : titre et horaires a gauche (fixes en `lg`), formulaire a droite sur
-          une carte claire. */}
-      <section className="container-x pb-16 md:pb-24">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <SplitReveal as="h2" className="font-display text-3xl font-bold uppercase leading-tight text-ink sm:text-4xl">
@@ -192,12 +153,41 @@ function Contact() {
               Décrivez votre projet, nous revenons vers vous rapidement.
             </motion.p>
 
+            <ul className="mt-8 space-y-3">
+              {DIRECT_CONTACTS.map((c, i) => (
+                <motion.li
+                  key={c.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: 0.35 + i * 0.1, ease: EASE }}
+                >
+                  <a
+                    href={c.href}
+                    className="group flex items-center gap-4 rounded-2xl border border-border p-3 transition hover:border-brand hover:bg-cream"
+                  >
+                    <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand-secondary text-paper transition duration-300 group-hover:bg-accent-red">
+                      <c.icon className="h-4 w-4" strokeWidth={1.75} />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[11px] font-semibold uppercase tracking-[0.2em] text-ink-soft">
+                        {c.label}
+                      </span>
+                      <span className="mt-0.5 block font-semibold text-ink [overflow-wrap:anywhere] transition-colors group-hover:text-brand">
+                        {c.value}
+                      </span>
+                    </span>
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.7, delay: 0.4, ease: EASE }}
-              className="mt-10"
+              transition={{ duration: 0.7, delay: 0.5, ease: EASE }}
+              className="mt-8 rounded-2xl border border-border p-3"
             >
               <div className="flex items-center gap-3">
                 <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand-secondary text-paper">
@@ -318,9 +308,62 @@ function Contact() {
         </div>
       </section>
 
+      {/* Plan d'acces : carte chargee a l'approche seulement. L'adresse et les liens Maps
+          flottent sur la carte en `lg`, et passent dessous sur les ecrans plus etroits. */}
+      <section className="container-x pb-16 md:pb-24">
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.8, ease: EASE }}
+          className="relative overflow-hidden rounded-3xl border border-border bg-cream"
+        >
+          <iframe
+            title="Plan d'accès : Souss Droguerie à Dcheira, Agadir"
+            src={MAP_EMBED_URL}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+            allowFullScreen
+            className="block h-72 w-full border-0 sm:h-96 lg:h-[30rem]"
+          />
+          <div className="border-t border-border bg-paper p-5 sm:p-6 lg:absolute lg:bottom-6 lg:left-6 lg:max-w-sm lg:rounded-2xl lg:border lg:shadow-[var(--shadow-elevated)]">
+            <div className="flex items-start gap-4">
+              <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-brand-secondary text-paper">
+                <MapPin className="h-4 w-4" strokeWidth={1.75} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-accent-red">
+                  Notre dépôt
+                </p>
+                <p className="mt-1 font-semibold leading-snug text-ink">{BUSINESS.address}</p>
+              </div>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-2">
+              <a
+                href={DIRECTIONS_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full bg-accent-red px-5 py-2.5 text-xs font-bold uppercase tracking-wider text-paper transition hover:bg-accent-red/90"
+              >
+                <Navigation className="h-3.5 w-3.5" /> Itinéraire
+              </a>
+              <a
+                href={BUSINESS.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-5 py-2 text-xs font-bold uppercase tracking-wider text-ink transition hover:bg-ink hover:text-paper"
+              >
+                Ouvrir dans Maps <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
       {/* Questions fréquentes : texte repris tel quel dans le balisage FAQPage. Meme liste
           numerotee que les engagements d'A propos. */}
-      <section className="container-x pb-20 md:pb-28">
+      {/* `#faq` : lien « FAQ » du pied de page ; `scroll-mt` degage l'en-tete fixe. */}
+      <section id="faq" className="container-x scroll-mt-28 pb-20 md:pb-28">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20">
           <div className="lg:sticky lg:top-32 lg:self-start">
             <SectionHeader title="Questions fréquentes" align="left" animated />

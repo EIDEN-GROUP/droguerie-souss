@@ -1,30 +1,34 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useState } from "react";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
+import { QuantityInput } from "./QuantityInput";
 
 /**
- * Carte produit : photo encadree, nom et pastille de prix, description, etiquettes et
- * bouton d'ajout. Au survol, le texte s'efface et la photo s'etend a toute la carte ; le
- * bouton reste par-dessus.
+ * Carte produit : pastille (promo, best-seller, saison) et favori sur la photo detouree,
+ * nom, rayon, prix sur devis, puis quantite et ajout au panier.
  *
- * La carte est un conteneur (`@container`) : sous 15rem de large (deux colonnes sur
- * mobile, quatre en `lg`), marges et textes se resserrent et la pastille passe sous le nom.
+ * Toute la carte mene a la fiche : un vrai lien etire sous les boutons, plutot qu'un clic
+ * JavaScript sur la carte (ouverture dans un onglet, exploration). La carte est un conteneur
+ * (`@container`) : sous 15rem de large (deux colonnes sur mobile), la quantite passe
+ * au-dessus du bouton au lieu d'etre a cote.
  */
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const { addToCart, toggleFavorite, favorites } = useApp();
+  const [qty, setQty] = useState(1);
   const isFav = favorites.includes(product.id);
   const pct = product.promo ?? 0;
 
-  const tags = [
-    pct > 0 ? { label: `-${pct}%`, promo: true } : null,
-    product.bestseller ? { label: "Best-seller" } : null,
-    product.seasonal ? { label: "De saison" } : null,
-    { label: product.category },
-  ]
-    .filter((t): t is { label: string; promo?: boolean } => t !== null)
-    .slice(0, 3);
+  const badge =
+    pct > 0
+      ? { label: `Promo -${pct}%`, className: "bg-accent-red/10 text-accent-red" }
+      : product.bestseller
+        ? { label: "Best-seller", className: "bg-brand/10 text-brand" }
+        : product.seasonal
+          ? { label: "De saison", className: "bg-mint text-brand-secondary" }
+          : null;
 
   return (
     <motion.div
@@ -34,78 +38,75 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       transition={{ duration: 0.5, delay: (index % 4) * 0.06 }}
       className="@container h-full"
     >
-      <div className="group relative flex h-full flex-col overflow-hidden rounded-[20px] bg-paper p-2.5 shadow-[0_8px_24px_-8px_rgba(0,0,0,0.18)] transition-shadow duration-300 hover:shadow-[0_14px_32px_-8px_rgba(0,0,0,0.28)] @[15rem]:rounded-[28px] @[15rem]:p-3.5">
-        {/* Toute la carte mene a la fiche : un vrai lien etire sous les boutons, plutot
-            qu'un clic JavaScript sur la carte (ouverture dans un onglet, exploration). */}
+      <div className="group relative flex h-full flex-col rounded-xl border border-border bg-paper p-3 transition duration-300 hover:border-transparent hover:shadow-[var(--shadow-elevated)] @[15rem]:p-4">
         <Link
           to="/product/$id"
           params={{ id: product.id }}
           aria-label={product.name}
-          className="absolute inset-0 z-[3]"
+          className="absolute inset-0 z-[1] rounded-xl"
         />
 
-        {/* Reserve la place de la photo dans le flux ; la photo elle-meme est posee en
-            absolu par-dessus pour pouvoir s'etendre a toute la carte au survol. */}
-        <div className="aspect-square w-full" />
-        {/* Hauteur au repos = largeur utile de la carte (100cqw moins les deux marges),
-            soit exactement le carre reserve au-dessus. */}
-        <div className="absolute left-2.5 right-2.5 top-2.5 z-[1] h-[calc(100cqw-1.25rem)] overflow-hidden rounded-2xl bg-cream transition-[top,left,right,height,border-radius] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:left-0 group-hover:right-0 group-hover:top-0 group-hover:h-full group-hover:rounded-none @[15rem]:left-3.5 @[15rem]:right-3.5 @[15rem]:top-3.5 @[15rem]:h-[calc(100cqw-1.75rem)] @[15rem]:rounded-[20px]">
+        <div className="relative aspect-square overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
             loading="lazy"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain p-2 transition duration-500 group-hover:scale-105"
           />
         </div>
+
+        {badge && (
+          <span
+            className={`pointer-events-none absolute left-3 top-3 z-[2] rounded-full px-2 py-1 text-[10px] font-semibold @[15rem]:left-4 @[15rem]:top-4 @[15rem]:px-2.5 @[15rem]:text-xs ${badge.className}`}
+          >
+            {badge.label}
+          </span>
+        )}
 
         <button
           type="button"
           onClick={() => toggleFavorite(product.id)}
           aria-label={isFav ? "Retirer des favoris" : "Ajouter aux favoris"}
-          className={`absolute right-4 top-4 z-[4] grid h-8 w-8 place-items-center rounded-full bg-paper/90 shadow transition hover:bg-paper lg:opacity-0 lg:group-hover:opacity-100 @[15rem]:right-6 @[15rem]:top-6 @[15rem]:h-9 @[15rem]:w-9 ${
-            isFav ? "text-accent-red" : "text-ink"
+          aria-pressed={isFav}
+          className={`absolute right-2 top-2 z-[2] grid h-9 w-9 place-items-center rounded-full transition hover:bg-cream @[15rem]:right-3 @[15rem]:top-3 ${
+            isFav ? "text-accent-red" : "text-ink-soft hover:text-accent-red"
           }`}
         >
-          <Heart className={`h-4 w-4 ${isFav ? "fill-current" : ""}`} />
+          <Heart
+            className={`h-[18px] w-[18px] ${isFav ? "fill-current" : ""}`}
+            strokeWidth={1.75}
+          />
         </button>
 
-        <div className="mt-3 flex flex-1 flex-col transition-opacity duration-300 group-hover:opacity-0 @[15rem]:mt-4">
-          <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1.5">
-            <h3 className="line-clamp-2 basis-full text-sm font-bold leading-tight text-ink @[15rem]:min-w-0 @[15rem]:flex-1 @[15rem]:basis-0 @[15rem]:text-lg">
-              {product.name}
-            </h3>
-            <span className="shrink-0 rounded-full bg-brand px-2.5 py-0.5 text-[11px] font-bold text-paper @[15rem]:px-3 @[15rem]:py-1 @[15rem]:text-sm">
-              Sur devis
-            </span>
-          </div>
+        <h3 className="mt-3 line-clamp-2 min-h-[2.5em] font-sans text-[13px] font-semibold leading-tight tracking-normal text-ink @[15rem]:text-sm">
+          {product.name}
+        </h3>
+        <p className="mt-1.5 truncate text-[11px] text-ink-soft @[15rem]:text-xs">
+          {product.subcategory || product.category}
+        </p>
 
-          {product.description && (
-            <p className="mt-2 line-clamp-2 text-[11px] leading-snug text-ink-soft @[15rem]:mt-3 @[15rem]:line-clamp-3 @[15rem]:text-[13px]">
-              {product.description}
-            </p>
-          )}
+        <div className="mt-auto pt-3 @[15rem]:pt-4">
+          <p className="text-base font-bold text-ink @[15rem]:text-lg">Sur devis</p>
 
-          <div className="mt-3 flex flex-wrap gap-1.5 @[15rem]:mt-4 @[15rem]:gap-2">
-            {tags.map((t) => (
-              <span
-                key={t.label}
-                className={`max-w-full truncate rounded-full px-2.5 py-0.5 text-[9px] font-medium @[15rem]:px-3 @[15rem]:py-1 @[15rem]:text-[10px] ${
-                  t.promo ? "bg-accent-red/10 text-accent-red" : "bg-brand/10 text-ink"
-                }`}
-              >
-                {t.label}
-              </span>
-            ))}
+          <div className="mt-3 flex flex-col gap-2 @[15rem]:flex-row @[15rem]:items-center">
+            <QuantityInput
+              value={qty}
+              onChange={setQty}
+              className="relative z-[2] justify-between border-border @[15rem]:w-[7rem] @[15rem]:shrink-0"
+            />
+
+            <button
+              type="button"
+              onClick={() => {
+                addToCart(product, qty);
+                setQty(1);
+              }}
+              className="relative z-[2] h-9 w-full rounded-full bg-dark-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red @[15rem]:w-auto @[15rem]:flex-1 @[15rem]:text-sm"
+            >
+              Au panier
+            </button>
           </div>
         </div>
-
-        <button
-          type="button"
-          onClick={() => addToCart(product)}
-          className="relative z-[4] mt-3 w-full rounded-full bg-brand py-2 text-xs font-bold text-paper transition hover:bg-brand-dark @[15rem]:mt-4 @[15rem]:py-3 @[15rem]:text-base"
-        >
-          Ajouter au panier
-        </button>
       </div>
     </motion.div>
   );

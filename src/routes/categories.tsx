@@ -1,10 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 import { Layout } from "@/components/Layout";
+import { PageHero } from "@/components/PageHero";
 import { ProductGrid } from "@/components/ProductGrid";
 import { CategoriesSection } from "@/components/CategoriesSection";
+import { ShopSidebar } from "@/components/ShopSidebar";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { categories, categoryGroup, type Category } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
@@ -17,30 +19,29 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react";
+import heroImg from "@/assets/hero-3.jpg";
 
 const searchSchema = z.object({
   cat: z.string().optional(),
   subcat: z.string().optional(),
   q: z.string().optional(),
-  /** `?bestseller=true` : lien « Voir tous » des best-sellers de l'accueil. */
   bestseller: z.boolean().optional(),
 });
 
 type Search = z.infer<typeof searchSchema>;
 
+/** Hauteur de l'en-tete du site (`h-20`), sous lequel colle la barre de filtres. */
+const HEADER_HEIGHT = 80;
+
 export const Route = createFileRoute("/categories")({
   validateSearch: searchSchema,
   component: Shop,
   head: ({ match }) => {
-    // Le contexte head n'expose pas `search` directement : il est porté par le match.
     const search = (match.search ?? {}) as Search;
     const cat = search.cat;
     const q = search.q;
     const catInfo = categories.find((c) => c.category === cat);
     const bestTitle = search.bestseller && !catInfo ? "Best-sellers | " : "";
-    // Facettes : le canonical ne garde que la catégorie (les sous-catégories et la
-    // recherche sont des variantes du même contenu, elles ne doivent pas être
-    // indexées séparément). La recherche (?q=) est en plus marquée noindex.
     const catPath = cat ? `?cat=${encodeURIComponent(cat)}` : "";
     return seo({
       title: catInfo
@@ -89,8 +90,6 @@ type SubcatTab = { label: string; value: string | undefined; count: number };
 
 function Shop() {
   const { cat: urlCat, subcat: urlSubcat, q: urlQ, bestseller } = Route.useSearch();
-  // Fiche de la catégorie sélectionnée : alimente le H1, le texte SEO et les liens
-  // internes vers les autres rayons (undefined si ?cat= est absent ou inconnu).
   const catInfo = urlCat ? categories.find((c) => c.category === urlCat) : undefined;
   const navigate = useNavigate();
   const { data: products, isLoading, isError } = useProducts();
@@ -101,15 +100,54 @@ function Shop() {
   const [sort, setSort] = useState<"default" | "asc" | "desc">("default");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);
-
+  const cardsRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const [barHeight, setBarHeight] = useState(88);
+  const [pastCards, setPastCards] = useState(false);
   const productList = useMemo(() => (products || []) as unknown as any[], [products]);
-
-  /** The pool the chips count from: everything the category and the search leave standing,
-   *  before the subcategory filter. Each chip's number is therefore what clicking it yields.
-   *  The search ranks matches across name, description and subcategory, accent-insensitive. */
-  /** Une carte de vitrine peut recouvrir plusieurs categories de l'admin (Carrelage &
-   *  Zellige regroupe Carrelage, Ceramique et Zellige) : on filtre sur le groupe entier. */
   const activeGroup = useMemo(() => (activeCat ? categoryGroup(activeCat) : []), [activeCat]);
+
+  /** Hauteur de la barre de filtres collante : elle varie (sous-categories, panneau mobile)
+   *  et fixe a la fois le seuil ou le carrousel est depasse et le haut de la colonne. */
+  useEffect(() => {
+    const el = barRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(() => setBarHeight(el.offsetHeight));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  /** Le carrousel des rayons est depasse quand son bas passe sous l'en-tete et la barre de
+   *  filtres : la colonne laterale (bureau) et la rangee de rayons (mobile) prennent le relais,
+   *  et s'effacent quand on remonte jusqu'a lui. */
+  useEffect(() => {
+    const el = cardsRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) =>
+        setPastCards(
+          !entry.isIntersecting && entry.boundingClientRect.top < (entry.rootBounds?.top ?? 0),
+        ),
+      { rootMargin: `-${HEADER_HEIGHT + barHeight}px 0px 0px 0px` },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [barHeight]);
+
+  /** Produits par rayon avec la recherche et le filtre best-sellers en cours, hors rayon :
+   *  ce que chaque entree de la colonne donnerait si on la choisissait. */
+  const categoryCounts = useMemo(() => {
+    let list = productList;
+    if (bestseller) list = list.filter((p: any) => p.bestseller);
+    if (query.trim()) list = searchProducts(list, query).map((r) => r.product);
+    const counts = new Map(
+      categories.map((c) => {
+        const group = categoryGroup(c.category);
+        return [c.category, list.filter((p: any) => group.includes(p.category)).length];
+      }),
+    );
+    return { counts, total: list.length };
+  }, [productList, bestseller, query]);
 
   const catFiltered = useMemo(() => {
     let list = productList;
@@ -119,9 +157,6 @@ function Shop() {
     return list;
   }, [productList, bestseller, activeCat, activeGroup, query]);
 
-  /** Admin-managed subcategories come first, in the order the admin sees them, and only when
-   *  they actually hold products. Anything a product carries outside that list still gets a chip
-   *  so no product becomes unreachable. */
   const subcategories = useMemo(() => {
     if (!activeCat) return [];
     const counts = new Map<string, number>();
@@ -135,14 +170,10 @@ function Shop() {
       .filter((name) => !managed.includes(name))
       .sort();
     const names = [...managed.filter((name) => counts.has(name)), ...unmanaged];
-    /** A search can empty the selected subcategory - keep its chip so the active filter
-     *  never disappears out from under the user. */
     if (activeSubcat && !names.includes(activeSubcat)) names.push(activeSubcat);
     return names.map((name) => ({ name, count: counts.get(name) ?? 0 }));
   }, [activeCat, activeGroup, activeSubcat, catFiltered, dbSubcategories]);
 
-  /** Only shown once a category is picked: its subcategories. Picking the category
-   *  itself happens on the cards above, so the chips never repeat them. */
   const tabs: SubcatTab[] = useMemo(() => {
     if (!activeCat || subcategories.length === 0) return [];
     return [
@@ -184,11 +215,44 @@ function Shop() {
     [activeCat, navigate],
   );
 
+  /** Apres un filtre choisi en cours de defilement : si la grille est deja entamee, on
+   *  ramene son debut sous la barre ; sinon la page ne bouge pas. Image suivante, pour que
+   *  la grille filtree soit en place. */
+  const backToResults = useCallback(() => {
+    requestAnimationFrame(() => {
+      const el = resultsRef.current;
+      if (!el) return;
+      if (el.getBoundingClientRect().top < parseFloat(getComputedStyle(el).scrollMarginTop)) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }, []);
+
+  /** Choix d'un rayon depuis la colonne ou la rangee de rayons : sans remise en haut de
+   *  page (le routeur la ferait par defaut), la grille filtree reste sous les yeux. */
+  const selectCategory = useCallback(
+    (category?: string) => {
+      navigate({
+        to: "/categories",
+        search: (prev: Search) => ({ ...prev, cat: category, subcat: undefined }),
+        resetScroll: false,
+      });
+      backToResults();
+    },
+    [navigate, backToResults],
+  );
+
+  /** Les sous-categories sont dans la barre collante : meme comportement. */
   const handleTabClick = useCallback(
     (value: string | undefined) => {
-      navigate({ to: "/categories", search: (prev: Search) => ({ ...prev, subcat: value }) });
+      navigate({
+        to: "/categories",
+        search: (prev: Search) => ({ ...prev, subcat: value }),
+        resetScroll: false,
+      });
+      backToResults();
     },
-    [navigate],
+    [navigate, backToResults],
   );
 
   const toggleBestseller = useCallback(() => {
@@ -200,46 +264,32 @@ function Shop() {
   }, [navigate]);
 
   return (
-    <Layout overlayNav>
-      <section className="relative overflow-hidden bg-brand-secondary text-paper">
-        <div className="container-x relative pb-10 pt-30 md:pb-14 md:pt-34">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between"
-          >
-            <div>
-              <nav className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-paper/50">
-                <Link to="/" className="transition hover:text-paper">
-                  Accueil
-                </Link>
-                <span>/</span>
-                <span className="text-sky">Boutique</span>
-              </nav>
+    <Layout>
+      {/* Photo du rayon choisi, sinon celle de la droguerie. */}
+      <PageHero
+        image={catInfo?.image ?? heroImg}
+        crumb="Boutique"
+        title={catInfo ? `${catInfo.name} à Agadir` : bestseller ? "Best-sellers" : "Boutique"}
+      >
+        {catInfo
+          ? `${catInfo.description}. Achetez en ligne ou demandez un devis gratuit : livraison dans tout le Souss sous 48h.`
+          : bestseller
+            ? "Les produits les plus demandés par nos clients, disponibles à la droguerie et livrés dans tout le Souss."
+            : "Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."}
+      </PageHero>
 
-              <h1 className="mt-4 font-display text-4xl font-bold uppercase leading-[0.95] sm:text-5xl">
-                {catInfo ? `${catInfo.name} à Agadir` : bestseller ? "Best-sellers" : "Boutique"}
-              </h1>
-              <span className="mt-4 block h-1 w-16 rounded-full bg-accent-red" />
-              <p className="mt-4 max-w-xl text-sm text-paper/70 sm:text-base">
-                {catInfo
-                  ? `${catInfo.description}. Achetez en ligne ou demandez un devis gratuit : livraison dans tout le Souss sous 48h.`
-                  : bestseller
-                    ? "Les produits les plus demandés par nos clients, disponibles à la droguerie et livrés dans tout le Souss."
-                    : "Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."}
-              </p>
-            </div>
-          </motion.div>
-        </div>
-      </section>
+      <div ref={cardsRef}>
+        <CategoriesSection
+          variant="shop"
+          onCategorySelect={handleCategorySelect}
+          selectedCategory={activeCat}
+        />
+      </div>
 
-      <CategoriesSection
-        variant="shop"
-        onCategorySelect={handleCategorySelect}
-        selectedCategory={activeCat}
-      />
-
-      <div className="sticky top-20 z-30 w-full border-b bg-paper/95 py-4 backdrop-blur md:py-5">
+      <div
+        ref={barRef}
+        className="sticky top-20 z-30 w-full border-b bg-paper/95 py-4 backdrop-blur md:py-5"
+      >
         <div className="container-x flex items-center justify-between md:hidden">
           <span className="text-xs font-semibold uppercase tracking-wider text-ink-soft">
             {filtered.length} produit{filtered.length > 1 ? "s" : ""}
@@ -285,6 +335,32 @@ function Shop() {
           </div>
         </div>
 
+        {/* Sous `lg`, pas de colonne laterale : une fois le carrousel depasse, les rayons
+            passent en rangee dans la barre (dans le panneau « Filtres » sur telephone). */}
+        {pastCards && (
+          <div className={`${filtersOpen ? "block" : "hidden md:block"} lg:hidden`}>
+            <CatTabs open>
+              <CatChip
+                active={!activeCat}
+                count={categoryCounts.total}
+                onClick={() => selectCategory(undefined)}
+              >
+                Tous les rayons
+              </CatChip>
+              {categories.map((c) => (
+                <CatChip
+                  key={c.category}
+                  active={activeCat === c.category}
+                  count={categoryCounts.counts.get(c.category)}
+                  onClick={() => selectCategory(c.category)}
+                >
+                  {c.name}
+                </CatChip>
+              ))}
+            </CatTabs>
+          </div>
+        )}
+
         {tabs.length > 0 && (
           <CatTabs open={filtersOpen}>
             {tabs.map((tab) => (
@@ -303,23 +379,55 @@ function Shop() {
 
       {/* scroll-mt clears the sticky header + filter bar when we jump here on category select,
           or arrive through `#produits` (the home page "Voir tous" links). */}
-      <div id="produits" ref={resultsRef} className="container-x scroll-mt-[14rem] py-10">
-        {isError && (
-          <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
-            Erreur de chargement. Veuillez réessayer.
+      {/* La marge de defilement suit la barre collante : un saut ici (rayon choisi, lien
+          `#produits` de l'accueil) pose la grille juste dessous. En `lg`, la colonne des
+          rayons est toujours reservee : son apparition ne fait pas sauter la grille. */}
+      <div
+        id="produits"
+        ref={resultsRef}
+        style={{ scrollMarginTop: HEADER_HEIGHT + barHeight }}
+        className="container-x py-10 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-8 xl:grid-cols-[16rem_minmax(0,1fr)] xl:gap-10"
+      >
+        <aside className="hidden lg:block">
+          <div
+            style={{
+              top: HEADER_HEIGHT + barHeight + 24,
+              maxHeight: `calc(100vh - ${HEADER_HEIGHT + barHeight + 48}px)`,
+            }}
+            className="no-scrollbar sticky overflow-y-auto overscroll-contain"
+          >
+            <AnimatePresence>
+              {pastCards && (
+                <ShopSidebar
+                  items={categories}
+                  active={activeCat}
+                  counts={isLoading ? undefined : categoryCounts.counts}
+                  total={isLoading ? undefined : categoryCounts.total}
+                  onSelect={selectCategory}
+                />
+              )}
+            </AnimatePresence>
           </div>
-        )}
-        {isLoading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="h-8 w-8 animate-spin text-brand" />
-          </div>
-        ) : filtered.length > 0 ? (
-          <ProductGrid items={filtered as any} />
-        ) : (
-          <div className="rounded-2xl border-2 border-dashed py-20 text-center text-ink-soft">
-            Aucun produit ne correspond à votre recherche.
-          </div>
-        )}
+        </aside>
+
+        <div className="min-w-0">
+          {isError && (
+            <div className="rounded-xl border border-accent-red/30 bg-accent-red/5 px-4 py-3 text-sm font-semibold text-accent-red">
+              Erreur de chargement. Veuillez réessayer.
+            </div>
+          )}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="h-8 w-8 animate-spin text-brand" />
+            </div>
+          ) : filtered.length > 0 ? (
+            <ProductGrid items={filtered as any} />
+          ) : (
+            <div className="rounded-2xl border-2 border-dashed py-20 text-center text-ink-soft">
+              Aucun produit ne correspond à votre recherche.
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Texte SEO + maillage interne : visible uniquement sur une catégorie précise.

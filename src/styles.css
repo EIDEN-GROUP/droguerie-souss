@@ -8,19 +8,20 @@
  * Indigo #2F378D primary · #202560 deep · #272D74 hover
  * Periwinkle #8E93C3 · Mist #DDDFEC · Indigo-50 #F3F3F8 surface
  * Ink #30313D · Ink-soft #757783 · Error #B8001F
- * Type: Fraunces (display), Inter (body), IBM Plex Mono (labels)
+ * Type: DM Serif Display 400 (titres), Manrope 400-800 (texte, navigation, boutons,
+ * prix, libelles et tout le reste de l'interface)
  */
 
 @theme {
-  --font-display: "Fraunces", "Iowan Old Style", Georgia, serif;
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "IBM Plex Mono", "SFMono-Regular", Menlo, monospace;
+  --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
 
   --color-brand-secondary: #202560;
   --color-brand: #2f378d;
-  --color-brand-foreground: #ffffff;
+  --color-brand-foreground: #f2f2f2;
   --color-brand-dark: #272d74;
   --color-accent-red: #B8001F;
+  --color-dark-red: #790014;
   --color-accent-red-foreground: #ffffff;
   --color-sky: #8e93c3;
   --color-mint: #dddfec;
@@ -61,7 +62,7 @@
 
 :root {
   --radius: 0.625rem;
-  --background: #ffffff;
+  --background: #fff;
   --foreground: #30313d;
   --card: #ffffff;
   --card-foreground: #30313d;
@@ -75,7 +76,7 @@
   --muted-foreground: #757783;
   --accent: #dddfec;
   --accent-foreground: #30313d;
-  --destructive: #B8001F;
+  --destructive: #b8001f;
   --destructive-foreground: #ffffff;
   --border: #e0e1ee;
   --input: #e0e1ee;
@@ -89,8 +90,6 @@
   html {
     scroll-behavior: smooth;
   }
-  /* Lenis lisse deja le defilement image par image : le lissage CSS s'y ajouterait a
-     chaque deplacement et le rendrait saccade. */
   html.lenis {
     scroll-behavior: auto;
   }
@@ -99,6 +98,10 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /* DM Serif Display n'existe qu'en 400 : sans ceci, les `font-bold` des titres
+       produiraient un faux gras (traits epaissis par le navigateur). Manrope a ses
+       vraies graisses jusqu'a 800, il n'est pas concerne. */
+    font-synthesis-weight: none;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);

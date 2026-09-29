@@ -19,6 +19,8 @@ export const BUSINESS = {
   email: "contact@soussdroguerie.com",
   address: "Bd Mohamed V, Q.I. Tassila III, N°29, Dcheira, Agadir 80360, Maroc",
   mapsUrl: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
+  /** Coordonnées GPS du dépôt (celles du lien Maps ci-dessus et du balisage schema.org). */
+  geo: { latitude: 30.3830705, longitude: -9.5184337 },
   /** Délai de réponse/devis officiel, partout le même. */
   quoteSla: "48h ouvrées",
   quoteSlaShort: "48h",

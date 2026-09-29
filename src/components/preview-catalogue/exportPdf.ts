@@ -7,7 +7,7 @@ import { PAGE_H, PAGE_W } from "./pages";
  * réelle, on les photographie une à une, puis on les empile dans un PDF A4.
  *
  * Ce qui a été optimisé (le premier rendu pouvait prendre plusieurs minutes) :
- *  - `skipFonts: true` : les polices (Fraunces, Inter, IBM Plex Mono) sont
+ *  - `skipFonts: true` : les polices (DM Serif Display, Manrope) sont
  *    déjà chargées par la page. Sans cette option, html-to-image reparsait
  *    toutes les feuilles de style et ré-encastrait les fichiers de police sur
  *    CHAQUE feuille - c'était le poste de dépense dominant.

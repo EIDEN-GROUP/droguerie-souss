@@ -30,17 +30,11 @@ import storyImg from "@/assets/1.jpg";
 import zoneImg from "@/assets/22.jpg";
 import heroImg from "@/assets/hero-1.jpg";
 
-const DESCRIPTION =
-  "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1992 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
-
-/** Fiche établissement pour les moteurs de recherche : c'est elle qui alimente le panneau
- *  local de Google (adresse, horaires, zone desservie). */
+const DESCRIPTION = "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1992 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "HardwareStore",
   name: "Souss Droguerie SARL",
-  // Le panneau local et la recherche associent l'orthographe courante à
-  // « Droguerie Souss » : les deux noms désignent le même dépôt.
   alternateName: ALTERNATE_NAME,
   foundingDate: "1992",
   slogan: "Votre droguerie de matériaux de construction à Agadir depuis 1992",
@@ -48,7 +42,6 @@ const structuredData = {
   image: `${SITE_URL}/logo.png`,
   hasMap: "https://maps.app.goo.gl/q54qmxeEv752bJMTA",
   sameAs: ["https://maps.app.goo.gl/q54qmxeEv752bJMTA"],
-  // Coordonnées GPS réelles du dépôt (extraites du lien Google Maps de la marque).
   geo: {
     "@type": "GeoCoordinates",
     latitude: 30.3830705,
@@ -68,10 +61,7 @@ const structuredData = {
     postalCode: "80360",
     addressCountry: "MA",
   },
-  // Zones desservies : source unique (@/lib/contact) partagée avec l'accueil.
   areaServed: [...AREA_SERVED],
-  // Horaires synchronisés avec la page /contact (coupure méridienne) : Google
-  // sanctionne les divergences NAP/horaires entre page visible et balisage.
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -105,7 +95,6 @@ export const Route = createFileRoute("/a-propos")({
   head: () =>
     seo({
       title: "À propos | Souss Droguerie, droguerie à Agadir depuis 1992",
-      // DESCRIPTION dépasse 155 caractères : on le tronque proprement (coupe sur mot).
       description: descriptionFrom(DESCRIPTION),
       path: "/a-propos",
       scripts: [
@@ -161,11 +150,6 @@ const engagements = [
   },
 ];
 
-/** Compteur qui s'anime à l'entrée dans le viewport, une seule fois.
- *
- *  L'état part de la valeur finale, pas de zéro : c'est elle qui est rendue côté serveur,
- *  donc celle que lisent les crawlers et les visiteurs sans JS. Le décompte ne repart de
- *  zéro qu'au moment où le bloc entre réellement dans le viewport, côté client. */
 function Counter({ to, suffix }: { to: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
@@ -192,10 +176,6 @@ function Counter({ to, suffix }: { to: number; suffix: string }) {
 }
 
 const EASE = [0.22, 1, 0.36, 1] as const;
-
-/** Photo qui s'ouvre en glissant (rideau lateral) a l'entree dans l'ecran, puis derive
- *  legerement au defilement. Plus haute que son cadre pour que la derive ne decouvre
- *  jamais de bord. */
 function RevealImage({ src, alt, from }: { src: string; alt: string; from: "left" | "right" }) {
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
@@ -228,7 +208,6 @@ function RevealImage({ src, alt, from }: { src: string; alt: string; from: "left
   );
 }
 
-/** Surtitre a filet rouge des sections texte + image, le filet se tracant a l'entree. */
 function Kicker({ children }: { children: React.ReactNode }) {
   return (
     <div className="inline-flex items-center gap-2">
@@ -252,7 +231,6 @@ function Kicker({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** Apparition en cascade des blocs d'une colonne de texte. */
 const stagger = {
   hidden: {},
   shown: { transition: { staggerChildren: 0.12, delayChildren: 0.2 } },
@@ -272,41 +250,7 @@ function APropos() {
         reconnues et un accompagnement technique à chaque étape de votre projet.
       </PageHero>
 
-      <script
-        type="application/ld+json"
-        // Données de balisage : la chaîne est construite ici, aucune entrée utilisateur.
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-      />
-
-      {/* Chiffres clés : centres, pastille ronde sombre, chiffre en serif, libelle discret. */}
-      <section className="container-x py-16 md:py-24">
-        <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{ duration: 0.7, delay: i * 0.12, ease: EASE }}
-              className="group flex flex-col items-center text-center"
-            >
-              <motion.span
-                initial={{ scale: 0.5, opacity: 0 }}
-                whileInView={{ scale: 1, opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.1 + i * 0.12, ease: EASE }}
-                className="grid h-16 w-16 place-items-center rounded-full bg-brand-secondary text-paper transition duration-500 group-hover:-translate-y-1 sm:h-[4.5rem] sm:w-[4.5rem]"
-              >
-                <s.icon className="h-6 w-6" strokeWidth={1.5} />
-              </motion.span>
-              <p className="mt-4 font-display text-3xl font-semibold tabular-nums text-ink sm:text-4xl">
-                <Counter to={s.value} suffix={s.suffix} />
-              </p>
-              <p className="mt-1.5 text-sm text-ink-soft">{s.label}</p>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
 
       {/* Notre histoire */}
       <section className="container-x py-16 md:py-24">
@@ -366,6 +310,38 @@ function APropos() {
               </Link>
             </motion.div>
           </motion.div>
+        </div>
+      </section>
+
+       {/* Chiffres clés : centres, pastille ronde sombre, chiffre en serif, libelle discret. */}
+      <section className="bg-brand-foreground">
+        <div className="container-x py-10">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-4">
+            {stats.map((s, i) => (
+              <motion.div
+                key={s.label}
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }}
+                transition={{ duration: 0.7, delay: i * 0.12, ease: EASE }}
+                className="group flex flex-col items-center text-center"
+              >
+                <motion.span
+                  initial={{ scale: 0.5, opacity: 0 }}
+                  whileInView={{ scale: 1, opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.7, delay: 0.1 + i * 0.12, ease: EASE }}
+                  className="grid h-16 w-16 place-items-center rounded-full bg-brand-secondary text-paper transition duration-500 group-hover:-translate-y-1 sm:h-[4.5rem] sm:w-[4.5rem]"
+                >
+                  <s.icon className="h-6 w-6" strokeWidth={1.5} />
+                </motion.span>
+                <p className="mt-4 font-display text-3xl font-semibold tabular-nums text-ink sm:text-4xl">
+                  <Counter to={s.value} suffix={s.suffix} />
+                </p>
+                <p className="mt-1.5 text-sm text-ink-soft">{s.label}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </section>
 

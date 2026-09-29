@@ -4,8 +4,6 @@ import {
   ChevronRight,
   Gift,
   Heart,
-  Minus,
-  Plus,
   ShoppingBag,
   Truck,
   ShieldCheck,
@@ -16,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { Layout } from "@/components/Layout";
 import { ProductGrid } from "@/components/ProductGrid";
+import { QuantityInput } from "@/components/QuantityInput";
 import { SectionHeader } from "@/components/SectionHeader";
 import { mapDbProduct } from "@/lib/adminStore";
 import { getProduct, getProducts } from "@/lib/api/products";
@@ -322,21 +321,7 @@ function ProductDetailContent({ product, products }: { product: Product; product
             )}
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
-              <div className="flex items-center rounded-full border">
-                <button
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                  className="grid h-11 w-11 place-items-center hover:bg-mint rounded-l-full"
-                >
-                  <Minus className="h-4 w-4" />
-                </button>
-                <span className="w-10 text-center font-bold">{qty}</span>
-                <button
-                  onClick={() => setQty(qty + 1)}
-                  className="grid h-11 w-11 place-items-center hover:bg-mint rounded-r-full"
-                >
-                  <Plus className="h-4 w-4" />
-                </button>
-              </div>
+              <QuantityInput size="lg" value={qty} onChange={setQty} />
               <button
                 onClick={() => toggleFavorite(product.id)}
                 className={`order-2 grid h-12 w-12 shrink-0 place-items-center rounded-full border transition sm:order-none ${
