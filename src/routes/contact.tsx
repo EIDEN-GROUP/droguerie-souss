@@ -7,13 +7,11 @@ import { PageHero } from "@/components/PageHero";
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SplitReveal } from "@/components/motion/SplitReveal";
-import heroImg from "@/assets/collection-bath.jpg";
+import heroImg from "@/assets/contact-hero.png";
 import { submitContact } from "@/lib/api/contact";
 import { BUSINESS } from "@/lib/contact";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 
-/** Questions affichées telles quelles plus bas : le balisage FAQPage ci-dessous
- *  reprend exactement ces textes (exigence Google pour les résultats enrichis). */
 const FAQS = [
   {
     q: "Livrez-vous en dehors d'Agadir ?",

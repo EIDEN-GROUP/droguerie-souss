@@ -28,7 +28,7 @@ import { seo, jsonLd, canonical, descriptionFrom, ALTERNATE_NAME, SITE_URL } fro
 import { AREA_SERVED } from "@/lib/contact";
 import storyImg from "@/assets/1.jpg";
 import zoneImg from "@/assets/22.jpg";
-import heroImg from "@/assets/hero-1.jpg";
+import heroImg from "@/assets/about-hero.png";
 
 const DESCRIPTION = "Souss Droguerie (Droguerie Souss), droguerie de matériaux de construction à Agadir depuis 1992 : carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie pour toute la région Souss-Massa.";
 const structuredData = {

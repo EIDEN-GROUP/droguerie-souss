@@ -24,7 +24,7 @@ import {
   Search,
   SlidersHorizontal,
 } from "lucide-react";
-import heroImg from "@/assets/hero-3.jpg";
+import heroImg from "@/assets/categorie-hero.png";
 
 const searchSchema = z.object({
   cat: z.string().optional(),

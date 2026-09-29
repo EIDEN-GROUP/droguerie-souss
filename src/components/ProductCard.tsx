@@ -55,13 +55,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           />
         </div>
 
-        {badge && (
+        {/* {badge && (
           <span
             className={`pointer-events-none absolute left-3 top-3 z-[2] rounded-full px-2 py-1 text-[10px] font-semibold @[15rem]:left-4 @[15rem]:top-4 @[15rem]:px-2.5 @[15rem]:text-xs ${badge.className}`}
           >
             {badge.label}
           </span>
-        )}
+        )} */}
 
         <button
           type="button"

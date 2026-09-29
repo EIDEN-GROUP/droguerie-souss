@@ -6,7 +6,7 @@ import { PageHero } from "@/components/PageHero";
 import { CatalogueCard } from "@/components/catalogue/CatalogueCard";
 import { catalogueEditions } from "@/lib/catalogue";
 import { seo } from "@/lib/seo";
-import heroImg from "@/assets/promo-collection.jpg";
+import heroImg from "@/assets/catalogue-hero.png";
 
 export const Route = createFileRoute("/catalogue/")({
   component: Catalogue,
