@@ -46,6 +46,8 @@ export type CatalogueEdition = {
   description: string;
   cover?: string;
   isNew?: boolean;
+  /** Carte masquée de /catalogue (l'édition reste accessible en direct). */
+  hidden?: boolean;
 } & (
   | { format: "flipbook"; pages: string[]; pdf?: never }
   | { format: "pdf"; pages?: never; pdf: { url: string; size: string; pageCount: number } }
@@ -78,6 +80,18 @@ export const catalogueEditions: CatalogueEdition[] = [
     format: "interactive",
   },
   {
+    /** Doit rester aligné sur la route `src/routes/catalogue/daoud-building.tsx`. */
+    slug: "daoud-building",
+    year: 2026,
+    title: "Daoud Building — Catalogue 2026",
+    description:
+      "Le catalogue feuilletable Daoud Building : agglos, planchers, poutrelles, pavés, bordures, revêtement du sol et attestations.",
+    /** La vraie couverture du catalogue, fournie par le client. */
+    cover: "/catalogue-daoud/daoudbuilding(front-cover).jpg",
+    isNew: true,
+    format: "interactive",
+  },
+  {
     slug: "2026",
     year: 2026,
     title: "Catalogue 2026",
@@ -85,6 +99,7 @@ export const catalogueEditions: CatalogueEdition[] = [
       "L'édition complète : carrelage, marbre, zellige, sanitaire, peinture et second œuvre.",
     cover: coverOf("2026"),
     isNew: true,
+    hidden: true,
     format: "pdf",
     pdf: {
       /** Fichier servi tel quel depuis `public/catalogue/`. */
@@ -101,6 +116,7 @@ export const catalogueEditions: CatalogueEdition[] = [
       "Matériaux de construction et solutions techniques : gros œuvre, étanchéité, isolation et finitions.",
     cover: coverOf("souss-droguerie-2026"),
     isNew: true,
+    hidden: true,
     format: "pdf",
     pdf: {
       url: "/catalogue/catalogue-souss-droguerie-2026.pdf",
@@ -111,6 +127,9 @@ export const catalogueEditions: CatalogueEdition[] = [
 ];
 
 export const findEdition = (slug: string) => catalogueEditions.find((e) => e.slug === slug);
+
+/** Éditions visibles sur /catalogue (les masquées restent accessibles en direct). */
+export const visibleEditions = catalogueEditions.filter((e) => !e.hidden);
 
 /** Ratio A4 portrait : dimensions de référence d'une page, StPageFlip s'étire ensuite. */
 export const PAGE_WIDTH = 550;

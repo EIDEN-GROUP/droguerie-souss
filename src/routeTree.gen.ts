@@ -26,6 +26,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 import { Route as CatalogueInteractifRouteImport } from './routes/catalogue/interactif'
 import { Route as CatalogueDuneDistributionRouteImport } from './routes/catalogue/dune-distribution'
+import { Route as CatalogueDaoudBuildingRouteImport } from './routes/catalogue/daoud-building'
 import { Route as CatalogueSlugRouteImport } from './routes/catalogue/$slug'
 import { Route as AdminSubcategoriesRouteImport } from './routes/admin/subcategories'
 import { Route as AdminProductsRouteImport } from './routes/admin/products'
@@ -120,6 +121,11 @@ const CatalogueDuneDistributionRoute =
     path: '/catalogue/dune-distribution',
     getParentRoute: () => rootRouteImport,
   } as any)
+const CatalogueDaoudBuildingRoute = CatalogueDaoudBuildingRouteImport.update({
+  id: '/catalogue/daoud-building',
+  path: '/catalogue/daoud-building',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CatalogueSlugRoute = CatalogueSlugRouteImport.update({
   id: '/catalogue/$slug',
   path: '/catalogue/$slug',
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/admin/products': typeof AdminProductsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue/daoud-building': typeof CatalogueDaoudBuildingRoute
   '/catalogue/dune-distribution': typeof CatalogueDuneDistributionRoute
   '/catalogue/interactif': typeof CatalogueInteractifRoute
   '/product/$id': typeof ProductIdRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/admin/products': typeof AdminProductsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue/daoud-building': typeof CatalogueDaoudBuildingRoute
   '/catalogue/dune-distribution': typeof CatalogueDuneDistributionRoute
   '/catalogue/interactif': typeof CatalogueInteractifRoute
   '/product/$id': typeof ProductIdRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/admin/products': typeof AdminProductsRoute
   '/admin/subcategories': typeof AdminSubcategoriesRoute
   '/catalogue/$slug': typeof CatalogueSlugRoute
+  '/catalogue/daoud-building': typeof CatalogueDaoudBuildingRoute
   '/catalogue/dune-distribution': typeof CatalogueDuneDistributionRoute
   '/catalogue/interactif': typeof CatalogueInteractifRoute
   '/product/$id': typeof ProductIdRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/subcategories'
     | '/catalogue/$slug'
+    | '/catalogue/daoud-building'
     | '/catalogue/dune-distribution'
     | '/catalogue/interactif'
     | '/product/$id'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/subcategories'
     | '/catalogue/$slug'
+    | '/catalogue/daoud-building'
     | '/catalogue/dune-distribution'
     | '/catalogue/interactif'
     | '/product/$id'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/admin/products'
     | '/admin/subcategories'
     | '/catalogue/$slug'
+    | '/catalogue/daoud-building'
     | '/catalogue/dune-distribution'
     | '/catalogue/interactif'
     | '/product/$id'
@@ -317,6 +329,7 @@ export interface RootRouteChildren {
   PreviewCatalogueRoute: typeof PreviewCatalogueRoute
   SecurityRoute: typeof SecurityRoute
   CatalogueSlugRoute: typeof CatalogueSlugRoute
+  CatalogueDaoudBuildingRoute: typeof CatalogueDaoudBuildingRoute
   CatalogueDuneDistributionRoute: typeof CatalogueDuneDistributionRoute
   CatalogueInteractifRoute: typeof CatalogueInteractifRoute
   ProductIdRoute: typeof ProductIdRoute
@@ -444,6 +457,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogueDuneDistributionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/catalogue/daoud-building': {
+      id: '/catalogue/daoud-building'
+      path: '/catalogue/daoud-building'
+      fullPath: '/catalogue/daoud-building'
+      preLoaderRoute: typeof CatalogueDaoudBuildingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/catalogue/$slug': {
       id: '/catalogue/$slug'
       path: '/catalogue/$slug'
@@ -523,6 +543,7 @@ const rootRouteChildren: RootRouteChildren = {
   PreviewCatalogueRoute: PreviewCatalogueRoute,
   SecurityRoute: SecurityRoute,
   CatalogueSlugRoute: CatalogueSlugRoute,
+  CatalogueDaoudBuildingRoute: CatalogueDaoudBuildingRoute,
   CatalogueDuneDistributionRoute: CatalogueDuneDistributionRoute,
   CatalogueInteractifRoute: CatalogueInteractifRoute,
   ProductIdRoute: ProductIdRoute,

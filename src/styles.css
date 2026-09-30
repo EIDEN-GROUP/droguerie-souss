@@ -12,6 +12,38 @@
  * prix, libelles et tout le reste de l'interface)
  */
 
+/* TeX Gyre Bonum (Bookman) auto-hébergé : corps du catalogue Daoud Building.
+ * Utilisé uniquement via --font-db-serif, donc téléchargé seulement sur la
+ * route du catalogue Daoud. Licence GUST (LPPL). */
+@font-face {
+  font-family: "Bonum";
+  src: url("/fonts/texgyrebonum-regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bonum";
+  src: url("/fonts/texgyrebonum-italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bonum";
+  src: url("/fonts/texgyrebonum-bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Bonum";
+  src: url("/fonts/texgyrebonum-bolditalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
 @theme {
   --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
   --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
@@ -40,6 +72,15 @@
   --font-dune: "Montserrat", -apple-system, "Segoe UI", sans-serif;
   --font-dune-serif: "Roca One", Georgia, serif;
   --font-dune-arabic: "Felfel", "Segoe UI", sans-serif;
+
+  /* Daoud Building : identité du catalogue daoud-building.
+   * Tokens isolés : rien de la charte Souss n'en dépend. */
+  --color-db-blue: #37619a;
+  --color-db-deep: #24406a;
+  --color-db-ink: #201c18;
+  --color-db-red: #e92529;
+  --color-db-paper: #fffaf6;
+  --font-db-serif: "Bonum", Georgia, "Times New Roman", serif;
 
   --shadow-card: 0 4px 16px rgba(47, 55, 141, 0.1), 0 2px 4px rgba(48, 49, 61, 0.06);
   --shadow-elevated: 0 16px 48px rgba(47, 55, 141, 0.16), 0 4px 12px rgba(48, 49, 61, 0.08);

@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { PageHero } from "@/components/PageHero";
 import { CatalogueCard } from "@/components/catalogue/CatalogueCard";
-import { catalogueEditions } from "@/lib/catalogue";
+import { visibleEditions } from "@/lib/catalogue";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 import heroImg from "@/assets/catalogue-hero.png";
 
@@ -29,8 +29,8 @@ export const Route = createFileRoute("/catalogue/")({
           "@context": "https://schema.org",
           "@type": "ItemList",
           name: "Catalogues Souss Droguerie",
-          numberOfItems: catalogueEditions.length,
-          itemListElement: catalogueEditions.map((e, i) => ({
+          numberOfItems: visibleEditions.length,
+          itemListElement: visibleEditions.map((e, i) => ({
             "@type": "ListItem",
             position: i + 1,
             name: e.title,
@@ -52,7 +52,7 @@ function Catalogue() {
       <section className="border-y bg-cream py-12 md:py-16">
         <div className="container-x">
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {catalogueEditions.map((edition, i) => (
+            {visibleEditions.map((edition, i) => (
               <CatalogueCard key={edition.slug} edition={edition} index={i} />
             ))}
           </div>

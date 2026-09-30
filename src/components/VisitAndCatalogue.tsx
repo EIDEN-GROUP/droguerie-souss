@@ -8,7 +8,7 @@ import { BUSINESS } from "@/lib/contact";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
 type PdfEdition = Extract<CatalogueEdition, { format: "pdf" }>;
-const pdfEdition = catalogueEditions.find((e): e is PdfEdition => e.format === "pdf");
+const pdfEdition = catalogueEditions.find((e): e is PdfEdition => e.format === "pdf" && !e.hidden);
 
 const button =
   "group/btn inline-flex items-center gap-2 rounded-full border border-ink/70 px-6 py-3 text-sm font-bold text-ink transition hover:bg-ink hover:text-paper";
