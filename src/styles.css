@@ -18,10 +18,9 @@
 
   --color-brand-secondary: #202560;
   --color-brand: #2f378d;
-  --color-brand-foreground: #f2f2f2;
+  --color-brand-foreground: #ffffff;
   --color-brand-dark: #272d74;
   --color-accent-red: #B8001F;
-  --color-dark-red: #790014;
   --color-accent-red-foreground: #ffffff;
   --color-sky: #8e93c3;
   --color-mint: #dddfec;
@@ -29,6 +28,18 @@
   --color-ink-soft: #757783;
   --color-paper: #ffffff;
   --color-cream: #f3f3f8;
+
+  /* Dune Distribution (Laâyoune) : identité du catalogue dune-distribution.
+   * Tokens isolés : rien de la charte Souss n'en dépend. */
+  --color-dune-blue: #26529c;
+  --color-dune-deep: #1a3a73;
+  --color-dune-orange: #f9a51b;
+  --color-dune-ink: #34312e;
+  --color-dune-sand: #f6f2e9;
+  --font-dune-display: "League Gothic", "Arial Narrow", sans-serif;
+  --font-dune: "Montserrat", -apple-system, "Segoe UI", sans-serif;
+  --font-dune-serif: "Roca One", Georgia, serif;
+  --font-dune-arabic: "Felfel", "Segoe UI", sans-serif;
 
   --shadow-card: 0 4px 16px rgba(47, 55, 141, 0.1), 0 2px 4px rgba(48, 49, 61, 0.06);
   --shadow-elevated: 0 16px 48px rgba(47, 55, 141, 0.16), 0 4px 12px rgba(48, 49, 61, 0.08);

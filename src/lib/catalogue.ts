@@ -66,6 +66,18 @@ export const catalogueEditions: CatalogueEdition[] = [
     format: "interactive",
   },
   {
+    /** Doit rester aligné sur la route `src/routes/catalogue/dune-distribution.tsx`. */
+    slug: "dune-distribution",
+    year: 2026,
+    title: "Dune Distribution — Catalogue 2026",
+    description:
+      "Le catalogue feuilletable Dune Distribution (Laâyoune) : céramique, ciment-colle, sanitaire, peinture et énergie solaire.",
+    /** La vraie couverture du catalogue, fournie par le client. */
+    cover: "/catalogue-dune/front-cover.png",
+    isNew: true,
+    format: "interactive",
+  },
+  {
     slug: "2026",
     year: 2026,
     title: "Catalogue 2026",
