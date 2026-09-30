@@ -9,7 +9,6 @@ import {
   Download,
   List,
   Maximize2,
-  Printer,
   Search,
   Share2,
   Volume2,
@@ -40,6 +39,8 @@ import {
 } from "@/data/dune-catalogue";
 import { useFlipSound } from "@/components/preview-catalogue/useFlipSound";
 import { exportDuneCataloguePdf } from "./duneExport";
+import { Toaster } from "@/components/ui/sonner";
+import { shareLink } from "@/lib/share";
 
 const TITLE = "CATALOGUE DUNE DISTRIBUTION";
 
@@ -231,18 +232,7 @@ export default function DuneFlipbook({ embedded = false }: { embedded?: boolean 
   const SHEETS =
     "repeating-linear-gradient(to right, rgba(0,0,0,.16) 0 1px, rgba(255,255,255,.92) 1px 3px)";
 
-  const share = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: TITLE, url });
-        return;
-      } catch {
-        /* annulé */
-      }
-    }
-    await navigator.clipboard?.writeText(url);
-  };
+  const share = () => shareLink(TITLE);
 
   const downloadPdf = async () => {
     const stage = printRef.current;
@@ -417,15 +407,6 @@ export default function DuneFlipbook({ embedded = false }: { embedded?: boolean 
           </button>
           <button
             type="button"
-            onClick={() => window.print()}
-            title="Imprimer"
-            aria-label="Imprimer"
-            className={toolBtn}
-          >
-            <Printer className="h-[18px] w-[18px]" />
-          </button>
-          <button
-            type="button"
             title={pdf ? `Export en cours… ${pdf.done}/${pdf.total}` : "Télécharger le PDF"}
             aria-label="Télécharger le PDF"
             onClick={downloadPdf}
@@ -513,6 +494,7 @@ export default function DuneFlipbook({ embedded = false }: { embedded?: boolean 
         </div>
       )}
 
+      <Toaster position="bottom-center" />
       {finder && (
         <div className="absolute right-5 top-14 z-30 w-[min(320px,90vw)] rounded-lg border border-dune-ink/10 bg-paper p-3 shadow-xl">
           <div className="relative">

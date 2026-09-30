@@ -9,7 +9,6 @@ import {
   Download,
   List,
   Maximize2,
-  Printer,
   Search,
   Share2,
   Volume2,
@@ -17,6 +16,8 @@ import {
   X,
   ZoomIn,
 } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
+import { shareLink } from "@/lib/share";
 import { products, type Product } from "@/data/products";
 import {
   BackCover,
@@ -495,18 +496,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
   const SHEETS =
     "repeating-linear-gradient(to right, rgba(0,0,0,.16) 0 1px, rgba(255,255,255,.92) 1px 3px)";
 
-  const share = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: TITLE, url });
-        return;
-      } catch {
-        /* annulé par l'utilisateur */
-      }
-    }
-    await navigator.clipboard?.writeText(url);
-  };
+  const share = () => shareLink(TITLE);
 
   const downloadPdf = async () => {
     const stage = printRef.current;
@@ -662,9 +652,6 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
           <ToolButton label="Partager" onClick={share}>
             <Share2 className="h-[18px] w-[18px]" />
           </ToolButton>
-          <ToolButton label="Imprimer" onClick={() => window.print()}>
-            <Printer className="h-[18px] w-[18px]" />
-          </ToolButton>
           <ToolButton
             label={pdf ? `Export en cours… ${pdf.done}/${pdf.total}` : "Télécharger le PDF"}
             onClick={downloadPdf}
@@ -746,6 +733,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
         </div>
       )}
 
+      <Toaster position="bottom-center" />
       {finder && (
         <div className="absolute right-5 top-14 z-30 w-[min(320px,90vw)] rounded-lg border border-border bg-paper p-3 shadow-xl">
           <div className="relative">

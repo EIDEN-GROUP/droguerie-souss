@@ -117,6 +117,13 @@ export function useFlipSound(enabled: boolean) {
   const ctxRef = useRef<AudioContext | null>(null);
   const busRef = useRef<GainNode | null>(null);
   const clipsRef = useRef<Clip[]>([]);
+  /**
+   * Le rappel est stable : react-pageflip capture `onFlip` une fois au montage.
+   * Sans ça, basculer le son ne changeait rien, le livre continuant d'appeler
+   * la fermeture initiale.
+   */
+  const enabledRef = useRef(enabled);
+  enabledRef.current = enabled;
 
   // Le contexte audio ne peut naître que d'un geste utilisateur.
   useEffect(() => {
@@ -166,7 +173,7 @@ export function useFlipSound(enabled: boolean) {
   }, [enabled]);
 
   return useCallback(() => {
-    if (!enabled) return;
+    if (!enabledRef.current) return;
     const ctx = ctxRef.current;
     const bus = busRef.current;
     if (!ctx || !bus || ctx.state !== "running") return;
@@ -242,5 +249,5 @@ export function useFlipSound(enabled: boolean) {
     tap.connect(tapLp).connect(tapGain).connect(bus);
     tap.start(tapAt);
     tap.stop(tapAt + tapDur);
-  }, [enabled]);
+  }, []);
 }
