@@ -101,7 +101,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
                 addToCart(product, qty);
                 setQty(1);
               }}
-              className="relative z-[2] h-9 w-full rounded-full bg-dark-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red @[15rem]:w-auto @[15rem]:flex-1 @[15rem]:text-sm"
+              className="relative z-[2] h-9 w-full rounded-full bg-accent-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red/90 @[15rem]:w-auto @[15rem]:flex-1 @[15rem]:text-sm"
             >
               Au panier
             </button>
