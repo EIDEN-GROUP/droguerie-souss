@@ -116,16 +116,17 @@ export function ProductCard({
             className="justify-between border-border bg-paper @[18rem]:w-[6.5rem] @[18rem]:shrink-0"
           />
 
-          <button
-            type="button"
-            onClick={() => {
-              addToCart(product, qty);
-              setQty(1);
-            }}
-            className="h-9 w-full cursor-pointer whitespace-nowrap rounded-full bg-accent-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red/85 @[18rem]:w-auto @[18rem]:flex-1 @[21rem]:text-sm"
-          >
-            Ajouter au panier
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                addToCart(product, qty);
+                setQty(1);
+              }}
+              className="relative z-[2] h-9 w-full rounded-full bg-accent-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red/90 @[15rem]:w-auto @[15rem]:flex-1 @[15rem]:text-sm"
+            >
+              Au panier
+            </button>
+          </div>
         </div>
       </div>
     </Reveal>
