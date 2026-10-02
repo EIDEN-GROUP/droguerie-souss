@@ -7,23 +7,14 @@ import { AuthDialog } from "./AuthDialog";
 import { ConsentBanner } from "./ConsentBanner";
 import { PageLoader } from "./Loader";
 import { FloatingActions } from "./FloatingActions";
+import { SideActions } from "./SideActions";
 import { IntroContext } from "./IntroContext";
 import { useCustomerAuth } from "@/lib/customerAuth";
 
 const SCROLL_KEYS = new Set([" ", "PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End"]);
 
-/** Passe a `true` des qu'une premiere page est affichee. Modifie seulement dans un effet
- *  (cote client) : le serveur et le premier rendu client restent donc d'accord. */
 let siteEntered = false;
 
-/** `overlayNav` : la page s'ouvre sur un bandeau sombre (premier enfant de `<main>`) qui
- *  passe sous l'en-tete ; celui-ci reste transparent tant qu'il le survole. Le bandeau doit
- *  reserver la hauteur de l'en-tete (h-20) dans son padding haut.
- *
- *  `videoIntro` (accueil) : a l'arrivee sur le site, pas d'ecran de chargement blanc - la
- *  video du hero en tient lieu. En-tete, boutons flottants et bandeau cookies attendent la
- *  fin de l'intro, et la page ne defile pas avant. En revenant a l'accueil depuis une autre
- *  page, l'ecran de chargement habituel s'affiche a la place. */
 export function Layout({
   children,
   overlayNav = false,
@@ -50,9 +41,6 @@ export function Layout({
     [playIntro, introDone, finish],
   );
 
-  // Bloque le defilement pendant l'intro sans toucher a `overflow` : la barre de
-  // defilement resterait masquee puis reapparaitrait, decalant toute la page. Les
-  // ecouteurs en capture passent aussi avant Lenis.
   useEffect(() => {
     if (introDone) return;
     const block = (e: Event) => {
@@ -80,6 +68,7 @@ export function Layout({
       <CartSidebar />
       <FavoritesSidebar />
       <AuthDialog />
+      {introDone && <SideActions />}
       {introDone && <FloatingActions />}
       {introDone && <ConsentBanner />}
     </IntroContext.Provider>

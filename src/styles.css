@@ -3,6 +3,9 @@
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
+/* Appareil piloté à la souris : pour les contenus révélés au survol, qui doivent rester
+ * visibles d'office sur écran tactile (panneaux de rayons de l'accueil). */
+@custom-variant can-hover (@media (hover: hover));
 
 /* Souss Droguerie brand palette (from brand_guide.html)
  * Indigo #2F378D primary · #202560 deep · #272D74 hover
@@ -48,6 +51,7 @@
   --font-display: "DM Serif Display", Georgia, "Times New Roman", serif;
   --font-sans: "Manrope", -apple-system, BlinkMacSystemFont, ui-sans-serif, system-ui, sans-serif;
 
+  --color-brand-night: #14173f;
   --color-brand-secondary: #202560;
   --color-brand: #2f378d;
   --color-brand-foreground: #ffffff;
@@ -197,6 +201,55 @@
     0 1px 2px rgb(0 0 0 / 0.65),
     0 3px 8px rgb(0 0 0 / 0.5),
     0 10px 32px rgb(0 0 0 / 0.45);
+}
+
+/* Bande sombre de l'accueil (à propos + rayons). Deux halos de couleur sur le fond, puis un
+ * treillis de zellige (étoile à huit branches) en `::before` et `::after`, chacun fondu
+ * vers son coin et très peu opaque : le fond vit sans gêner la lecture. */
+@utility section-dark {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: var(--color-brand-night);
+  background-image:
+    radial-gradient(60rem 38rem at 88% 0%, rgb(47 55 141 / 0.55), transparent 70%),
+    radial-gradient(48rem 34rem at 0% 100%, rgb(184 0 31 / 0.14), transparent 70%);
+  color: var(--color-paper);
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80' viewBox='0 0 80 80' fill='none' stroke='%23fff'%3E%3Cpath d='M20 20h40v40H20z'/%3E%3Cpath d='M40 11.7 68.3 40 40 68.3 11.7 40z'/%3E%3Cpath d='M0 40h11.7M68.3 40H80M40 0v11.7M40 68.3V80M0 8 8 0M72 0l8 8M80 72l-8 8M8 80 0 72'/%3E%3C/svg%3E");
+  }
+  &::before {
+    top: 0;
+    right: 0;
+    width: min(64rem, 85%);
+    height: 46rem;
+    background-size: 5rem;
+    opacity: 0.09;
+    mask-image: radial-gradient(ellipse at top right, #000 10%, transparent 70%);
+  }
+  &::after {
+    bottom: 0;
+    left: 0;
+    width: min(56rem, 85%);
+    height: 42rem;
+    background-size: 7.5rem;
+    opacity: 0.06;
+    mask-image: radial-gradient(ellipse at bottom left, #000 10%, transparent 70%);
+  }
+}
+
+/* Fines hachures diagonales, posées sur un aplat clair (bloc FAQ de l'accueil). */
+@utility bg-hatch {
+  background-image: repeating-linear-gradient(
+    135deg,
+    rgb(48 49 61 / 0.05) 0 1px,
+    transparent 1px 7px
+  );
 }
 
 @utility no-scrollbar {

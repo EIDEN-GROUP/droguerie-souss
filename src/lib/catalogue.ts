@@ -83,7 +83,7 @@ export const catalogueEditions: CatalogueEdition[] = [
     /** Doit rester aligné sur la route `src/routes/catalogue/daoud-building.tsx`. */
     slug: "daoud-building",
     year: 2026,
-    title: "Daoud Building — Catalogue 2026",
+    title: "Daoud Building Catalogue 2026",
     description:
       "Le catalogue feuilletable Daoud Building : agglos, planchers, poutrelles, pavés, bordures, revêtement du sol et attestations.",
     /** La vraie couverture du catalogue, fournie par le client. */

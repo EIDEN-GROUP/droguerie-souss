@@ -5,6 +5,9 @@ import { useMemo } from "react";
 import { categories as bundledCategories, categoryImage, type CategoryInfo } from "@/lib/products";
 import { useCategories } from "@/lib/adminStore";
 import { SectionHeader } from "./SectionHeader";
+import { CategoryShowcase } from "./CategoryShowcase";
+import { Reveal } from "./motion/Reveal";
+import { rise } from "./motion/reveals";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext,} from "@/components/ui/carousel";
 
 export function CategoryCardBody({
@@ -84,17 +87,27 @@ export function CategoriesSection({
 
   if (!isShop) {
     return (
-      <section className="py-10 px-3 bg-paper">
-        <SectionHeader kicker="Nos rayons" title="Toutes les catégories" animated />
-        <CategoryCardsCarousel items={items} />
-        <div className="mt-8 text-center">
+      <section className="pb-16 pt-6 md:pb-20">
+        <CategoryShowcase
+          items={items}
+          header={
+            <SectionHeader
+              kicker="Nos rayons"
+              title="Toutes les catégories"
+              align="left"
+              animated
+              onDark
+            />
+          }
+        />
+        <Reveal variants={rise({ y: 16, duration: 0.6 })} className="mt-10 px-3 text-center">
           <Link
             to="/categories"
-            className="inline-flex items-center gap-2 rounded-full border-2 border-ink px-6 py-3 font-bold uppercase tracking-wider transition hover:bg-ink hover:text-paper"
+            className="inline-flex items-center gap-2 rounded-full border-2 border-paper/70 px-6 py-3 font-bold uppercase tracking-wider text-paper transition hover:border-paper hover:bg-paper hover:text-ink"
           >
             Découvrir tous les produits <ArrowRight className="h-4 w-4" />
           </Link>
-        </div>
+        </Reveal>
       </section>
     );
   }

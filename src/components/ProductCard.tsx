@@ -1,9 +1,11 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "@/lib/products";
 import { useApp } from "@/lib/store";
+import { cn } from "@/lib/utils";
+import { Reveal } from "./motion/Reveal";
+import { rise } from "./motion/reveals";
 import { QuantityInput } from "./QuantityInput";
 
 /**
@@ -12,10 +14,22 @@ import { QuantityInput } from "./QuantityInput";
  *
  * Toute la carte mene a la fiche : un vrai lien etire sous les boutons, plutot qu'un clic
  * JavaScript sur la carte (ouverture dans un onglet, exploration). La carte est un conteneur
- * (`@container`) : sous 15rem de large (deux colonnes sur mobile), la quantite passe
- * au-dessus du bouton au lieu d'etre a cote.
+ * (`@container`) : sous 18rem de large, la quantite passe au-dessus du bouton au lieu d'etre
+ * a cote.
+ *
+ * `hoverActions` (accueil) : a la souris, quantite et bouton restent caches et montent sur le
+ * bas de la photo au survol de la carte (ou quand le clavier y entre). Sur ecran tactile,
+ * sans survol possible, ils restent affiches sous le prix.
  */
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+export function ProductCard({
+  product,
+  index = 0,
+  hoverActions = false,
+}: {
+  product: Product;
+  index?: number;
+  hoverActions?: boolean;
+}) {
   const { addToCart, toggleFavorite, favorites } = useApp();
   const [qty, setQty] = useState(1);
   const isFav = favorites.includes(product.id);
@@ -31,14 +45,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           : null;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-50px" }}
-      transition={{ duration: 0.5, delay: (index % 4) * 0.06 }}
+    <Reveal
+      margin="-50px"
+      variants={rise({ y: 24, duration: 0.5, delay: (index % 4) * 0.06 })}
       className="@container h-full"
     >
-      <div className="group relative flex h-full flex-col rounded-xl border border-border bg-paper p-3 transition duration-300 hover:border-transparent hover:shadow-[var(--shadow-elevated)] @[15rem]:p-4">
+      {/* Grille a une colonne : la photo et, en `hoverActions`, les boutons partagent la
+          premiere rangee - c'est ce qui pose les boutons sur le bas de la photo. */}
+      <div className="group relative grid h-full grid-cols-1 grid-rows-[auto_auto_auto_1fr_auto] rounded-xl border border-border bg-paper p-3 transition duration-300 hover:border-transparent hover:shadow-[var(--shadow-elevated)] @[15rem]:p-4">
         <Link
           to="/product/$id"
           params={{ id: product.id }}
@@ -46,7 +60,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           className="absolute inset-0 z-[1] rounded-xl"
         />
 
-        <div className="relative aspect-square overflow-hidden">
+        <div className="relative col-start-1 row-start-1 aspect-square overflow-hidden">
           <img
             src={product.image}
             alt={product.name}
@@ -78,36 +92,42 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           />
         </button>
 
-        <h3 className="mt-3 line-clamp-2 min-h-[2.5em] font-sans text-[13px] font-semibold leading-tight tracking-normal text-ink @[15rem]:text-sm">
+        <h3 className="col-start-1 row-start-2 mt-3 line-clamp-2 min-h-[2.5em] font-sans text-[13px] font-semibold leading-tight tracking-normal text-ink @[15rem]:text-sm">
           {product.name}
         </h3>
-        <p className="mt-1.5 truncate text-[11px] text-ink-soft @[15rem]:text-xs">
+        <p className="col-start-1 row-start-3 mt-1.5 truncate text-[11px] text-ink-soft @[15rem]:text-xs">
           {product.subcategory || product.category}
         </p>
 
-        <div className="mt-auto pt-3 @[15rem]:pt-4">
-          <p className="text-base font-bold text-ink @[15rem]:text-lg">Sur devis</p>
+        <p className="col-start-1 row-start-4 self-end pt-3 text-base font-bold text-ink @[15rem]:pt-4 @[15rem]:text-lg">
+          Sur devis
+        </p>
 
-          <div className="mt-3 flex flex-col gap-2 @[15rem]:flex-row @[15rem]:items-center">
-            <QuantityInput
-              value={qty}
-              onChange={setQty}
-              className="relative z-[2] justify-between border-border @[15rem]:w-[7rem] @[15rem]:shrink-0"
-            />
+        <div
+          className={cn(
+            "relative z-[2] col-start-1 row-start-5 mt-3 flex flex-col gap-2 @[18rem]:flex-row @[18rem]:items-center",
+            hoverActions &&
+              "can-hover:pointer-events-none can-hover:row-start-1 can-hover:mt-0 can-hover:translate-y-3 can-hover:self-end can-hover:rounded-2xl can-hover:bg-paper/90 can-hover:p-1.5 can-hover:opacity-0 can-hover:shadow-[var(--shadow-card)] can-hover:backdrop-blur-sm can-hover:transition can-hover:duration-300 can-hover:ease-out can-hover:group-focus-within:pointer-events-auto can-hover:group-focus-within:translate-y-0 can-hover:group-focus-within:opacity-100 can-hover:group-hover:pointer-events-auto can-hover:group-hover:translate-y-0 can-hover:group-hover:opacity-100 motion-reduce:transition-none",
+          )}
+        >
+          <QuantityInput
+            value={qty}
+            onChange={setQty}
+            className="justify-between border-border bg-paper @[18rem]:w-[6.5rem] @[18rem]:shrink-0"
+          />
 
-            <button
-              type="button"
-              onClick={() => {
-                addToCart(product, qty);
-                setQty(1);
-              }}
-              className="relative z-[2] h-9 w-full rounded-full bg-dark-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red @[15rem]:w-auto @[15rem]:flex-1 @[15rem]:text-sm"
-            >
-              Au panier
-            </button>
-          </div>
+          <button
+            type="button"
+            onClick={() => {
+              addToCart(product, qty);
+              setQty(1);
+            }}
+            className="h-9 w-full cursor-pointer whitespace-nowrap rounded-full bg-accent-red px-3 text-xs font-bold text-paper transition hover:bg-accent-red/85 @[18rem]:w-auto @[18rem]:flex-1 @[21rem]:text-sm"
+          >
+            Ajouter au panier
+          </button>
         </div>
       </div>
-    </motion.div>
+    </Reveal>
   );
 }

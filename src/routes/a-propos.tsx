@@ -1,35 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  animate,
-  motion,
-  useInView,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-} from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
   BadgeCheck,
-  Building2,
   Clock,
   HandCoins,
-  Handshake,
   MapPin,
-  Package,
   Phone,
   ShieldCheck,
   Users,
   Warehouse,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import { Layout } from "@/components/Layout";
 import { SectionHeader } from "@/components/SectionHeader";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { CtaBanner } from "@/components/CtaBanner";
 import { CategoryCardsCarousel } from "@/components/CategoriesSection";
+import { Counter } from "@/components/motion/Counter";
 import { SplitReveal } from "@/components/motion/SplitReveal";
 import { PageHero } from "@/components/PageHero";
 import { StackedCards } from "@/components/StackedCards";
+import { ABOUT, aboutStats } from "@/lib/about";
 import { categories } from "@/lib/products";
 import { seo, jsonLd, canonical, descriptionFrom, ALTERNATE_NAME, SITE_URL } from "@/lib/seo";
 import { AREA_SERVED } from "@/lib/contact";
@@ -118,39 +110,6 @@ export const Route = createFileRoute("/a-propos")({
     }),
 });
 
-/** Chiffres cles : un surtitre, le chiffre, puis une phrase qui le raconte (reprise de
- *  l'histoire et des engagements de la page) plutot qu'un libelle sec. */
-const stats = [
-  {
-    value: 30,
-    suffix: "+",
-    tag: "Depuis 1993",
-    text: "ans à fournir les chantiers du Souss-Massa",
-    icon: Building2,
-  },
-  {
-    value: 48,
-    suffix: "h",
-    tag: "Réactivité",
-    text: "pour recevoir un devis chiffré, quelle que soit la taille du lot",
-    icon: Clock,
-  },
-  {
-    value: 8,
-    suffix: "",
-    tag: "Choix",
-    text: "familles de matériaux, du gros œuvre aux finitions",
-    icon: Package,
-  },
-  {
-    value: 12,
-    suffix: "",
-    tag: "Confiance",
-    text: "marques partenaires, retenues pour leur régularité sur le terrain",
-    icon: Handshake,
-  },
-];
-
 /** Traits de soulignement « a la main », un par fiche pour qu'aucun ne soit identique. */
 const UNDERLINES = [
   "M3 8 C 22 4, 42 10, 62 6 S 90 5, 97 7",
@@ -215,31 +174,6 @@ const engagements = [
   },
 ];
 
-function Counter({ to, suffix }: { to: number; suffix: string }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-  const reduce = useReducedMotion();
-  const [n, setN] = useState(to);
-
-  useEffect(() => {
-    if (!inView || reduce) return;
-    setN(0);
-    const controls = animate(0, to, {
-      duration: 1.6,
-      ease: "easeOut",
-      onUpdate: (v) => setN(Math.round(v)),
-    });
-    return () => controls.stop();
-  }, [inView, to, reduce]);
-
-  return (
-    <span ref={ref}>
-      {n}
-      {suffix}
-    </span>
-  );
-}
-
 const EASE = [0.22, 1, 0.36, 1] as const;
 function RevealImage({ src, alt, from }: { src: string; alt: string; from: "left" | "right" }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -249,27 +183,35 @@ function RevealImage({ src, alt, from }: { src: string; alt: string; from: "left
   const hidden =
     from === "left" ? "inset(0% 100% 0% 0% round 24px)" : "inset(0% 0% 0% 100% round 24px)";
 
+  // L'entree dans l'ecran est guettee sur ce bloc et non sur la photo masquee : rognee en
+  // entier, celle-ci ne compte plus dans Chrome que pour son coin haut gauche, qui tombe hors
+  // de la zone guettee pres du bord (colonne de gauche, telephone) - elle ne se devoilait pas.
   return (
     <motion.div
       ref={ref}
-      initial={{ clipPath: hidden }}
-      whileInView={{ clipPath: "inset(0% 0% 0% 0% round 24px)" }}
+      initial="hidden"
+      whileInView="shown"
       viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 1.2, ease: EASE }}
-      className="relative aspect-[4/3] overflow-hidden rounded-3xl"
     >
-      <motion.img
-        src={src}
-        alt={alt}
-        loading="lazy"
-        style={{ y }}
-        initial={{ scale: 1.15 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true, margin: "-80px" }}
-        transition={{ duration: 1.6, ease: EASE }}
-        className="absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover"
-      />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
+      <motion.div
+        variants={{
+          hidden: { clipPath: hidden },
+          shown: { clipPath: "inset(0% 0% 0% 0% round 24px)" },
+        }}
+        transition={{ duration: 1.2, ease: EASE }}
+        className="relative aspect-[4/3] overflow-hidden rounded-3xl"
+      >
+        <motion.img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          style={{ y }}
+          variants={{ hidden: { scale: 1.15 }, shown: { scale: 1 } }}
+          transition={{ duration: 1.6, ease: EASE }}
+          className="absolute inset-x-0 -top-[8%] h-[116%] w-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-ink/40 to-transparent" />
+      </motion.div>
     </motion.div>
   );
 }
@@ -310,10 +252,7 @@ function APropos() {
   return (
     <Layout>
       <PageHero image={heroImg} crumb="À propos" title="Qui sommes-nous ?">
-        Depuis plus de 30 ans, Souss Droguerie accompagne les professionnels du BTP et les
-        particuliers avec une offre complète de matériaux de construction. De la structure aux
-        finitions, nous mettons à votre disposition des produits certifiés, des marques reconnues et
-        un accompagnement technique à chaque étape de votre projet.
+        {ABOUT.intro.join(" ")}
       </PageHero>
 
       <script
@@ -324,11 +263,7 @@ function APropos() {
       {/* Notre histoire */}
       <section className="container-x py-16 md:py-24">
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
-          <RevealImage
-            src={storyImg}
-            alt="Dépôt de matériaux de construction Souss Droguerie à Agadir"
-            from="left"
-          />
+          <RevealImage src={storyImg} alt={ABOUT.story.imageAlt} from="left" />
 
           <motion.div
             variants={stagger}
@@ -336,32 +271,20 @@ function APropos() {
             whileInView="shown"
             viewport={{ once: true, margin: "-80px" }}
           >
-            <Kicker>Notre histoire</Kicker>
+            <Kicker>{ABOUT.story.kicker}</Kicker>
             <SplitReveal
               as="h2"
               className="mt-4 font-display text-3xl font-bold uppercase leading-tight text-ink sm:text-4xl"
             >
-              Un partenaire de chantier,
-              <br className="hidden sm:block" /> pas un simple dépôt
+              {ABOUT.story.title[0]}
+              <br className="hidden sm:block" /> {ABOUT.story.title[1]}
             </SplitReveal>
             <div className="mt-6 space-y-4 text-sm leading-relaxed text-ink-soft sm:text-base">
-              <motion.p variants={rise}>
-                Depuis 1993, Souss Droguerie développe son expertise dans la distribution de
-                matériaux de construction destinés aux professionnels et aux particuliers. Notre
-                objectif est resté le même : proposer des produits fiables, disponibles et adaptés
-                aux exigences des chantiers modernes.
-              </motion.p>
-              <motion.p variants={rise}>
-                Au fil des années, notre catalogue s'est enrichi pour couvrir l'ensemble des besoins
-                du gros œuvre, du second œuvre et de la finition. Carrelage, sanitaire, métallurgie,
-                isolation, peinture, électricité ou énergie solaire : une seule adresse pour
-                l'ensemble de vos projets.
-              </motion.p>
-              <motion.p variants={rise}>
-                Aujourd'hui, nous poursuivons cette évolution en intégrant progressivement des
-                solutions innovantes afin d'améliorer notre accompagnement, optimiser le choix des
-                matériaux et proposer un service toujours plus performant.
-              </motion.p>
+              {ABOUT.story.paragraphs.map((paragraph) => (
+                <motion.p key={paragraph} variants={rise}>
+                  {paragraph}
+                </motion.p>
+              ))}
             </div>
             <motion.div variants={rise} className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -410,7 +333,7 @@ function APropos() {
             </motion.div>
 
             <div className="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-              {stats.map((s, i) => (
+              {aboutStats.map((s, i) => (
                 <motion.div
                   key={s.tag}
                   initial={{ opacity: 0, y: 28 }}
@@ -450,21 +373,18 @@ function APropos() {
             viewport={{ once: true, margin: "-80px" }}
             className="order-2 lg:order-1"
           >
-            <Kicker>Zone d'intervention</Kicker>
+            <Kicker>{ABOUT.zone.kicker}</Kicker>
             <SplitReveal
               as="h2"
               className="mt-4 font-display text-3xl font-bold uppercase leading-tight text-ink sm:text-4xl"
             >
-              Au service des chantiers dans toute la région Souss-Massa
+              {ABOUT.zone.title}
             </SplitReveal>
             <motion.p
               variants={rise}
               className="mt-5 text-sm leading-relaxed text-ink-soft sm:text-base"
             >
-              Implantée à Agadir, Souss Droguerie accompagne quotidiennement les entreprises du
-              bâtiment, les artisans et les particuliers dans toute la région Souss-Massa. Nos
-              équipes assurent un accompagnement commercial et technique afin de répondre rapidement
-              aux besoins de chaque chantier.
+              {ABOUT.zone.text}
             </motion.p>
 
             <motion.div variants={rise} className="mt-8 flex flex-wrap gap-3">
@@ -495,7 +415,7 @@ function APropos() {
         </div>
       </section>
 
-      {/* Expertise : les memes cartes de rayons que l'accueil. */}
+      {/* Expertise : les rayons en cartes, dans un carrousel. */}
       <section className="bg-cream px-3 py-20">
         <SectionHeader kicker="Notre expertise" title="Huit métiers, un seul dépôt" animated />
         <CategoryCardsCarousel items={categories} />

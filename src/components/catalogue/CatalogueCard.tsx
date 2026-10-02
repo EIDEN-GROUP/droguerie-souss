@@ -41,7 +41,7 @@ function metricsOf(edition: CatalogueEdition) {
 }
 
 /** Ce que la carte promet, selon le format de l'édition. */
-function actionOf(edition: CatalogueEdition) {
+export function actionOf(edition: CatalogueEdition) {
   if (edition.format === "pdf") return { kind: "PDF", action: "Ouvrir le PDF" };
   if (edition.format === "interactive")
     return { kind: "Interactif", action: "Feuilleter en ligne" };

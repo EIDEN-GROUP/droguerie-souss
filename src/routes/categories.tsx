@@ -104,6 +104,9 @@ function Shop() {
   const activeCat = (urlCat as Category) || undefined;
   const activeSubcat = urlSubcat || undefined;
   const [query, setQuery] = useState(urlQ || "");
+  // Une recherche lancee depuis l'en-tete alors qu'on est deja dans la boutique ne change
+  // que l'adresse : le champ la reprend.
+  useEffect(() => setQuery(urlQ || ""), [urlQ]);
   const [sort, setSort] = useState<"default" | "asc" | "desc">("default");
   const [filtersOpen, setFiltersOpen] = useState(false);
   const resultsRef = useRef<HTMLDivElement>(null);

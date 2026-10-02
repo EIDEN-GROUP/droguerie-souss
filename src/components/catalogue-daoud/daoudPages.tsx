@@ -202,7 +202,7 @@ export const DaoudCover = forwardRef<HTMLDivElement, object>(function DaoudCover
     <Sheet ref={ref}>
       <Photo
         src="/catalogue-daoud/daoudbuilding(front-cover).jpg"
-        alt="Daoud Building — Catalogue 2026"
+        alt="Daoud Building Catalogue 2026"
       />
       <Folio n={1} light />
     </Sheet>

@@ -33,6 +33,7 @@ import {
   PAGE_H,
 } from "./pages";
 import { stripTags } from "@/lib/richtext";
+import { ABOUT } from "@/lib/about";
 import { useFlipSound } from "./useFlipSound";
 import { exportCataloguePdf } from "./exportPdf";
 
@@ -262,17 +263,13 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
       <Editorial
         key="mot"
         page={n}
-        kicker="Mot du directeur"
-        light="Construire avec"
-        bold="expérience"
+        kicker={ABOUT.director.kicker}
+        light={ABOUT.director.title[0]}
+        bold={ABOUT.director.title[1]}
         photo={`${PH}facade-jour.webp`}
         caption="Notre siège · 29 Bd Mohamed V, Dcheira - Inezgane"
-        body={[
-          "Chers clients et partenaires, depuis 1993 Souss Droguerie accompagne les professionnels et les particuliers dans leurs projets de construction à travers une offre complète de matériaux fiables et performants.",
-          "Notre priorité a toujours été d'apporter qualité, disponibilité et conseil technique afin de garantir la réussite de vos réalisations, du gros œuvre à la finition.",
-          "Nous remercions l'ensemble de nos clients, partenaires et collaborateurs pour leur confiance continue.",
-        ]}
-        signature="La Direction"
+        body={[...ABOUT.director.body]}
+        signature={ABOUT.director.signature}
       />,
     );
     n++;
@@ -311,7 +308,7 @@ export default function Flipbook({ embedded = false }: { embedded?: boolean }) {
         key="ouverture"
         page={n}
         photo={`${PH}beton-cire.webp`}
-        quote="Chaque chantier commence par le choix d'une matière."
+        quote={ABOUT.opening}
         caption="Effet béton ciré · grand format"
       />,
     );

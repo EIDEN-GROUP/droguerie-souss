@@ -1,21 +1,27 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Layout } from "@/components/Layout";
 import { Hero } from "@/components/Hero";
+import { IntroSection } from "@/components/IntroSection";
+import { SpecialtiesSection } from "@/components/SpecialtiesSection";
+import { AboutSection } from "@/components/AboutSection";
 import { ServiceBar } from "@/components/ServiceBar";
 import { SectionHeader } from "@/components/SectionHeader";
-import { ProductCard } from "@/components/ProductCard";
+import { BestSellersShowcase } from "@/components/BestSellersShowcase";
 import { CatalogueCarousel } from "@/components/CatalogueCarousel";
 import { SuppliersCarousel } from "@/components/SuppliersCarousel";
 import { PromoCards } from "@/components/PromoCards";
 import { CategoriesSection } from "@/components/CategoriesSection";
-import { CtaBanner } from "@/components/CtaBanner";
-import { VisitAndCatalogue } from "@/components/VisitAndCatalogue";
+import { StoresShowcase } from "@/components/StoresShowcase";
+import { FaqSection } from "@/components/FaqSection";
+import { CatalogueEditions } from "@/components/CatalogueEditions";
+import { QuoteStrip } from "@/components/QuoteStrip";
 import promoImg from "@/assets/promo-collection.jpg";
 import { useProducts } from "@/lib/adminStore";
 import { MotionConfig, motion } from "framer-motion";
 import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ReplayReveals } from "@/components/motion/Reveal";
+import { ArrowRight } from "lucide-react";
 import { seo, jsonLd, descriptionFrom, canonical, SITE_URL, ALTERNATE_NAME } from "@/lib/seo";
 import { AREA_SERVED } from "@/lib/contact";
 
@@ -105,18 +111,11 @@ export const Route = createFileRoute("/")({
     }),
 });
 
-function SeeAllLink({
-  bestsellers = false,
-  className = "mb-4 mt-10 flex justify-end",
-}: {
-  bestsellers?: boolean;
-  className?: string;
-}) {
+function SeeAllLink({ className = "mb-4 mt-10 flex justify-end" }: { className?: string }) {
   return (
     <div className={className}>
       <Link
         to="/categories"
-        search={bestsellers ? { bestseller: true } : {}}
         hash="produits"
         hashScrollIntoView={{ behavior: "instant", block: "start" }}
         className="group inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-ink transition hover:text-brand"
@@ -128,10 +127,6 @@ function SeeAllLink({
   );
 }
 
-function fullRows(count: number, cols: number, max: number) {
-  return count < cols ? count : Math.min(max, count - (count % cols));
-}
-
 function Home() {
   const { data: products, isLoading } = useProducts();
   const productList = products || [];
@@ -139,37 +134,28 @@ function Home() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <Layout overlayNav videoIntro>
+      {/* Sur l'accueil, les apparitions se rejouent a chaque passage : entree a l'arrivee
+          dans l'ecran, sortie en le quittant. */}
+      <ReplayReveals value>
+        <Layout overlayNav videoIntro>
         <SmoothScroll />
         <Hero />
         {/* <ServiceBar /> */}
 
-        <CategoriesSection />
+        <IntroSection />
+        <SpecialtiesSection />
 
-        <section className="container-x py-20">
-          <SectionHeader kicker="Best-sellers" title="Nos produits populaires" animated />
-          <SeeAllLink bestsellers />
-          {isLoading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-brand" />
-            </div>
-          ) : (
-            <div className="no-scrollbar -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-4 px-4 pb-4 sm:-mx-6 sm:scroll-px-6 sm:px-6 md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0 xl:grid-cols-4">
-              {bestSellers.slice(0, 8).map((p, i) => (
-                <div
-                  key={p.id}
-                  className={`w-[72%] shrink-0 snap-start sm:w-[45%] md:w-auto ${
-                    i < fullRows(bestSellers.length, 3, 6) ? "md:block" : "md:hidden"
-                  } ${i < fullRows(bestSellers.length, 4, 8) ? "xl:block" : "xl:hidden"}`}
-                >
-                  <ProductCard product={p} index={i} />
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
+        {/* Bande sombre : a propos puis rayons, sur le meme fond a motif. */}
+        <div className="section-dark">
+          <AboutSection />
+          <CategoriesSection />
+        </div>
+
+        <BestSellersShowcase products={bestSellers.slice(0, 8)} loading={isLoading} />
 
         <SuppliersCarousel />
+
+        <StoresShowcase />
 
         {/* <PromoCards /> */}
 
@@ -182,6 +168,7 @@ function Home() {
               animated
             />
           }
+          description="Matériaux, outillage et finitions sélectionnés pour tous vos projets de construction dans le Souss."
           seeAll={<SeeAllLink className="mt-8 flex" />}
           products={productList.slice(0, 8)}
           loading={isLoading}
@@ -210,12 +197,12 @@ function Home() {
           </div>
         </section> */}
 
-        <CtaBanner />
-        <div className="bg-paper">
-          <VisitAndCatalogue />
-        </div>
+        <FaqSection />
+        <CatalogueEditions />
+        <QuoteStrip />
         <ScrollProgress />
-      </Layout>
+        </Layout>
+      </ReplayReveals>
     </MotionConfig>
   );
 }

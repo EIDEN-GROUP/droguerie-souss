@@ -1,10 +1,10 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronRight, Heart, Menu, Phone, ShoppingBag, UserRound, X } from "lucide-react";
+import { ChevronRight, Menu, Phone, UserRound, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useApp } from "@/lib/store";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { CategoryCardBody } from "@/components/CategoriesSection";
+import { HeaderSearch } from "@/components/HeaderSearch";
 import {
   Carousel,
   CarouselContent,
@@ -82,7 +82,6 @@ function CategoryCarousel({
 /** `hidden` : barre tenue au-dessus de l'ecran pendant l'intro video de l'accueil ; elle
  *  descend a sa place quand l'intro se termine. */
 export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean; hidden?: boolean }) {
-  const { cart, favorites, setCartOpen, setFavOpen } = useApp();
   const { user, setAuthOpen } = useCustomerAuth();
   const [open, setOpen] = useState(false);
   const [overHero, setOverHero] = useState(true);
@@ -102,8 +101,6 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
     observer.observe(hero);
     return () => observer.disconnect();
   }, [overlay, pathname]);
-
-  const cartCount = cart.reduce((s, i) => s + i.qty, 0);
 
   /** Transparent (texte blanc) tant que l'en-tete survole le bandeau sombre de la page,
    *  panneau des categories ouvert ou non ; blanc des qu'il passe sur le corps de la page. */
@@ -215,6 +212,8 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
           </nav>
 
           <div className="flex items-center gap-1">
+            <HeaderSearch transparent={transparent} />
+
             {/* Entre `lg` et `xl`, les liens occupent la barre : le numero se replie sur
                 son pictogramme. */}
             <a
@@ -241,32 +240,8 @@ export function Navbar({ overlay = false, hidden = false }: { overlay?: boolean;
               </button>
             )}
 
-            <button
-              onClick={() => setFavOpen(true)}
-              aria-label="Favoris"
-              className={`relative ${iconBtn}`}
-            >
-              <Heart className="h-5 w-5" />
-              {favorites.length > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent-red px-1 text-[10px] font-bold text-paper">
-                  {favorites.length}
-                </span>
-              )}
-            </button>
-
-            <button
-              onClick={() => setCartOpen(true)}
-              aria-label="Panier"
-              className={`relative ${iconBtn}`}
-            >
-              <ShoppingBag className="h-5 w-5" />
-              {cartCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 grid h-5 min-w-5 place-items-center rounded-full bg-accent-red px-1 text-[10px] font-bold text-paper">
-                  {cartCount}
-                </span>
-              )}
-            </button>
-
+            {/* Favoris et panier ne sont plus ici : ils suivent le defilement, en onglets
+                sur le bord droit de l'ecran (`SideActions`). */}
             <button
               onClick={() => setOpen(!open)}
               className={`${iconBtn} lg:hidden`}

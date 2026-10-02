@@ -25,7 +25,7 @@ function HelpItem({ icon: Icon, children }: { icon: typeof Phone; children: Reac
  */
 export function Footer() {
   return (
-    <footer className="bg-ink text-paper">
+    <footer className="bg-brand-night text-paper">
       <div className="container-x grid gap-10 py-14 sm:grid-cols-2 md:py-16 lg:grid-cols-[1.3fr_1fr_1fr_1.25fr] lg:gap-12">
         <div className="min-w-0">
           <Link to="/" className="inline-flex items-center gap-3">
