@@ -68,12 +68,14 @@ export function Hero() {
 
   return (
     <section ref={ref} className="relative h-svh min-h-[600px] w-full overflow-hidden bg-ink">
-      {/* Pendant l'intro, lent travelling avant ; a l'ouverture, la video se pose. */}
+      {/* Pendant l'intro, lent travelling avant ; a l'ouverture, la video se pose.
+          `w-screen` plutot que `inset-0`, ici comme sur l'ecran d'intro : la barre de
+          defilement, absente pendant l'intro, revient a l'ouverture sans rien decaler. */}
       <motion.div
         initial={active ? { opacity: 1, scale: 1.18 } : { opacity: 0, scale: 1.08 }}
         animate={done ? { opacity: 1, scale: 1 } : { opacity: 1, scale: 1.08 }}
         transition={done ? { duration: 1.4, ease: EASE } : { duration: 3, ease: "easeOut" }}
-        className="absolute inset-0"
+        className="absolute inset-y-0 left-0 w-screen"
       >
         <motion.div style={{ y: videoY, scale: videoScale }} className="absolute inset-0">
           <video
@@ -102,7 +104,7 @@ export function Hero() {
             key="intro"
             aria-hidden="true"
             exit={{ opacity: 0, transition: { duration: 0.7, ease: EASE } }}
-            className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-7 bg-black/40"
+            className="absolute inset-y-0 left-0 z-20 flex w-screen flex-col items-center justify-center gap-7 bg-black/40"
           >
             <motion.img
               src={logo}

@@ -9,9 +9,8 @@ import { PageLoader } from "./Loader";
 import { FloatingActions } from "./FloatingActions";
 import { SideActions } from "./SideActions";
 import { IntroContext } from "./IntroContext";
+import { ScrollLock } from "./ScrollLock";
 import { useCustomerAuth } from "@/lib/customerAuth";
-
-const SCROLL_KEYS = new Set([" ", "PageDown", "PageUp", "ArrowDown", "ArrowUp", "Home", "End"]);
 
 let siteEntered = false;
 
@@ -41,26 +40,9 @@ export function Layout({
     [playIntro, introDone, finish],
   );
 
-  useEffect(() => {
-    if (introDone) return;
-    const block = (e: Event) => {
-      e.preventDefault();
-      e.stopPropagation();
-    };
-    const blockKeys = (e: KeyboardEvent) => SCROLL_KEYS.has(e.key) && e.preventDefault();
-    const opts = { capture: true, passive: false } as const;
-    window.addEventListener("wheel", block, opts);
-    window.addEventListener("touchmove", block, opts);
-    window.addEventListener("keydown", blockKeys, true);
-    return () => {
-      window.removeEventListener("wheel", block, opts);
-      window.removeEventListener("touchmove", block, opts);
-      window.removeEventListener("keydown", blockKeys, true);
-    };
-  }, [introDone]);
-
   return (
     <IntroContext.Provider value={intro}>
+      {!introDone && <ScrollLock top />}
       {!playIntro && <PageLoader />}
       <Navbar overlay={overlayNav} hidden={!introDone} />
       <main className="min-h-screen">{children}</main>

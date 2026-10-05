@@ -8,7 +8,14 @@ export const getRouter = () => {
   const router = createRouter({
     routeTree,
     context: { queryClient },
-    scrollRestoration: true,
+    // L'accueil s'ouvre sur son intro video, jouee en haut de page : tant qu'elle tient la
+    // page (`ScrollLock top`), la position de defilement n'est pas retablie (rechargement).
+    // Sur le serveur, c'est le script qui la retablit avant le demarrage de React qui n'y
+    // est pas joint.
+    scrollRestoration: ({ location }) =>
+      typeof window === "undefined"
+        ? location.pathname !== "/"
+        : !document.querySelector('[data-scroll-lock="top"]'),
     defaultPreloadStaleTime: 0,
   });
 

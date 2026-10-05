@@ -149,6 +149,10 @@
   html.lenis {
     scroll-behavior: auto;
   }
+  /* Ecran de chargement : tant qu'un `ScrollLock` est dans la page, ni defilement ni barre. */
+  html:has([data-scroll-lock]) {
+    overflow: hidden;
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
