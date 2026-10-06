@@ -16,6 +16,8 @@ import { SITE_URL, DEFAULT_OG_IMAGE } from "../lib/seo";
 import { gaHeadScripts, trackPageview } from "../lib/analytics";
 import { SiteGate } from "../components/SiteGate";
 import { getGateStatus } from "../lib/api/site-gate";
+import { Maintenance } from "../components/Maintenance";
+import { getMaintenanceStatus } from "../lib/api/maintenance";
 
 function NotFoundComponent() {
   return (
@@ -172,10 +174,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   // SITE-GATE:BEGIN - verrou d'accès activable par ENV.
   // Actif uniquement si VITE_SITE_GATE_ENABLED=true (voir site-gate.ts) ;
   // sinon getGateStatus() renvoie { unlocked: true } et <SiteGate> laisse passer.
+  // MAINTENANCE:BEGIN - page « Site en maintenance » activable par ENV.
+  // Active uniquement si VITE_MAINTENANCE_MODE=true (voir maintenance.ts) ;
+  // sinon getMaintenanceStatus() renvoie { active: false } et <Maintenance>
+  // laisse passer.
   beforeLoad: async () => {
     const gate = await getGateStatus();
-    return { gateUnlocked: gate.unlocked };
+    const maintenance = await getMaintenanceStatus();
+    return { gateUnlocked: gate.unlocked, maintenanceActive: maintenance.active };
   },
+  // MAINTENANCE:END
   // SITE-GATE:END
   shellComponent: RootShell,
   component: RootComponent,
@@ -202,14 +210,21 @@ function RootComponent() {
   // SITE-GATE:BEGIN - traversant quand VITE_SITE_GATE_ENABLED ≠ "true".
   const { gateUnlocked } = Route.useRouteContext();
   // SITE-GATE:END
+  // MAINTENANCE:BEGIN - traversant quand VITE_MAINTENANCE_MODE ≠ "true".
+  const { maintenanceActive } = Route.useRouteContext();
+  // MAINTENANCE:END
   return (
     <QueryClientProvider client={queryClient}>
-      {/* SITE-GATE:BEGIN */}
-      <SiteGate initiallyUnlocked={gateUnlocked}>
-        <PageviewTracker />
-        <Outlet />
-      </SiteGate>
-      {/* SITE-GATE:END */}
+      {/* MAINTENANCE:BEGIN */}
+      <Maintenance initiallyActive={maintenanceActive}>
+        {/* SITE-GATE:BEGIN */}
+        <SiteGate initiallyUnlocked={gateUnlocked}>
+          <PageviewTracker />
+          <Outlet />
+        </SiteGate>
+        {/* SITE-GATE:END */}
+      </Maintenance>
+      {/* MAINTENANCE:END */}
     </QueryClientProvider>
   );
 }
