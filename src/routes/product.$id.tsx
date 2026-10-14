@@ -19,6 +19,7 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { mapDbProduct } from "@/lib/adminStore";
 import { getProduct, getProducts } from "@/lib/api/products";
 import type { Product } from "@/lib/products";
+import { displayCategory, displayCategoryValue } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { ProductPromoPrice } from "@/components/ProductPrice";
 import { seo, jsonLd, absoluteUrl, descriptionFrom, canonical } from "@/lib/seo";
@@ -54,6 +55,9 @@ export const Route = createFileRoute("/product/$id")({
     const price = pct > 0 ? product.price * (1 - pct / 100) : product.price;
     const pageUrl = canonical(`/product/${product.id}`);
 
+    // Libellés publics via le mapping d'affichage : jamais la valeur DB brute.
+    const mainCategory = displayCategory(product.category);
+    const mainCategoryValue = displayCategoryValue(product.category);
     const productSchema = {
       "@context": "https://schema.org",
       "@type": "Product",
@@ -66,7 +70,7 @@ export const Route = createFileRoute("/product/$id")({
           ? [absoluteUrl(product.image)]
           : [],
       description: descriptionFrom(product.description, 300),
-      category: product.category,
+      category: mainCategory,
       brand: { "@type": "Brand", name: "Souss Droguerie" },
       ...(product.price_mode === "fixed" && product.price > 0
         ? {
@@ -90,15 +94,15 @@ export const Route = createFileRoute("/product/$id")({
         {
           "@type": "ListItem",
           position: 3,
-          name: product.category,
-          item: canonical(`/categories?cat=${encodeURIComponent(product.category)}`),
+          name: mainCategory,
+          item: canonical(`/categories?cat=${encodeURIComponent(mainCategoryValue)}`),
         },
         { "@type": "ListItem", position: 4, name: product.name, item: pageUrl },
       ],
     };
 
     return seo({
-      title: `${product.name} - ${product.category}`,
+      title: `${product.name} - ${mainCategory}`,
       description: descriptionFrom(product.description, 155),
       path: `/product/${product.id}`,
       image: product.image,
