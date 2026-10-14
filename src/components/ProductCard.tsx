@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Heart } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "@/lib/products";
+import { displayCategory, displaySubcategory } from "@/lib/products";
 import { useApp } from "@/lib/store";
 import { cn } from "@/lib/utils";
 import { Reveal } from "./motion/Reveal";
@@ -96,7 +97,8 @@ export function ProductCard({
           {product.name}
         </h3>
         <p className="col-start-1 row-start-3 mt-1.5 truncate text-[11px] text-ink-soft @[15rem]:text-xs">
-          {product.subcategory || product.category}
+          {(product.subcategory ? displaySubcategory(product.subcategory) : null) ??
+            displayCategory(product.category)}
         </p>
 
         <p className="col-start-1 row-start-4 self-end pt-3 text-base font-bold text-ink @[15rem]:pt-4 @[15rem]:text-lg">

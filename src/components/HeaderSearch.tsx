@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Search, X } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState, type RefObject } from "react";
 import { useProducts } from "@/lib/adminStore";
-import { categories, type Product } from "@/lib/products";
+import { categories, displayCategory, displaySubcategory, type Product } from "@/lib/products";
 import { searchProducts } from "@/lib/search";
 import { cn } from "@/lib/utils";
 
@@ -170,7 +170,8 @@ export function HeaderSearch({ transparent }: { transparent: boolean }) {
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-sm font-semibold text-ink">{p.name}</span>
                     <span className="block truncate text-xs text-ink-soft">
-                      {p.subcategory || p.category}
+                      {(p.subcategory ? displaySubcategory(p.subcategory) : null) ??
+                        displayCategory(p.category)}
                     </span>
                   </span>
                   <ArrowRight

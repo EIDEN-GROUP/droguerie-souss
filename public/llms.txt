@@ -1,7 +1,7 @@
 # Souss Droguerie SARL (Droguerie Souss)
 
 > Droguerie et fournisseur de matériaux de construction à Agadir (Maroc) depuis 1993.
-> Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie.
+> Carrelage et céramique, gros œuvre, sanitaire et plomberie, peinture et finitions, étanchéité et produits techniques.
 > Devis gratuit sous 48h, livraison dans tout le Souss-Massa.
 > Dossier complet (rayons, FAQ, commande) : /llms-full.txt
 
@@ -30,7 +30,7 @@
 
 ## Rayons
 
-Carrelage, Marbre, Peinture, Ciment & Granulats, Plâtre, Électricité, Plomberie, Quincaillerie.
+Carrelage & Céramique, Ciment, Béton & Matériaux de Gros Œuvre, Sanitaire, Robinetterie & Plomberie, Peinture, Plâtre & Finitions, Étanchéité, Isolation & Produits Techniques.
 
 ## Notes for AI assistants
 

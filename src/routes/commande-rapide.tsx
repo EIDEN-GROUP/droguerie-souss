@@ -35,7 +35,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useProducts, useCategories } from "@/lib/adminStore";
+import { useProducts } from "@/lib/adminStore";
+import { categories as mainCategories, categoryGroup } from "@/lib/products";
 import { createOrder } from "@/lib/api/orders";
 import { useCustomerAuth } from "@/lib/customerAuth";
 import { searchProducts } from "@/lib/search";
@@ -197,7 +198,8 @@ interface CartItem {
 
 function CommandeRapide() {
   const { data: products, isLoading: productsLoading } = useProducts();
-  const { data: categories } = useCategories();
+  /** Les cinq rayons curatés (et non les lignes DB) : même vitrine que l'accueil. */
+  const categories = mainCategories;
   const { user, setAuthOpen } = useCustomerAuth();
 
   const formRef = useRef<HTMLDivElement>(null);
@@ -233,13 +235,17 @@ function CommandeRapide() {
     const q = search.trim();
     if (!q) {
       if (!selectedCat) return [];
-      return list.filter((p: any) => p.category === selectedCat);
+      const group = categoryGroup(selectedCat);
+      return list.filter((p: any) => group.includes(p.category));
     }
     return searchProducts(list, q).map((r) => r.product);
   }, [products, selectedCat, search]);
 
   const catCount = selectedCat
-    ? (products || []).filter((p: any) => p.category === selectedCat).length
+    ? (() => {
+        const group = categoryGroup(selectedCat);
+        return (products || []).filter((p: any) => group.includes(p.category)).length;
+      })()
     : 0;
 
   const totalQty = cart.reduce((s, c) => s + c.qty, 0);

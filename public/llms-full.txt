@@ -1,7 +1,7 @@
 # Souss Droguerie SARL - dossier complet (Droguerie Souss, Agadir)
 
 > Droguerie et fournisseur de matériaux de construction à Agadir (Maroc) depuis 1993.
-> Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie.
+> Carrelage et céramique, gros œuvre, sanitaire et plomberie, peinture et finitions, étanchéité et produits techniques.
 > Devis gratuit sous 48h ouvrées, livraison dans tout le Souss-Massa.
 > Fichier résumé : /llms.txt - Plan du site : /sitemap.xml
 
@@ -20,15 +20,11 @@
 
 ## Rayons (boutique : /categories)
 
-1. Carrelage - grès cérame sol, faïence murale, grand format (/categories?cat=Carrelage)
-2. Marbre - marbre poli, travertin, terrazzo (/categories?cat=Marbre)
-3. Zellige - zellige émaillé de Fès, bejmat (voir catalogue et showroom)
-4. Peinture - peintures, enduits, stuc vénitien, résines
-5. Ciment & Granulats - ciment, béton, sable, adjuvants
-6. Plâtre - plâtre, plaques, enduits bicouches
-7. Électricité - appareillage Schneider/Legrand, câbles, éclairage
-8. Plomberie - sanitaire, robinetterie Grohe, tubes PPR, PVC
-9. Quincaillerie - outillage, visserie, métallurgie, tôles
+1. Carrelage & Céramique - grès cérame sol, faïence murale, grand format, pierre naturelle (/categories?cat=Carrelage%20%26%20C%C3%A9ramique)
+2. Ciment, Béton & Matériaux de Gros Œuvre - ciment, béton, mortiers, fer à béton, préfabriqué (/categories?cat=Ciment%2C%20B%C3%A9ton%20%26%20Mat%C3%A9riaux%20de%20Gros%20%C5%92uvre)
+3. Sanitaire, Robinetterie & Plomberie - sanitaire, robinetterie, tubes PPR, PVC (/categories?cat=Sanitaire%2C%20Robinetterie%20%26%20Plomberie)
+4. Peinture, Plâtre & Finitions - peintures, enduits, stuc vénitien, résines (/categories?cat=Peinture%2C%20Pl%C3%A2tre%20%26%20Finitions)
+5. Étanchéité, Isolation & Produits Techniques - membranes, isolation, électricité, solaire, outillage (/categories?cat=%C3%89tanch%C3%A9it%C3%A9%2C%20Isolation%20%26%20Produits%20Techniques)
 
 ## Commander
 

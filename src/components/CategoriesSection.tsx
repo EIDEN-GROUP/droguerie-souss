@@ -1,9 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { useMemo } from "react";
-import { categories as bundledCategories, categoryImage, type CategoryInfo } from "@/lib/products";
-import { useCategories } from "@/lib/adminStore";
+import { categories as bundledCategories, type CategoryInfo } from "@/lib/products";
 import { SectionHeader } from "./SectionHeader";
 import { CategoryShowcase } from "./CategoryShowcase";
 import { Reveal } from "./motion/Reveal";
@@ -72,18 +70,11 @@ export function CategoriesSection({
   selectedCategory?: string;
 }) {
   const isShop = variant === "shop";
-  const { data: dbCategories } = useCategories();
-  const items: CategoryInfo[] = useMemo(() => {
-    if (isShop) return bundledCategories;
-    if (!dbCategories || dbCategories.length === 0) return bundledCategories;
-    return dbCategories.map((c) => ({
-      slug: c.slug,
-      category: c.name,
-      name: c.name,
-      image: c.image_url || categoryImage(c.slug),
-      description: c.description,
-    }));
-  }, [dbCategories, isShop]);
+  /**
+   * Les cinq rayons curatés sont fixes : la vitrine n'épouse plus les lignes
+   * DB (qui restent gérées côté admin et joignables via recherche et boutique).
+   */
+  const items: CategoryInfo[] = bundledCategories;
 
   if (!isShop) {
     return (

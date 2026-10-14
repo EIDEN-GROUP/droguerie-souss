@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
@@ -11,7 +11,13 @@ import { SectionHeader } from "@/components/SectionHeader";
 import { ShopSidebar } from "@/components/ShopSidebar";
 import { useProducts, useSubcategories } from "@/lib/adminStore";
 import { BUSINESS } from "@/lib/contact";
-import { categories, categoryGroup, type Category } from "@/lib/products";
+import {
+  categories,
+  categoryGroup,
+  displaySubcategory,
+  normalizeCategoryParam,
+  type Category,
+} from "@/lib/products";
 import { searchProducts } from "@/lib/search";
 import { seo, jsonLd, canonical } from "@/lib/seo";
 import {
@@ -43,6 +49,21 @@ const HEADER_HEIGHT = 80;
 export const Route = createFileRoute("/categories")({
   validateSearch: searchSchema,
   component: Shop,
+  /**
+   * Normalisation des anciennes valeurs `?cat=` (cartes, SEO, liens) vers les
+   * cinq rayons. Exécuté côté serveur avant le rendu, les loaders et `head` :
+   * filtrage, canonical et métadonnées partent toujours d'une valeur saine.
+   * Les valeurs inconnues retombent sur la boutique non filtrée.
+   */
+  beforeLoad: ({ search }) => {
+    const normalized = normalizeCategoryParam(search.cat);
+    if (search.cat !== undefined && normalized !== search.cat) {
+      throw redirect({
+        to: "/categories",
+        search: (prev: Search) => ({ ...prev, cat: normalized }),
+      });
+    }
+  },
   head: ({ match }) => {
     const search = (match.search ?? {}) as Search;
     const cat = search.cat;
@@ -56,7 +77,7 @@ export const Route = createFileRoute("/categories")({
         : `${bestTitle}Droguerie & Matériaux de construction à Agadir | Souss Droguerie`,
       description: catInfo
         ? `Achetez ${catInfo.name.toLowerCase()} à Agadir chez Souss Droguerie : ${catInfo.description}. Devis gratuit sous 48h, livraison dans tout le Souss.`
-        : "Souss Droguerie (Droguerie Souss) : droguerie et catalogue complet de matériaux de construction à Agadir. Carrelage, marbre, zellige, peinture, ciment, plomberie, électricité et quincaillerie. Devis gratuit sous 48h.",
+        : "Souss Droguerie (Droguerie Souss) : droguerie et catalogue complet de matériaux de construction à Agadir. Carrelage, céramique, peinture, ciment, plomberie, électricité et quincaillerie. Devis gratuit sous 48h.",
       path: `/categories${catPath}`,
       noindex: !!q,
       scripts: [
@@ -181,7 +202,13 @@ function Shop() {
     if (!activeCat || subcategories.length === 0) return [];
     return [
       { label: "Toutes", value: undefined, count: catFiltered.length } as SubcatTab,
-      ...subcategories.map((s) => ({ label: s.name, value: s.name, count: s.count })),
+      ...subcategories.flatMap((s) => {
+        // Libellé public via la table d'affichage ; null = chip omis des
+        // filtres (les produits restent visibles via « Toutes »). Le filtrage
+        // utilise toujours la valeur DB brute (`value`).
+        const label = displaySubcategory(s.name);
+        return label === null ? [] : [{ label, value: s.name, count: s.count }];
+      }),
     ];
   }, [activeCat, subcategories, catFiltered]);
 

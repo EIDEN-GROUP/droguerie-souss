@@ -103,17 +103,15 @@ const CORE_PAGES = [
   { loc: "/security", lastmod: null, changefreq: "yearly", priority: "0.4" },
 ];
 
-/** Pages de catégories (`/categories?cat=…`) : mêmes valeurs que les cartes du site
- *  et le canonical des routes, encodées comme le router les génère. */
+/** Pages de catégories (`/categories?cat=…`) : les cinq rayons vitrine, mêmes
+ *  valeurs que les cartes du site et le canonical des routes, encodées comme
+ *  le router les génère. */
 const CATEGORY_PAGES = [
-  "Carrelage",
-  "Marbre",
-  "Peinture",
-  "Ciment & Granulats",
-  "Plâtre",
-  "Électricité",
-  "Plomberie",
-  "Quincaillerie",
+  "Carrelage & Céramique",
+  "Ciment, Béton & Matériaux de Gros Œuvre",
+  "Sanitaire, Robinetterie & Plomberie",
+  "Peinture, Plâtre & Finitions",
+  "Étanchéité, Isolation & Produits Techniques",
 ].map((cat) => ({
   loc: `/categories?cat=${encodeURIComponent(cat)}`,
   lastmod: null,

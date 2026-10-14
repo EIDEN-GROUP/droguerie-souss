@@ -96,7 +96,7 @@ export const catalogueEditions: CatalogueEdition[] = [
     year: 2026,
     title: "Catalogue 2026",
     description:
-      "L'édition complète : carrelage, marbre, zellige, sanitaire, peinture et second œuvre.",
+      "L'édition complète : carrelage, céramique, sanitaire, peinture et second œuvre.",
     cover: coverOf("2026"),
     isNew: true,
     hidden: true,
