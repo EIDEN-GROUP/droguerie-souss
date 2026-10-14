@@ -51,6 +51,32 @@ export const ALTERNATE_NAME = "Droguerie Souss";
  *  dépassait le ratio max et se faisait recadrer par les plateformes. */
 export const DEFAULT_OG_IMAGE = "/og-image.png";
 
+/**
+ * Interrupteur NO_INDEX : `VITE_NO_INDEX=true` (figé au build, lu aussi côté
+ * client) OU `NO_INDEX=true` côté serveur (runtime). Toute autre valeur - ou
+ * variable absente - = indexation autorisée (défaut). Configurer à `true`
+ * uniquement sur l'environnement Preview de Vercel, jamais en Production.
+ */
+function readEnv(key: string): string | undefined {
+  try {
+    if (typeof import.meta !== "undefined" && import.meta.env?.[key] != null) {
+      return String(import.meta.env[key]);
+    }
+  } catch {
+    /* import.meta indisponible côté pur Node */
+  }
+  if (typeof process !== "undefined" && process.env?.[key] != null) {
+    return String(process.env[key]);
+  }
+  return undefined;
+}
+
+/** `true` quand l'environnement demande de ne pas indexer (défaut : `false`). */
+export function isNoIndexEnabled(): boolean {
+  const raw = readEnv("VITE_NO_INDEX") ?? readEnv("NO_INDEX");
+  return raw?.trim().toLowerCase() === "true";
+}
+
 /** Transforme un chemin de route (ou absolu `/x`) en URL absolue du site. */
 export function canonical(path: string): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
@@ -127,11 +153,15 @@ export function seo({
       ]
     : [];
 
+  // Une seule meta robots par page (jamais de doublon) : le réglage par page
+  // (`noindex: true`) et l'interrupteur global NO_INDEX s'additionnent.
+  const robots = noindex || isNoIndexEnabled() ? "noindex, nofollow" : "index, follow";
+
   return {
     meta: [
       { title: fullTitle },
       { name: "description", content: description },
-      ...(noindex ? [{ name: "robots", content: "noindex, nofollow" }] : []),
+      { name: "robots", content: robots },
       { property: "og:title", content: fullTitle },
       { property: "og:description", content: description },
       { property: "og:type", content: ogType },
